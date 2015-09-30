@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="Code Generators"
+            id="com.quakearts.codegenerators">
+      </category>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.datatools.wizard.ProcedureWrapperWizard"
+            finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+            icon="icons/databases.png"
+            id="com.quakearts.datatools.wizards.procedurewrapperwizard"
+            name="Procedure Wrapper Class Generator">
+      </wizard>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.webtools.codegenerators.wizard.BeanFormWizard"
+            finalPerspective="org.eclipse.wst.web.ui.webDevPerspective"
+            icon="icons/form.png"
+            id="bean.ui.form"
+            name="Bean UI Form">
+      </wizard>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.webtools.codegenerators.wizard.BeanListViewWizard"
+            finalPerspective="org.eclipse.wst.web.ui.webDevPerspective"
+            icon="icons/listview.png"
+            id="bean.ui.list.view"
+            name="Bean UI List View">
+      </wizard>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.webtools.codegenerators.wizard.BaseTemplateWizard"
+            icon="icons/basetemplate.png"
+            id="base.template.wizard"
+            name="Base UI template page">
+      </wizard>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.datatools.wizard.ProcedureResultsWizard"
+            icon="icons/text_columns.png"
+            id="com.quakearts.datatools.wizards.procedureresultswizard"
+            name="New Procedure Result Class">
+      </wizard>
+      <wizard
+            category="com.quakearts.codegenerators"
+            class="com.quakearts.webtools.codegenerators.wizard.ScaffoldingWizard"
+            icon="icons/application_cascade.png"
+            id="com.quakearts.datatools.wizards.scaffoldingswizard"
+            name="New Bean Application">
+      </wizard>      
+   </extension>
+
+</plugin>

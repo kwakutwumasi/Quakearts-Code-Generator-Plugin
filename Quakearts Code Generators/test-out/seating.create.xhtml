@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
+	xmlns:c="http://quakearts.com/2.0/common">
+<ui:composition template="/base/template.xhtml">
+    <ui:define name="content">
+   		<b:form type="horizontal">
+			<b:messages showDetail="true" dismissible="true"></b:messages>
+            <span class="h4">#{crudapp.seating.id != 0? 'Create':'Edit'} Seating</span>
+    		<ui:include src="/tm/seating.crud.xhtml">
+				<ui:param name="obj" value="#{crudapp.seating}"></ui:param>
+			</ui:include>
+			<b:buttonGroup>
+				<b:button value="Save">
+					<c:saveUpdate object="#{crudapp.seating}" action="update" unless="#{crudapp.seating.id == 0}"></c:saveUpdate>
+					<c:saveUpdate object="#{crudapp.seating}" action="save" unless="#{crudapp.seating.id != 0}"></c:saveUpdate>
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button value="Delete" disabled="#{crudapp.seating.id == 0}">
+					<c:delete object="#{crudapp.seating}"></c:delete>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button value="Reset" disabled="#{crudapp.seating.id == 0}">
+					<c:set as="#{null}" var="#{crudapp.seating}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			</b:buttonGroup>
+   		</b:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,22 @@
+getProcedureColumns result rows
+
+PROCEDURE_CAT (database name)
+PROCEDURE_SCHEM (schema name)
+PROCEDURE_NAME
+COLUMN_NAME (if==RETURN_VALUE, set as output param 1, else use to create parameter name. Remove @ if exists)
+COLUMN_TYPE (int corresponds to DatabaseMetaData.procedure* static values)
+DATA_TYPE  (int correspondes to java.sql.Types)
+TYPE_NAME (string value of datatype)
+NULLABLE (int corresponds to DatabaseMetaData.procedure* static values)
+---------------------------
+getProcedure
+PROCEDURE_TYPE (matches DatabaseMetaData.procedure static values)
+PROCEDURE_CAT (database name)
+PROCEDURE_SCHEM (schema name)
+PROCEDURE_NAME
+------------------------------
+get schemas for catlog
+TABLE_SCHEM:{db_accessadmin}
+TABLE_CATALOG:{null}
+
+

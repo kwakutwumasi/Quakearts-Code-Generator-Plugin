@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scaffolding id="" xmlns="http://quakearts.com/scaffolding"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://quakearts.com/scaffolding src/com/quakearts/webtools/codegenerators/model/scaffolding.xsd ">
+	<properties>
+		<entry property="testproperty"><![CDATA[
+			<test></test>
+			<hibernate></hibernate>
+		]]></entry>
+	</properties>
+	<template-group folderID="tm">
+		<template filename="crud.xhtml" location="crudapp/basic.crud.xhtml" />
+		<template filename="list.xhtml" location="crudapp/basic.list.xhtml" />
+	</template-group>
+	<resource folderID="images" location="crudapp/images/loading.gif" />
+	<resource folderID="images" location="crudapp/images/loading-small.gif" />
+	<resource folderID="ui" location="crudapp/view.xhtml" template="true" />
+	<resource folderID="ui" location="crudapp/edit.xhtml" template="true" />
+	<resource folderID="src" location="crudapp/"/>
+	<folder-structure>
+		<folder name="Root Folder" folderID="root">
+			<folder name="src" folderID="src">
+			</folder>
+			<folder name="WebContent" folderID="web">
+				<folder name="base" folderID="base" />
+				<folder name="resources" folderID="resources">
+					<folder name="images" folderID="images" />
+				</folder>
+				<folder name="WEB-INF" folderID="webinf">
+					<folder name="classes" folderID="classes" />
+				</folder>
+				<folder name="ui" folderID="ui" />
+				<folder name="tm" folderID="tm" />
+			</folder>
+		</folder>
+	</folder-structure>
+</scaffolding>

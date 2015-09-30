@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
+	xmlns:c="http://quakearts.com/2.0/common">
+<ui:composition template="/base/template.xhtml">
+    <ui:define name="content">
+		<b:form type="horizontal">
+ 			<b:messages showDetail="true"></b:messages>
+    		<span class="h4"> #{crudapp.mode eq 'edit'?'Edit ':'Search '} Party
+				<b:button rendered="#{crudapp.mode eq 'edit'}"
+					value="Back to search...">
+					<b:glyph value="backward"></b:glyph>
+					<c:set as="#{null}" var="#{crudapp.mode}"></c:set>
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+                </b:button>
+            </span>
+			<b:row rendered="#{crudapp.mode eq null}">		
+				<b:pagination for="#{table}" limit="10"></b:pagination>
+				<b:dataTable value="#{crudapp.partyList}" var="party" binding="#{table}">
+    				<h:column>
+    					<f:facet name="header">
+    						Guests
+    					</f:facet>
+    					#{party.guests}
+    				</h:column>
+    				<h:column>
+    					<f:facet name="header">
+    						Id
+    					</f:facet>
+    					#{party.id}
+    				</h:column>
+    				<h:column>
+    					<f:facet name="header">
+    						Menu
+    					</f:facet>
+    					#{party.menu}
+    				</h:column>
+    				<h:column>
+    					<f:facet name="header">
+    						Seating
+    					</f:facet>
+    					#{party.seating}
+    				</h:column>
+    				<h:column>
+    					<f:facet name="header">
+    						Valid
+    					</f:facet>
+    					#{party.valid}
+    				</h:column>
+    				<h:column>
+    					<f:facet name="header">
+    						Action
+    					</f:facet>
+    					<h:commandLink value="Edit">
+    						<c:set as="#{party}" var="#{crudapp.party}"></c:set>
+    						<c:set as="edit" var="#{crudapp.mode}" />
+							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+    					</h:commandLink>
+    				</h:column>
+    			</b:dataTable>
+			</b:row>
+			<b:row rendered="#{crudapp.mode eq 'edit' or crudapp.mode eq null}">
+				<ui:include src="/tm/party.crud.xhtml">
+					<ui:param name="obj" value="#{crudapp.party}"></ui:param>
+				</ui:include>
+				<b:buttonGroup rendered="#{crudapp.mode eq 'edit'}">
+					<b:button value="Save">
+						<c:saveUpdate object="#{crudapp.party}" action="update"></c:saveUpdate>
+						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					</b:button>
+					<b:button value="Delete">
+						<c:delete object="#{crudapp.party}"></c:delete>
+						<c:executeAction listener="#{crudapp.removeParty}"></c:executeAction>
+						<c:set as="#{null}" var="#{crudapp.party}"></c:set>
+						<c:set as="#{null}" var="#{crudapp.mode}"></c:set>
+						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					</b:button>
+				</b:buttonGroup>
+				<b:button rendered="#{crudapp.mode eq null}">
+					Search
+					<c:executeAction listener="#{crudapp.findParty}"></c:executeAction>
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			</b:row>
+		</b:form>
+    </ui:define>
+</ui:composition>
+</html>

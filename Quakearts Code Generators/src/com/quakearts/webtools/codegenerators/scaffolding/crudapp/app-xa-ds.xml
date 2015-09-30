@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  JBoss DataSource Configuration                                       -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: derby-xa-ds.xml 77479 2008-08-26 10:33:09Z alex.loubyansky@jboss.com $ -->
+
+<datasources>
+#if($datasourcetype=="derby")
+   <xa-datasource>
+		<jndi-name>$jndiname</jndi-name>
+		
+		<!-- uncomment to enable interleaving <interleaving/> -->
+		<isSameRM-override-value>false</isSameRM-override-value>
+		<xa-datasource-class>org.apache.derby.jdbc.EmbeddedXADataSource</xa-datasource-class>
+		
+		<!-- path to the database. (${jboss.server.data.dir}${/}derby${/}default didn't work on win) -->
+		<xa-datasource-property name="DatabaseName">$databaseName</xa-datasource-property>
+		<xa-datasource-property name="User">sa</xa-datasource-property>
+		<xa-datasource-property name="Password"></xa-datasource-property>
+		<xa-datasource-property name="CreateDatabase">create</xa-datasource-property>
+		
+		<!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+		<metadata>
+		   <type-mapping>Derby</type-mapping>
+		</metadata>	
+   </xa-datasource>
+#elseif($datasourcetype=="sqlserver")
+   <xa-datasource>
+		<jndi-name>$jndiname</jndi-name>
+     
+ 		<!-- uncomment to enable interleaving <interleaving/> -->
+		<isSameRM-override-value>false</isSameRM-override-value>
+		<xa-datasource-class>com.microsoft.sqlserver.jdbc.SQLServerXADataSource</xa-datasource-class>
+		<xa-datasource-property name="ServerName">$serverName</xa-datasource-property>
+		<xa-datasource-property name="DatabaseName">$databaseName</xa-datasource-property>
+		<xa-datasource-property name="SelectMethod">cursor</xa-datasource-property>
+		<xa-datasource-property name="User">$user</xa-datasource-property>
+		<xa-datasource-property name="Password">$password</xa-datasource-property>
+
+      <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+		<metadata>
+		   <type-mapping>MS SQLSERVER2000</type-mapping>
+		</metadata>
+   </xa-datasource>
+#elseif($datasourcetype=="mysql")
+   <xa-datasource>
+		<jndi-name>$jndiname</jndi-name>
+		
+		<track-connection-by-tx>true</track-connection-by-tx> 
+	    <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+		<xa-datasource-property name="ServerName">$serverName</xa-datasource-property>
+		<xa-datasource-property name="DatabaseName">$databaseName</xa-datasource-property>
+		<xa-datasource-property name="User">$user</xa-datasource-property>
+		<xa-datasource-property name="Password">$password</xa-datasource-property>
+	
+	    <!-- should only be used on drivers after 3.22.1 with "ping" support
+	    <valid-connection-checker-class-name>org.jboss.resource.adapter.jdbc.vendor.MySQLValidConnectionChecker</valid-connection-checker-class-name>
+	    -->
+	    <!-- sql to call when connection is created
+	    <new-connection-sql>some arbitrary sql</new-connection-sql>
+	      -->
+	    <!-- sql to call on an existing pooled connection when it is obtained from pool - MySQLValidConnectionChecker is preferred for newer drivers
+	    <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+	      -->
+	
+	    <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+	    <metadata>
+	       <type-mapping>mySQL</type-mapping>
+	    </metadata>	
+   </xa-datasource>
+#elseif($datasourcetype=="sybasexa")
+    <xa-datasource>
+         <jndi-name>$jndiname</jndi-name>
+         <!-- uncomment to enable interleaving <interleaving/> -->
+         <xa-datasource-class>com.sybase.jdbc4.jdbc.SybXADataSource</xa-datasource-class>
+         <xa-datasource-property name="NetworkProtocol">Tds</xa-datasource-property>
+		 <xa-datasource-property name="ServerName">$serverName</xa-datasource-property>
+         <xa-datasource-property name="PortNumber">$serverPort</xa-datasource-property>
+		 <xa-datasource-property name="DatabaseName">$databaseName</xa-datasource-property>
+        
+         <!-- Use the security domain defined in conf/login-config.xml - - >
+         <security-domain>SybaseXADSRealm</security-domain>
+         < ! - - or User/Password properties -->
+		 <xa-datasource-property name="User">$user</xa-datasource-property>
+		 <xa-datasource-property name="Password">$password</xa-datasource-property>
+        
+         <min-pool-size>1</min-pool-size>
+         <max-pool-size>20</max-pool-size>
+         <idle-timeout-minutes>15</idle-timeout-minutes>
+         <check-valid-connection-sql>select 1 from mytable</check-valid-connection-sql>
+         <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.SybaseExceptionSorter</exception-sorter-class-name>
+    	 <metadata>
+    		<type-mapping>Sybase</type-mapping>
+         </metadata>
+    </xa-datasource>
+#elseif($datasourcetype=="sybaselocaltx")
+    <local-tx-datasource>
+       <jndi-name>$jndiname</jndi-name>
+        <!-- Sybase jConnect URL for the database. 
+        NOTE: The hostname and port are made up values. The optional
+              database name is provided, as well as some additinal Driver
+              parameters.
+        -->
+        <connection-url>jdbc:sybase:Tds:$serverName:$serverPort/db_name?JCONNECT_VERSION=6</connection-url>
+        <driver-class>com.sybase.jdbc3.jdbc.SybDataSource</driver-class>
+        <user-name>$user</user-name>
+        <password>$password</password>
+        <exception-sorter-class-name>org.jboss.resource.adapter.jdbc.vendor.SybaseExceptionSorter</exception-sorter-class-name>
+        <!-- sql to call when connection is created
+        <new-connection-sql>some arbitrary sql</new-connection-sql>
+        -->
+        
+        <!-- sql to call on an existing pooled connection when it is obtained from pool 
+        <check-valid-connection-sql>some arbitrary sql</check-valid-connection-sql>
+        -->
+        
+          <!-- corresponding type-mapping in the standardjbosscmp-jdbc.xml (optional) -->
+        <metadata>
+        <type-mapping>Sybase</type-mapping>
+        </metadata>
+    </local-tx-datasource>
+#end
+</datasources>

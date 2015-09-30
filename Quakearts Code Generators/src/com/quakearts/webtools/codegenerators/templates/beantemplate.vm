@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+#foreach($taglibrary in $taglibraries)
+	xmlns:${taglibrary.namespace}="$taglibrary.url"
+#end>
+<ui:composition template="$templatesrc">
+    <ui:define name="title"></ui:define>
+    <ui:define name="head"></ui:define>
+    <ui:define name="topmenu"></ui:define>
+    <ui:define name="header"></ui:define>
+    <ui:define name="sidemenu"></ui:define>
+    <ui:define name="content">
+		$textopen
+#foreach($beanElement in $beanModel.beanElements)
+#if(!$beanElement.readOnly) $beanElement.renderedText #end
+#end
+		
+		$textclose
+	</ui:define>
+    <ui:define name="footer"></ui:define>
+</ui:composition>
+</html>

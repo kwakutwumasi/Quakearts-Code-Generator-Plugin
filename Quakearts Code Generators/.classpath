@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/hibernate-jpa-2.0-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.faces-2.0.11.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test-src"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar" sourcepath="C:/Users/Public/Utilities/velocity-1.7/src/java">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Public/Utilities/velocity-1.7/docs/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/velocity-1.7.jar" sourcepath="C:/Users/Public/Utilities/velocity-1.7/src/java">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Public/Utilities/velocity-1.7/docs/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

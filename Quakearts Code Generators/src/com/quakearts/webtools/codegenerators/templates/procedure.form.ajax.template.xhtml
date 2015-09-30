@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot">
+	<b:form id="formopen" type="horizontal">
+		<b:formGroup id="tag:default"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}"></h:inputText></b:formGroup>
+		<b:formGroup id="tag:int"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateLongRange></f:validateLongRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:java.lang.Integer"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateLongRange></f:validateLongRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:long"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateLongRange></f:validateLongRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:java.lang.Long"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateLongRange></f:validateLongRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:double"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateDoubleRange></f:validateDoubleRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:java.lang.Double"><label for="">${util.toLabel($value)}</label><h:inputText styleClass="form-control" value="#{${name}.${value}}" validatorMessage="Enter a valid number"><f:validateDoubleRange></f:validateDoubleRange></h:inputText></b:formGroup>
+		<b:formGroup id="tag:java.util.Date"><label for="">${util.toLabel($value)}</label><b:date format="dmy" value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy"></f:convertDateTime></b:date></b:formGroup>
+		<b:formGroup id="tag:java.sql.Date"><label for="">${util.toLabel($value)}</label><b:date format="dmy" value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy"></f:convertDateTime></b:date></b:formGroup>
+		<b:formGroup id="tag:java.sql.Timestamp"><label for="">${util.toLabel($value)}</label><b:date format="dmy" value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy"></f:convertDateTime></b:date></b:formGroup>
+		<b:formGroup id="tag:boolean"><label>${util.toLabel($value)}<h:selectBooleanCheckbox value="#{${name}.${value}}"></h:selectBooleanCheckbox></label></b:formGroup>
+		<b:formGroup id="tag:java.lang.Boolean"><label>${util.toLabel($value)}<h:selectBooleanCheckbox value="#{${name}.${value}}"></h:selectBooleanCheckbox></label></b:formGroup>
+		<b:buttonGroup>	
+			<b:button value="Execute" actionListener="#{${name}.executeListener}">
+				<f:ajax execute="@form" render="@form" onevent="" />
+			</b:button>
+		</b:buttonGroup>
+	</b:form>
+</html>

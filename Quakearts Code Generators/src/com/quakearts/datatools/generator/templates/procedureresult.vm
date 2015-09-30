@@ -1,0 +1,21 @@
+#if(!$wrapperClass.packageName.empty)package $wrapperClass.packageName; #end
+
+#foreach($import in $imports)import $import;
+#end
+
+public class $procedureResult.javaClassName {
+#foreach($resultColumn in $procedureResult.resultColumns)
+	private $resultColumn.javaTypeName $resultColumn.variableName;
+#end
+
+#foreach($resultColumn in $procedureResult.resultColumns)
+	public $resultColumn.javaTypeName #if($resultColumn.javaTypeName=="boolean")is#{else}get#{end}${util.camelCase($resultColumn.variableName)}(){
+		return $resultColumn.variableName;
+	}
+
+	public void set${util.camelCase($resultColumn.variableName)}($resultColumn.javaTypeName $resultColumn.variableName){
+		this.$resultColumn.variableName = $resultColumn.variableName;
+    }
+
+#end
+}

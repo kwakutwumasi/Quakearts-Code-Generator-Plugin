@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://quakearts.com/scaffolding" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://quakearts.com/scaffolding">
+
+    <element name="scaffolding">
+    	<complexType>
+    		<sequence>
+    			<element name="properties" minOccurs="0" maxOccurs="1"
+    				type="tns:scaffolding-properties">
+    			</element>
+    			<element name="template-group" minOccurs="1" maxOccurs="unbounded"
+    				type="tns:template-group">
+    			</element>
+    			<element name="resource" minOccurs="1"
+					maxOccurs="unbounded" type="tns:resource">
+				</element>
+    			<element name="folder-structure" minOccurs="1"
+    				maxOccurs="1" type="tns:folder-structure">
+    			</element>
+    		</sequence>
+    		<attribute name="id" type="string" use="required"></attribute>
+    	</complexType>
+    </element>
+
+    <complexType name="folder">
+    	<sequence>
+            <element name="folder" type="tns:folder" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+        <attribute name="folderID" type="string" use="required"></attribute>
+    </complexType>
+    
+    <complexType name="folder-structure">
+		<sequence>
+			<element name="folder" type="tns:folder" minOccurs="1"
+				maxOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
+    
+    <complexType name="beanType">
+    	<simpleContent>
+			<extension base="string">
+				<attribute name="restriction-type" use="required">
+					<simpleType>
+						<restriction base="string">
+							<enumeration value="MUSTBE"></enumeration>
+							<enumeration value="CHILDOF"></enumeration>
+							<enumeration value="HASMETHOD"></enumeration>
+							<enumeration value="ANNOTATION"></enumeration>
+							<enumeration value="NAMELIKE"></enumeration>
+						</restriction>
+					</simpleType>
+				</attribute>
+				<attribute name="exclusive" use="optional" type="boolean"></attribute>
+			</extension>	
+    	</simpleContent>
+	</complexType>
+	
+	<complexType name="scaffolding-properties">
+		<sequence>
+			<element name="entry" maxOccurs="unbounded" minOccurs="1" type="tns:property-entry">
+			</element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="template-group">
+		<sequence>
+			<element name="template" minOccurs="1" maxOccurs="unbounded"
+				type="tns:template">
+			</element>
+			<element name="bean" minOccurs="0"
+				maxOccurs="unbounded" type="tns:bean">
+			</element>
+		</sequence>
+		<attribute name="folderID"></attribute>
+	</complexType>
+
+	<complexType name="property-entry">
+		<simpleContent>
+			<extension base="string">
+				<attribute name="property" use="required" type="string">
+				</attribute>
+			</extension>
+		</simpleContent>
+	</complexType>
+	
+	<complexType name="bean">
+		<choice>
+			<element name="bean-class" type="tns:beanType" minOccurs="1" maxOccurs="1">
+			</element>
+			<element name="bean-interface" type="tns:beanType" minOccurs="1" maxOccurs="1">
+			</element>
+		</choice>
+	</complexType>
+	
+	<complexType name="resource">
+		<attribute name="folderID" use="required" type="string"></attribute>
+		<attribute name="location" type="string" use="required"></attribute>
+		<attribute name="template" type="boolean" use="optional"></attribute>
+		<attribute name="filename" type="string" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="template">
+		<attribute name="filename" type="string" use="required"></attribute>
+		<attribute name="location" type="string" use="required"></attribute>
+	</complexType>
+</schema>

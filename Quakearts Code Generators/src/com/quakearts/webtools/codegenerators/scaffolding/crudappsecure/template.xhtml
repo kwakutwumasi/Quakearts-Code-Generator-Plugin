@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
+	xmlns:ut="http://quakearts.com/utils">
+<h:head>
+  <title><ui:insert name="title">${apptitle}</ui:insert></title>
+</h:head>
+<h:body>
+<b:ajaxLoader mainloaderimage="../resources/images/loading.gif" miniloaderimage="../resources/images/loading-small.gif" startTimeout="1000" />
+<b:container fluid="true">
+<b:navbar>
+	<f:facet name="header">
+		<span class="navbar-brand">${apptitle}</span>
+	</f:facet>
+	<h:form>
+		<b:nav>
+			<ga:checkRole roles="$createrole">
+			<b:menu value="Create">
+#foreach($beanModel in $beanModels)
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.create.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;"> Create ${beanModel.beanClass.simpleName}</span><b:glyph value="edit"></b:glyph></h:outputLink>
+#end
+			</b:menu>
+			</ga:checkRole>
+			<ga:checkRole roles="$readrole">
+			<b:menu value="View">
+#foreach($beanModel in $beanModels)
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.list.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;">View ${beanModel.beanClass.simpleName}</span><b:glyph value="search"></b:glyph> </h:outputLink>
+#end
+			</b:menu>
+			</ga:checkRole>
+		</b:nav>
+	</h:form>
+</b:navbar>
+<b:row>
+	<b:column sm="10" offsetsm="1" md="8" offsetmd="2">
+		<ui:insert name="content"></ui:insert>
+	</b:column>
+</b:row>
+</b:container>
+<footer>
+	<div style="text-align: center; font-family: Arial; font-size: 10px">
+		(c)Copyright ${company}
+		<h:outputText value="#{ut:now()}">
+			<f:convertDateTime pattern="yyyy"></f:convertDateTime>
+		</h:outputText>
+	</div>
+</footer>
+</h:body>
+
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 30, 2015 12:15:29 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.quakearts.test.hibernate.Menu" table="Menu" schema="dbo" catalog="PartyDB">
+        <id name="id" type="long">
+            <column name="mid" />
+            <generator class="identity"></generator>
+        </id>
+        <property name="itemName" type="string">
+            <column name="item_name" length="50" />
+        </property>
+        <property name="valid" type="boolean">
+            <column name="valid" not-null="true" />
+        </property>
+        <set name="parties" table="Party" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="mid" />
+            </key>
+            <one-to-many class="com.quakearts.test.hibernate.Party" />
+        </set>
+    </class>
+</hibernate-mapping>

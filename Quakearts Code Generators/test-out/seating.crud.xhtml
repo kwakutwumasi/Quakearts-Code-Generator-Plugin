@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
+	xmlns:c="http://quakearts.com/2.0/common">
+<ui:component>
+	<b:formGroup>
+		<label id="guests_label" for="#{guestsComponent.clientId}">Guests <h:outputLink value="guests.create.jsf">New</h:outputLink></label>
+		<b:selectOneMenu value="#{obj.guests}" autocomplete="true" suggestion="#{autocomplete.guestsSearchText}" delay="1"
+			fill="true" listener="#{autocomplete.filterGuestsItems}" onevent="#{loader.mainAjaxLoader}"
+			>
+			<f:selectItems value="#{autocomplete.foundGuestsItems}" 
+				var="guests" itemValue="#{guests}" itemLabel= "#{guests.id} #{guests.name} ">
+			</f:selectItems>
+			<c:pojoConverter collection="#{autocomplete.foundGuestsItems}"></c:pojoConverter>
+		</b:selectOneMenu>
+	</b:formGroup>
+	<b:formGroup>
+		<label id="seatingType_label" for="#{seatingTypeComponent.clientId}">Seating Type <h:outputLink value="seatingtype.create.jsf">New</h:outputLink></label>
+		<b:selectOneMenu value="#{obj.seatingType}" autocomplete="true" suggestion="#{autocomplete.seatingtypeSearchText}" delay="1"
+			fill="true" listener="#{autocomplete.filterSeatingtypeItems}" onevent="#{loader.mainAjaxLoader}"
+			>
+			<f:selectItems value="#{autocomplete.foundSeatingtypeItems}" 
+				var="seatingType" itemValue="#{seatingType}" itemLabel= "#{seatingType.description} ">
+			</f:selectItems>
+			<c:pojoConverter collection="#{autocomplete.foundSeatingtypeItems}"></c:pojoConverter>
+		</b:selectOneMenu>
+	</b:formGroup>
+	<b:formGroup>
+		<label id="valid_label" for="#{validComponent.clientId}"><h:selectBooleanCheckbox value="#{obj.valid}" binding="#{validComponent}"></h:selectBooleanCheckbox>Valid</label>
+	</b:formGroup>
+</ui:component>
+</html>

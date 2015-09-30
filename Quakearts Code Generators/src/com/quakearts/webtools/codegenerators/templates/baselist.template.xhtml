@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:dataTable value="#{}" var="${name}" id="listopen" binding="#{table}">
+		<h:column id="tag:default"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:int"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:java.lang.Integer"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:long"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:java.lang.Long"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:double"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:java.lang.Double"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"></h:outputText></h:column>
+		<h:column id="tag:java.sql.Date"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy" /></h:outputText></h:column>
+		<h:column id="tag:java.util.Date"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy" /></h:outputText></h:column>
+		<h:column id="tag:java.sql.Timestamp"><f:facet name="header">${util.toLabel(${value})}</f:facet><h:outputText value="#{${name}.${value}}"><f:convertDateTime format="dd/MM/yyyy" /></h:outputText></h:column>
+	</h:dataTable>
+</html>

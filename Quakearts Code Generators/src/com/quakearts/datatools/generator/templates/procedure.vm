@@ -1,0 +1,241 @@
+#if(!$wrapperClass.packageName.empty)package $wrapperClass.packageName; #end
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+#if($wrapperClass.facesType)import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.sql.DataSource;
+import com.quakearts.webapp.facelets.util.UtilityMethods; #end
+#foreach($import in $imports)import $import;
+#end
+
+public class $wrapperClass.javaClassName {
+	private static final String CALLSTATEMENT = "$callStatement";
+	
+#if(!$wrapperClass.updater && !$wrapperClass.executor && !$wrapperClass.separate)
+#foreach($procedureResult in $wrapperClass.procedure.procedureResults)
+	public static class $procedureResult.javaClassName {
+#foreach($resultColumn in $procedureResult.resultColumns)
+		private $resultColumn.javaTypeName $resultColumn.variableName;
+#end
+
+#foreach($resultColumn in $procedureResult.resultColumns)
+		public $resultColumn.javaTypeName #if($resultColumn.javaTypeName=="boolean")is#{else}get#{end}${util.camelCase($resultColumn.variableName)}(){
+			return $resultColumn.variableName;
+		}
+
+		public void set${util.camelCase($resultColumn.variableName)}($resultColumn.javaTypeName $resultColumn.variableName){
+			this.$resultColumn.variableName = $resultColumn.variableName;
+        }
+
+#end
+	}
+#end
+
+#foreach($procedureResult in $wrapperClass.procedure.procedureResults)
+#if($procedureResult.multiRow)
+	private List<$procedureResult.javaClassName> ${util.reverseCamelCase($procedureResult.javaClassName)}s = new ArrayList<$procedureResult.javaClassName>();
+#else
+	private $procedureResult.javaClassName ${util.reverseCamelCase($procedureResult.javaClassName)} = new ${procedureResult.javaClassName}();
+#end
+#end
+#end
+	private CallableStatement call;
+#if($wrapperClass.facesType)
+	private String jndiName;
+#end
+#if($wrapperClass.procedure.returnCodeEnabled)
+	private int returnCode;
+#end
+#if($wrapperClass.updater)
+	private int updateCount;
+#end
+
+#foreach($parameter in $wrapperClass.procedure.parameters)
+	private $parameter.javaTypeName $parameter.variableName#if($parameter.nullable)#if($parameter.javaTypeName=="int")=-1#end#if($parameter.javaTypeName=="long")=-1l#end#if($parameter.javaTypeName=="double")=-1d#end#end;
+#end
+
+#if(!$wrapperClass.updater && !$wrapperClass.executor)
+#foreach($procedureResult in $wrapperClass.procedure.procedureResults)
+#if($procedureResult.multiRow)
+	public List<$procedureResult.javaClassName> get${procedureResult.javaClassName}s(){
+		return ${util.reverseCamelCase($procedureResult.javaClassName)}s;
+	}
+#else
+	public $procedureResult.javaClassName get${procedureResult.javaClassName}(){
+		return ${util.reverseCamelCase($procedureResult.javaClassName)};
+	}
+#end
+#end
+#end
+
+#foreach($parameter in $wrapperClass.procedure.parameters)
+	public $parameter.javaTypeName #if($parameter.javaTypeName=="boolean")is#{else}get#{end}${util.camelCase($parameter.variableName)}(){
+		return $parameter.variableName;
+	}
+	
+	public void set${util.camelCase($parameter.variableName)}($parameter.javaTypeName $parameter.variableName){
+		this.$parameter.variableName = $parameter.variableName;
+	}
+
+#end
+#if($wrapperClass.facesType)
+	public String getJndiName() {
+		return jndiName;
+	}
+	
+	public void setJndiName(String jndiName) {
+		this.jndiName = jndiName;
+	}
+
+#end
+	public CallableStatement getCall() {
+		return call;
+	}
+
+#if($wrapperClass.procedure.returnCodeEnabled)
+	public int getReturnCode(){
+		return returnCode;
+	}
+#end
+#if($wrapperClass.updateOnly)
+	public int getUpdateCount(){
+		return updateCount;
+	}
+#end
+
+	public boolean execute(Connection con) throws SQLException{
+#foreach($parameter in $wrapperClass.procedure.parameters)
+#if(!$parameter.nullable && $parameter.javaTypeName!="boolean")
+#if($parameter.javaTypeName=="int")		if($parameter.variableName ==-1)#elseif($parameter.javaTypeName=="long")		if($parameter.variableName ==-1l)#elseif($parameter.javaTypeName=="double")		if($parameter.variableName ==-1d)#elseif($parameter.javaTypeName!="int"&&$parameter.javaTypeName!="long"&&$parameter.javaTypeName!="double")		if($parameter.variableName == null)
+#end
+			throw new SQLException("Parameter $parameter.variableName cannot be null");
+#end
+#end
+		call = con.prepareCall(CALLSTATEMENT);
+
+#if($wrapperClass.procedure.returnCodeEnabled)
+		call.registerOutParameter(1,Types.INTEGER);
+#end
+#foreach($parameter in $wrapperClass.procedure.parameters)
+#if($parameter.outputEnabled)
+		call.registerOutParameter($parameter.callPosition,$parameter.sqlTypesString);
+#else
+#if($parameter.inoutEnabled)
+		call.registerOutParameter($parameter.callPosition,$parameter.sqlTypesString);
+#end
+#if($parameter.nullable)
+#if($parameter.javaTypeName=="int")		if($parameter.variableName ==-1)#elseif($parameter.javaTypeName=="long")		if($parameter.variableName ==-1l)#elseif($parameter.javaTypeName=="double")		if($parameter.variableName ==-1d)#elseif($parameter.javaTypeName!="int"&&$parameter.javaTypeName!="long"&&$parameter.javaTypeName!="double")		if($parameter.variableName == null)#end
+
+			call.setNull($parameter.callPosition,$parameter.type);
+		else
+			call.set${util.camelCase($parameter.javaTypeName)}($parameter.callPosition,$parameter.variableName);
+#else
+		call.set${util.camelCase($parameter.javaTypeName)}($parameter.callPosition,$parameter.variableName);
+#end
+#end
+#end
+#if($wrapperClass.updater)
+		updateCount = call.executeUpdate;
+#elseif($wrapperClass.executor)
+		boolean resultSets = call.execute();
+#elseif($wrapperClass.multipleSets)
+		boolean resultSets = call.execute();
+		if(resultSets){
+			do {
+//TODO: Complete results processing for multiple sets
+/*				ResultSet rs = call.getResultSet();
+#else
+		ResultSet rs = call.executeQuery();
+		boolean resultSets = rs.next();
+#end
+#if(!$wrapperClass.updater && !$wrapperClass.executor)
+#foreach($procedureResult in $wrapperClass.procedure.procedureResults)
+#if(!$procedureResult.condition.empty)		$procedureResult.condition{
+
+#end
+		if(rs.next()){
+#if($procedureResult.multiRow)
+			do {
+				$procedureResult.javaClassName ${util.reverseCamelCase($procedureResult.javaClassName)} = new ${procedureResult.javaClassName}();
+#end
+#foreach($resultColumn in $procedureResult.resultColumns)
+				${util.reverseCamelCase($procedureResult.javaClassName)}.set${util.camelCase($resultColumn.variableName)}(rs.get${util.camelCase($resultColumn.javaTypeName)}($resultColumn.columnNumber));
+#end
+#if($procedureResult.multiRow)
+				${util.reverseCamelCase($procedureResult.javaClassName)}s.add(${util.reverseCamelCase($procedureResult.javaClassName)});
+			} while(rs.next());
+#end
+		}
+#if(!$procedureResult.condition.empty)		}
+
+#end
+#end
+
+#if($wrapperClass.multipleSets)
+*/
+			} while(call.getMoreResults());
+		}
+#end
+#end
+#if($wrapperClass.procedure.returnCodeEnabled)		returnCode = call.getInt(1);
+#end
+#foreach($parameter in $wrapperClass.procedure.parameters)
+#if($parameter.outputEnabled || $parameter.inoutEnabled)
+		$parameter.variableName = call.get${util.camelCase($parameter.javaTypeName)}($parameter.callPosition);
+#end
+#end
+#if($wrapperClass.updater)		return false#else		return resultSets;#end
+
+	}
+
+#if($wrapperClass.facesType)
+	public void executeListener(ActionEvent event){
+		FacesContext ctx=FacesContext.getCurrentInstance();
+		DataSource ds;
+		try {
+			ds =(DataSource) UtilityMethods.getInitialContext().lookup(jndiName);
+		} catch (Exception e) {
+			addError("Cannot get datasource", "Exception of type " + e.getClass().getName()
+					+ " was thrown. Message is " + e.getMessage()
+					+ ". Exception occured whiles getting datasource",ctx);
+			return;
+		}
+		Connection con;
+		try {
+			con = ds.getConnection();
+		} catch (SQLException e) {
+			addError("Cannot get connection", "Exception of type " + e.getClass().getName()
+					+ " was thrown. Message is " + e.getMessage()
+					+ ". Exception occured whiles getting connection",ctx);
+			return;
+		}
+		try {
+			execute(con);
+			addInfo("Procedure executed", "$wrapperClass.callName execution completed successfully", ctx);
+		} catch (SQLException e) {
+			addError("Cannot run call", "Exception of type " + e.getClass().getName()
+					+ " was thrown. Message is " + e.getMessage()
+					+ ". $wrapperClass.callName loading did not complete successfully",ctx);
+			return;
+		} finally {
+			try {
+				con.close();
+			} catch (Exception e2) {
+			}
+		}
+	}
+	
+	private void addError(String title, String details, FacesContext ctx){
+		ctx.addMessage("this", new FacesMessage(FacesMessage.SEVERITY_ERROR, title, details));
+	}
+
+	private void addInfo(String title, String details, FacesContext ctx){
+		ctx.addMessage("this", new FacesMessage(FacesMessage.SEVERITY_INFO, title, details));
+	}	
+#end
+}
+/* DO NOT EDIT OR REMOVE ANYTHING BELOW THIS LINE
+ * wrapperdata[$wrapperdata]*/

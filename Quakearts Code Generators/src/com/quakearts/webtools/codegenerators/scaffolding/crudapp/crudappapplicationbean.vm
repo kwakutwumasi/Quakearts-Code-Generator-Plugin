@@ -1,0 +1,116 @@
+package com.quakearts.webapp.beans;
+
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.DateTimeConverter;
+import javax.faces.event.ActionEvent;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import com.quakearts.webapp.facelets.tag.BaseBean;
+import com.quakearts.webapp.hibernate.HibernateHelper;
+#foreach($beanModelObj in $beanModels)import ${beanModelObj.beanClass.name};
+#end
+
+@ManagedBean(name="crudapp")
+@ViewScoped
+public class CRUDApplicationBean extends BaseBean {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5797127755522296661L;
+	private static Logger log = Logger.getLogger(CRUDApplicationBean.class.getName());
+	private String mode;
+	private Converter converter;
+	
+	public String getMode() {
+		return mode;
+	}
+	
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	
+	public Converter getConverter() {
+		if(converter==null){
+			converter = new TimeStampConverter();
+			((TimeStampConverter)converter).setDateStyle("dd/MM/yyyy");
+		}
+		return converter;
+	}
+	
+	public static class TimeStampConverter extends DateTimeConverter {
+		@Override
+		public Object getAsObject(FacesContext context, UIComponent component, String dateString) {
+			Object result;
+			try {
+				result = super.getAsObject(context, component, dateString);
+				if (result instanceof Date) {
+					//make it a Timestamp, because that is what jBPM will make of it anyway
+					result = new java.sql.Timestamp(((Date) result).getTime());
+				}
+			} catch (ConverterException ex) {
+				log.severe("Exception of type " + ex.getClass().getName()
+						+ " was thrown. Message is " + ex.getMessage());
+				return null;
+			}
+			return result;
+		}
+
+		@Override
+		public String getAsString(FacesContext context, UIComponent component, Object dateObject) {
+			String result = null;
+			try {
+				result = super.getAsString(context, component, dateObject);
+			} catch (ConverterException ex) {
+				return null;
+			}
+			return result;
+		}
+	}
+	
+#foreach($beanModelObj in $beanModels)
+	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	
+	private List<${beanModelObj.beanClass.simpleName}> ${beanModelObj.name}List;
+	
+	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
+		if(${beanModelObj.name}==null)
+			${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
+		
+		return ${beanModelObj.name};
+	}
+	
+	public void set${util.camelCase($beanModelObj.name)}(${beanModelObj.beanClass.simpleName} ${beanModelObj.name}) {
+		this.${beanModelObj.name} = ${beanModelObj.name};
+	}
+	
+	public List<${beanModelObj.beanClass.simpleName}> get${util.camelCase($beanModelObj.name)}List(){
+		return ${beanModelObj.name}List;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void find${util.camelCase($beanModelObj.name)}(ActionEvent event){
+		Criteria query = HibernateHelper.getCurrentSession().createCriteria(${beanModelObj.beanClass.simpleName}.class);
+#foreach($element in ${beanModelObj.beanElements})#if(!$element.collection && !$element.map && !$element.identity)
+		if(${beanModelObj.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.numeric)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModelObj.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
+			query.add(Restrictions.#if($element.string)ilike#{else}eq#{end}("${element.value}", ${beanModelObj.name}.${element.descriptor.readMethod.name}()));
+		}
+#end#end
+		${beanModelObj.name}List = query.list();
+	}
+	
+	public void remove${util.camelCase($beanModelObj.name)}(ActionEvent event){
+		if(${beanModelObj.name}!=null && ${beanModelObj.name}List!=null){
+			${beanModelObj.name}List.remove(${beanModelObj.name});
+		}
+	}
+	
+#end
+}
