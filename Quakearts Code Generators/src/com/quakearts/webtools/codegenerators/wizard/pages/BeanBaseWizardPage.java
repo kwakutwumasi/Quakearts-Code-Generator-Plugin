@@ -136,7 +136,7 @@ public abstract class BeanBaseWizardPage extends WizardPage {
 				ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), true, "Select a folders to save the file in...");
 				dialog.setTitle("Select file location");
 				if(dialog.open()==ContainerSelectionDialog.OK){
-					IPath path = ((IPath)dialog.getResult()[0]).makeAbsolute();
+					IPath path = ((IPath)dialog.getResult()[0]);
 					location = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
 					if(location instanceof IProject)
 						project = (IProject) location;

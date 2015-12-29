@@ -141,8 +141,10 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				PropertyEntry entry = (PropertyEntry) propertyText.getData();
-				entry.setValue(propertyText.getText());
-				tableViewer.refresh();
+				if(entry!=null){
+					entry.setValue(propertyText.getText());
+					tableViewer.refresh();
+				}
 			}
 		});
 		

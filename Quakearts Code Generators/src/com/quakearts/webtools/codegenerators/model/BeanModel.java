@@ -38,7 +38,7 @@ public class BeanModel {
 		ClassLoader loader;
 		if(project==null){
 			loader = Thread.currentThread().getContextClassLoader();
-		}else{
+		} else {
 			loader = CodeGenerators.getProjectClassLoader(project);
 		}
 		
