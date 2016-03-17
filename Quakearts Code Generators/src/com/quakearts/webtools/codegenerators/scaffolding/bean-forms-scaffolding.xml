@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scaffolding id="hibernate-app" xmlns="http://quakearts.com/scaffolding"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://quakearts.com/scaffolding ../model/scaffolding.xsd ">
+	<properties>
+		<entry property="apptitle">Bean Application</entry>
+		<entry property="company">Quake Arts Inc.</entry>
+	</properties>
+	<template-group folderID="tm">
+		<template filename="crud.xhtml" location="basic/crud.xhtml" />
+	</template-group>
+	<resource folderID="images" location="crudapp/images/loading.gif" />
+	<resource folderID="images" location="crudapp/images/loading-small.gif" />
+	<resource folderID="beans" location="basic/crudappapplicationbean.vm" filename="CRUDApplicationBean.java" template="true" />
+	<resource folderID="web" location="crudapp/index.vm" filename="index.jsp" template="true" />
+	<resource folderID="webinf" location="crudapp/web.xml" template="true" filename="web.xml" />
+	<resource folderID="base" location="crudapp/template.xhtml" template="true" />
+	<resource folderID="webinf" location="crudapp/faces-config.xml" />
+	<folder-structure>
+		<folder name="Root Folder" folderID="root">
+			<folder name="src" folderID="src">
+				<folder folderID="com" name="com">
+					<folder folderID="quakearts" name="quakearts">
+						<folder folderID="webapp" name="webapp">
+							<folder folderID="beans" name="beans" />
+						</folder>
+					</folder>
+				</folder>
+			</folder>
+			<folder name="WebContent" folderID="web">
+				<folder name="base" folderID="base" />
+				<folder name="resources" folderID="resources">
+					<folder name="images" folderID="images" />
+				</folder>
+				<folder name="WEB-INF" folderID="webinf">
+					<folder name="classes" folderID="classes" />
+				</folder>
+				<folder name="ui" folderID="ui" />
+				<folder name="tm" folderID="tm" />
+			</folder>
+		</folder>
+	</folder-structure>
+</scaffolding>

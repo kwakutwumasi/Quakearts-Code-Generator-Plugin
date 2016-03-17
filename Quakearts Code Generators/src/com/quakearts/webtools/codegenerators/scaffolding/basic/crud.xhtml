@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:c="http://quakearts.com/2.0/common">
+<ui:component>
+#foreach($element in $beanModel.beanElements)#if($element.knownInputType && !$element.identity)#set($componentName=${beanModel.name}+${util.camelCase($element.value)}+"Component")
+	<b:formGroup>
+		<label id="${element.value}_label" for="#{${componentName}Component.clientId}">#if($element.boolean)<h:selectBooleanCheckbox value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
+#if($element.string || $element.numeric)
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+#if($element.numeric)
+			<f:convertNumber></f:convertNumber>
+#end
+		</h:inputText>
+#elseif(${element.dateTimeType})
+		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+    	</b:date>
+#end
+	</b:formGroup>
+#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
+	<b:formGroup>
+		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>
+		<b:selectOneMenu value="#{obj.${element.value}}" autocomplete="true" 
+			suggestion="#{autocomplete.${elementModel.name}SearchText}" delay="1"
+			fill="true" listener="#{autocomplete.filter${util.camelCase($elementModel.name)}Items}" 
+			onevent="#{loader.mainAjaxLoader}" binding="${componentName}"
+			#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+			<f:selectItems value="#{autocomplete.found${util.camelCase($elementModel.name)}Items}" 
+				var="${element.value}" itemValue="#{${element.value}}" itemLabel= "$stringValue">
+			</f:selectItems>
+			<c:pojoConverter collection="#{autocomplete.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
+		</b:selectOneMenu>
+	</b:formGroup>
+#end#end
+#end
+</ui:component>
+</html>

@@ -1,0 +1,163 @@
+package com.quakearts.webapp.beans;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.DateTimeConverter;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
+import com.quakearts.webapp.facelets.tag.BaseBean;
+#foreach($beanModelObj in $beanModels)import ${beanModelObj.beanClass.name};
+#end
+
+@ManagedBean(name="crudapp")
+@ViewScoped
+public class CRUDApplicationBean extends BaseBean {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5797127755522296661L;
+	private static Logger log = Logger.getLogger(CRUDApplicationBean.class.getName());
+	private String mode;
+	private Converter converter;
+	
+	public String getMode() {
+		return mode;
+	}
+	
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	
+	public Converter getConverter() {
+		if(converter==null){
+			converter = new TimeStampConverter();
+			((TimeStampConverter)converter).setPattern("dd/MM/yyyy");
+		}
+		return converter;
+	}
+	
+	public static class TimeStampConverter extends DateTimeConverter implements Serializable {
+		@Override
+		public Object getAsObject(FacesContext context, UIComponent component, String dateString) {
+			Object result;
+			try {
+				result = super.getAsObject(context, component, dateString);
+				if (result instanceof Date) {
+					//make it a Timestamp, because that is what jBPM will make of it anyway
+					result = new java.sql.Timestamp(((Date) result).getTime());
+				}
+			} catch (ConverterException ex) {
+				log.severe("Exception of type " + ex.getClass().getName()
+						+ " was thrown. Message is " + ex.getMessage());
+				return null;
+			}
+			return result;
+		}
+
+		@Override
+		public String getAsString(FacesContext context, UIComponent component, Object dateObject) {
+			String result = null;
+			try {
+				result = super.getAsString(context, component, dateObject);
+			} catch (ConverterException ex) {
+				return null;
+			}
+			return result;
+		}
+	}
+	
+#foreach($beanModelObj in $beanModels)
+	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	
+	private List<${beanModelObj.beanClass.simpleName}> ${beanModelObj.name}List;
+	
+	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
+		if(${beanModelObj.name}==null)
+			${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
+		
+		return ${beanModelObj.name};
+	}
+	
+	public void set${util.camelCase($beanModelObj.name)}(${beanModelObj.beanClass.simpleName} ${beanModelObj.name}) {
+		this.${beanModelObj.name} = ${beanModelObj.name};
+#foreach($element in $beanModel.beanElements)#if(!$element.knownInputType)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($elementModel)		if(${beanModelObj.name}!=null){
+			${elementModel.beanClass.simpleName} ${element.value} = ${beanModelObj.name}.get${util.camelCase(${element.value})}();
+			if(${element.value}!=null){
+				found${util.camelCase($elementModel.name)}Items = new ArrayList<>();
+				found${util.camelCase($elementModel.name)}Items.add(${element.value});
+			}
+			
+		}#end#end#end
+	}
+	
+	public List<${beanModelObj.beanClass.simpleName}> get${util.camelCase($beanModelObj.name)}List(){
+		return ${beanModelObj.name}List;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void find${util.camelCase($beanModelObj.name)}(ActionEvent event){
+		//TODO
+	}
+	
+	public void remove${util.camelCase($beanModelObj.name)}(ActionEvent event){
+		if(${beanModelObj.name}!=null && ${beanModelObj.name}List!=null){
+			${beanModelObj.name}List.remove(${beanModelObj.name});
+		}
+	}
+	
+#set($stringElements=[])#foreach($element in $beanModelObj.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end	private List<${beanModelObj.beanClass.simpleName}> found${util.camelCase($beanModelObj.name)}Items;
+#if($stringElements.isEmpty())	@SuppressWarnings("unchecked")
+#end	public List<${beanModelObj.beanClass.simpleName}> getFound${util.camelCase($beanModelObj.name)}Items() {
+		
+		return found${util.camelCase($beanModelObj.name)}Items;
+	}
+	
+	public boolean isIn${util.camelCase($beanModelObj.name)}CreateMode() {
+		return in${util.camelCase($beanModelObj.name)}CreateMode;
+	}
+
+	public void setIn${util.camelCase($beanModelObj.name)}Mode(boolean inCreateMode) {
+		in${util.camelCase($beanModelObj.name)}CreateMode = inCreateMode;
+	}
+
+	private boolean in${util.camelCase($beanModelObj.name)}CreateMode;
+	
+	public void create${util.camelCase($beanModelObj.name)}AddToList(ActionEvent event) {
+		//TODO
+		found${util.camelCase($beanModelObj.name)}Items = new ArrayList<>();
+		found${util.camelCase($beanModelObj.name)}Items.add(get${util.camelCase($beanModelObj.name)}());
+		in${util.camelCase($beanModelObj.name)}CreateMode = false;
+	}
+	
+#if(!$stringElements.isEmpty())		private String ${beanModelObj.name}SearchText;
+	
+	public String get${util.camelCase($beanModelObj.name)}SearchText() {
+		return ${beanModelObj.name}SearchText;
+	}
+	
+	public void set${util.camelCase($beanModelObj.name)}SearchText(String ${beanModelObj.name}SearchText) {
+		this.${beanModelObj.name}SearchText = ${beanModelObj.name}SearchText;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void filter${util.camelCase($beanModelObj.name)}Items(AjaxBehaviorEvent event){
+		if(!isEmpty(${beanModelObj.name}SearchText)){
+			//TODO
+		}
+	}
+#end
+#end
+	
+	private boolean isEmpty(String text){
+		return text ==null||text.trim().isEmpty();
+	}
+}
