@@ -10,7 +10,7 @@
 		<b:form type="horizontal">
  			<b:messages showDetail="true"></b:messages>
     		<span class="h4"> #{crudapp.mode eq 'edit'?'Edit ':'Search '} ${beanModel.beanClass.simpleName}
-				<<h:outputLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}"
+				<h:outputLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}"
 					value="#{facesContext.externalContext.requestPathInfo}">
 					<b:glyph value="backward"></b:glyph>
 					Back to search...

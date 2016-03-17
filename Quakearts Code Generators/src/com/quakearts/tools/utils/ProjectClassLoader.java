@@ -1,9 +1,12 @@
 package com.quakearts.tools.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -21,8 +24,11 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
+import com.quakearts.tools.CodeGenerators;
+
 public class ProjectClassLoader extends ClassLoader {
 	private IProject project;
+	private List<String> notFoundClasses = new ArrayList<>();
 	
 	public ProjectClassLoader(IProject project, ClassLoader loader) {
 		super(loader);
@@ -34,11 +40,16 @@ public class ProjectClassLoader extends ClassLoader {
 	
 	@Override
 	protected Class<?> findClass(String className) throws ClassNotFoundException {
+		if(notFoundClasses.contains(className)) //Speed up processing
+			throw new ClassNotFoundException("Class "+className+" not found in binary files of reference project "+project.getName());
+			
 		byte[] classBytes = findBytesInProject(className);
 		if(classBytes!=null)
 			return defineClass(className, classBytes, 0, classBytes.length);
-		else
+		else {
+			notFoundClasses.add(className);
 			throw new ClassNotFoundException("Class "+className+" not found in binary files of reference project "+project.getName());
+		}
 	}
 	
 	private byte[] findBytesInProject(String className) throws ClassNotFoundException{
@@ -117,20 +128,27 @@ public class ProjectClassLoader extends ClassLoader {
 						path = project.getLocation().append(path.removeFirstSegments(1));
 					}
 					
-					JarFile file = new JarFile(path.toFile());
-					try {
-						ZipEntry entry = file.getEntry(name);
-						if(entry !=null){
-							return new URL("jar:file:"+path.toString()+"!/"+name);
+					if("jar".equals(path.getFileExtension())){
+						JarFile file = new JarFile(path.toFile());
+						try {
+							ZipEntry entry = file.getEntry(name);
+							if(entry !=null){
+								return new URL("jar:file:"+path.toString()+"!/"+name);
+							}
+						} finally{
+							file.close();
 						}
-					} finally{
-						file.close();
+					} else {
+						File resource = path.append(name).makeAbsolute().toFile();
+						if(resource.exists()){
+							return resource.toURI().toURL();
+						}
 					}
-					
 				}
 			}
 		} catch (JavaModelException | IOException e) {
-			e.printStackTrace();
+			CodeGenerators.logError("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
+					+ ". Exception occured whiles getting resource "+name, null);
 		}
 		return null;
 	}

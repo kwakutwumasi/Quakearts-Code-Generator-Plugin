@@ -20,7 +20,6 @@
 	</template-group>
 	<resource folderID="images" location="crudapp/images/loading.gif" />
 	<resource folderID="images" location="crudapp/images/loading-small.gif" />
-	<resource folderID="beans" location="crudapp/autocompletebean.vm" filename="AutoCompleteBean.java" template="true" />
 	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="CRUDApplicationBean.java" template="true" />
 	<resource folderID="web" location="crudapp/index.vm" filename="index.jsp" template="true" />
 	<resource folderID="webinf" location="crudapp/web.xml" template="true" filename="web.xml" />

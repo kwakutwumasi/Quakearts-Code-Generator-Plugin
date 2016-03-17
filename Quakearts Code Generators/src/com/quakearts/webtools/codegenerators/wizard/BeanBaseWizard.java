@@ -121,4 +121,8 @@ public abstract class BeanBaseWizard extends Wizard implements INewWizard {
 		project = resource.getProject();
 	}
 
+	@Override
+	public boolean needsProgressMonitor() {
+		return true;
+	}
 }

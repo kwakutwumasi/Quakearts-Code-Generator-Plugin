@@ -42,6 +42,7 @@ public abstract class NavigatorBase {
 							+ ". Exception occured whiles performing action in "
 							+this.getClass().getName()
 							+";profile "+ profileName, status.getException());
+					e.printStackTrace();
 				}
 			} else {
 				if (status.getException() != null) {

@@ -166,4 +166,8 @@ public abstract class AbstractWrapperWizard extends Wizard implements INewWizard
 		throw new CoreException(status);
 	}
 
+	@Override
+	public boolean needsProgressMonitor() {
+		return true;
+	}
 }

@@ -63,6 +63,8 @@ public class DatabasesReader extends NavigatorBase {
 					databasedef[0]=databasedef[0]==null?"":databasedef[0];
 					currentCachedDatabases.add(databasedef);
 				} while (set.next());
+			} else {
+				currentCachedDatabases.add(new String[]{"",database});
 			}
 			set.close();
 		}

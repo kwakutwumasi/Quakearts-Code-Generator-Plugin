@@ -26,7 +26,9 @@ public class ProcedureParameterReader extends NavigatorBase {
 		this.procedureName = procedureName;
 		this.schema = schema;
 		this.procedure = procedure;
-		procedure.setProcedureName((catalog!=null?catalog+".":"")+(schema!=null?schema+".":"")+(procedureName.indexOf(' ')!=-1?"["+procedureName+"]":procedureName));
+		procedure.setProcedureName((catalog != null && !catalog.trim().isEmpty() ? catalog + "." : "")
+				+ (schema != null && !schema.trim().isEmpty() ? schema + "." : "")
+				+ (procedureName.indexOf(' ') != -1 ? "[" + procedureName + "]" : procedureName));
 		setupAndPerformDBAction(profileName);
 	}
 
@@ -34,7 +36,8 @@ public class ProcedureParameterReader extends NavigatorBase {
 	protected void performDBAction(Connection connection) throws SQLException {
 		ResultSet rs;
 		DatabaseMetaData metaData = connection.getMetaData();
-    	rs = metaData.getProcedureColumns(catalog, schema, procedureName, null);
+		rs = metaData.getProcedureColumns(catalog, schema == null || schema.trim().isEmpty() ? null : schema,
+				procedureName, null);
     	int i=1;
 		if (rs.next()) {
 			do {

@@ -4,18 +4,20 @@ import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BeanElement {
+public class BeanElement implements Comparable<BeanElement> {
 	private String value;
 	private String renderedText;
 	private PropertyDescriptor descriptor;
 	private Map<String, String> generatorProperties = new HashMap<>();
 	private boolean identity, id;
+	private int order;
 	
-	public BeanElement(PropertyDescriptor descriptor, boolean identity, boolean id) {
+	public BeanElement(PropertyDescriptor descriptor, boolean identity, boolean id, int order) {
 		this.descriptor = descriptor;
 		this.value = descriptor.getName();
 		this.identity = identity;
 		this.id = id;
+		this.order=order;
 	}
 	
 	public String getRenderedText() {
@@ -54,6 +56,11 @@ public class BeanElement {
 		return id;
 	}
 	
+	public boolean isPrimitiveNumber(){
+		System.out.println(descriptor.getPropertyType().getName()+"= primitive? "+descriptor.getPropertyType().isPrimitive()+" numeric?"+isNumeric());
+		return isNumeric() && descriptor.getPropertyType().isPrimitive();
+	}
+	
 	public boolean isString(){
 		return descriptor.getPropertyType().getName().equals("java.lang.String")
 				|| descriptor.getPropertyType().getName().equals("char")
@@ -72,7 +79,9 @@ public class BeanElement {
 				|| descriptor.getPropertyType().getName().equals("java.lang.Short")
 				|| descriptor.getPropertyType().getName().equals("java.lang.Float")
 				|| descriptor.getPropertyType().getName().equals("java.lang.Integer")
-				|| descriptor.getPropertyType().getName().equals("java.lang.Byte"));
+				|| descriptor.getPropertyType().getName().equals("java.lang.Byte")
+				|| descriptor.getPropertyType().getName().equals("java.math.BigInteger")
+				|| descriptor.getPropertyType().getName().equals("java.math.BigDecimal"));
 	}
 	
 	public boolean isPrimitiveOrString(){
@@ -85,7 +94,9 @@ public class BeanElement {
 				|| descriptor.getPropertyType().getName().equals("java.lang.Character")
 				|| descriptor.getPropertyType().getName().equals("java.lang.Short")
 				|| descriptor.getPropertyType().getName().equals("java.lang.Float")
-				|| descriptor.getPropertyType().getName().equals("java.lang.Integer");
+				|| descriptor.getPropertyType().getName().equals("java.lang.Integer")
+				|| descriptor.getPropertyType().getName().equals("java.math.BigInteger")
+				|| descriptor.getPropertyType().getName().equals("java.math.BigDecimal");
 	}
 	
 	public boolean isKnownInputType(){
@@ -153,5 +164,20 @@ public class BeanElement {
 	
 	public Map<String, String> getGeneratorProperties() {
 		return generatorProperties;
+	}
+
+	@Override
+	public int compareTo(BeanElement o) {
+		if(o==null)
+			return 1;
+		
+		if(o==this)
+			return 0;
+		
+		if(this.order!= o.order)
+			return this.order - o.order;
+		
+
+		return this.value.compareTo(o.value);
 	}
 }

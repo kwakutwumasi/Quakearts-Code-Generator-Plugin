@@ -4,6 +4,8 @@ import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -48,9 +50,9 @@ public class ScaffoldingWizardPage extends WizardPage {
 	private String defaultDescription;
 	private IResource scaffoldingFile;
 	private Scaffolding scaffolding;
-	private ArrayList<BeanModel> beanModels = new ArrayList<BeanModel>();
-	private HashMap<String, BeanModel> nameModelMapping = new HashMap<>();
-	private HashMap<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>(){
+	private List<BeanModel> beanModels = new ArrayList<BeanModel>();
+	private Map<String, BeanModel> nameModelMapping = new HashMap<>();
+	private Map<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>(){
 		/**
 		 * 
 		 */
@@ -198,7 +200,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				CodeGenerators.getBeanModels().clear();
-				generator.getScaffoldingTemplates().clear();
+				generator.clearUserTemplates();
 			}
 		});
 		
@@ -282,15 +284,15 @@ public class ScaffoldingWizardPage extends WizardPage {
 		return scaffolding;
 	}
 	
-	public ArrayList<BeanModel> getBeanModels() {
+	public List<BeanModel> getBeanModels() {
 		return beanModels;
 	}
 	
-	public HashMap<String, BeanModel> getNameModelMapping() {
+	public Map<String, BeanModel> getNameModelMapping() {
 		return nameModelMapping;
 	}
 	
-	public HashMap<String, BeanModel> getClassModelMapping() {
+	public Map<String, BeanModel> getClassModelMapping() {
 		return classModelMapping;
 	}
 
@@ -307,7 +309,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 
 		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Loading beans models", beanTypes.length);
+			monitor.beginTask("Loading bean models....", beanTypes.length);
 			for(Object beanTypeObject:beanTypes){
 				IType beanType=(IType) beanTypeObject;
 				try {

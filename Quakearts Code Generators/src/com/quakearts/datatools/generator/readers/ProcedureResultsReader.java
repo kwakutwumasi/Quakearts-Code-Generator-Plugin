@@ -67,11 +67,14 @@ public class ProcedureResultsReader extends NavigatorBase {
 		
 		if(procedure.isReturnCodeEnabled())
 			callableStatement.registerOutParameter(1, Types.INTEGER);
-
+				
 		for(Parameter parameter:procedure.getParameters()){
-			Object parameterData = parameterDatas[parameter.getCallPosition()-offset];
 			if(parameter.isInoutEnabled() || parameter.isOutputEnabled())
 				callableStatement.registerOutParameter(parameter.getCallPosition(), parameter.getType());
+		}
+		
+		for(Parameter parameter:procedure.getParameters()){
+			Object parameterData = parameterDatas[parameter.getCallPosition()-offset];
 
 			if(!parameter.isOutputEnabled()){
 				if(parameterData instanceof Integer){

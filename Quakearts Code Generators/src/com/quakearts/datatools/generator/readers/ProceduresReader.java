@@ -41,7 +41,7 @@ public class ProceduresReader extends NavigatorBase {
 	@Override
 	protected void performDBAction(Connection connection) throws SQLException {
 		DatabaseMetaData metadata = connection.getMetaData();
-		ResultSet rs = metadata.getProcedures(database, schema, null);
+		ResultSet rs = metadata.getProcedures(database, schema == null || schema.trim().isEmpty()?null:schema, null);
 		currentCachedProcedures = new ArrayList<String[]>();
 		if (rs.next()) {
 			do {

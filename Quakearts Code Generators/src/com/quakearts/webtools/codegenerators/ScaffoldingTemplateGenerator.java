@@ -11,7 +11,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.velocity.VelocityContext;
@@ -30,10 +33,10 @@ import com.quakearts.webtools.codegenerators.model.TemplateGroup;
 import static com.quakearts.tools.CodeGenerators.*;
 
 public class ScaffoldingTemplateGenerator extends GenericGenerator {
-	private static HashMap<String, String> forbiddenIds = new HashMap<String, String>();
+	private static Map<String, String> forbiddenIds = new ConcurrentHashMap<String, String>();
 	private static String[] predefinedScaffoldingTemplates;
 	private static final String EMPTY ="";
-	private static HashMap<String, Scaffolding> scaffoldingTemplates = new HashMap<String, Scaffolding>();
+	private static Map<String, Scaffolding> scaffoldingTemplates = new ConcurrentHashMap<String, Scaffolding>();
 
 	public ScaffoldingTemplateGenerator() {
 		getEngine();
@@ -193,8 +196,18 @@ public class ScaffoldingTemplateGenerator extends GenericGenerator {
 		return forbiddenIds.containsKey(scaffoldingId);
 	}
 	
-	public HashMap<String, Scaffolding> getScaffoldingTemplates() {
+	public Map<String, Scaffolding> getScaffoldingTemplates() {
 		return scaffoldingTemplates;
 	}
 	
+	public void clearUserTemplates(){
+		for(String key:scaffoldingTemplates.keySet()){
+			for(String predifinedKey:predefinedScaffoldingTemplates){
+				if(key.equals(predifinedKey))
+					continue;
+			}
+			
+			scaffoldingTemplates.remove(key);
+		}
+	}
 }

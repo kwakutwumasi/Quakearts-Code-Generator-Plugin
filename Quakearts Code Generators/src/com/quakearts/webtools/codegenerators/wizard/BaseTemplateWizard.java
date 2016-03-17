@@ -95,5 +95,8 @@ public class BaseTemplateWizard extends Wizard implements INewWizard {
 			folder = resource.getParent();
 		}
 	}
-
+	@Override
+	public boolean needsProgressMonitor() {
+		return true;
+	}
 }

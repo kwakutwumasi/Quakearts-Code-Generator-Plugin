@@ -1,7 +1,9 @@
 package com.quakearts.webapp.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -11,6 +13,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import com.quakearts.webapp.facelets.tag.BaseBean;
@@ -41,12 +44,12 @@ public class CRUDApplicationBean extends BaseBean {
 	public Converter getConverter() {
 		if(converter==null){
 			converter = new TimeStampConverter();
-			((TimeStampConverter)converter).setDateStyle("dd/MM/yyyy");
+			((TimeStampConverter)converter).setPattern("dd/MM/yyyy");
 		}
 		return converter;
 	}
 	
-	public static class TimeStampConverter extends DateTimeConverter {
+	public static class TimeStampConverter extends DateTimeConverter implements Serializable {
 		@Override
 		public Object getAsObject(FacesContext context, UIComponent component, String dateString) {
 			Object result;
@@ -78,8 +81,7 @@ public class CRUDApplicationBean extends BaseBean {
 	
 #foreach($beanModelObj in $beanModels)
 	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	
-	private List<${beanModelObj.beanClass.simpleName}> ${beanModelObj.name}List;
-	
+
 	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
 		if(${beanModelObj.name}==null)
 			${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
@@ -89,7 +91,18 @@ public class CRUDApplicationBean extends BaseBean {
 	
 	public void set${util.camelCase($beanModelObj.name)}(${beanModelObj.beanClass.simpleName} ${beanModelObj.name}) {
 		this.${beanModelObj.name} = ${beanModelObj.name};
+		if(${beanModelObj.name}!=null){
+#foreach($element in $beanModelObj.beanElements)#if(!$element.knownInputType)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
+			${elementModel.beanClass.simpleName} ${element.value} = ${beanModelObj.name}.get${util.camelCase(${element.value})}();
+			if(${element.value}!=null){
+				found${util.camelCase($elementModel.name)}Items = new ArrayList<>();
+				found${util.camelCase($elementModel.name)}Items.add(${element.value});
+			}
+#end#end#end
+		}
 	}
+	
+	private List<${beanModelObj.beanClass.simpleName}> ${beanModelObj.name}List;
 	
 	public List<${beanModelObj.beanClass.simpleName}> get${util.camelCase($beanModelObj.name)}List(){
 		return ${beanModelObj.name}List;
@@ -99,8 +112,8 @@ public class CRUDApplicationBean extends BaseBean {
 	public void find${util.camelCase($beanModelObj.name)}(ActionEvent event){
 		Criteria query = HibernateHelper.getCurrentSession().createCriteria(${beanModelObj.beanClass.simpleName}.class);
 #foreach($element in ${beanModelObj.beanElements})#if(!$element.collection && !$element.map && !$element.identity)
-		if(${beanModelObj.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.numeric)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModelObj.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
-			query.add(Restrictions.#if($element.string)ilike#{else}eq#{end}("${element.value}", ${beanModelObj.name}.${element.descriptor.readMethod.name}()));
+		if(${beanModelObj.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.primitiveNumber)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModelObj.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
+			query.add(Restrictions.#if($element.string)ilike#{else}eq#end("${element.value}", ${beanModelObj.name}.${element.descriptor.readMethod.name}()));
 		}
 #end#end
 		${beanModelObj.name}List = query.list();
@@ -112,5 +125,54 @@ public class CRUDApplicationBean extends BaseBean {
 		}
 	}
 	
+#set($stringElements=[])#foreach($element in $beanModelObj.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end	private List<${beanModelObj.beanClass.simpleName}> found${util.camelCase($beanModelObj.name)}Items;
+#if($stringElements.isEmpty())	@SuppressWarnings("unchecked")
+#end	public List<${beanModelObj.beanClass.simpleName}> getFound${util.camelCase($beanModelObj.name)}Items() {
+#if($stringElements.isEmpty())		found${util.camelCase($beanModelObj.name)}Items = HibernateHelper.getCurrentSession().createCriteria(${beanModelObj.beanClass.simpleName}.class).list();
 #end
+		return found${util.camelCase($beanModelObj.name)}Items;
+	}
+	
+	private boolean in${util.camelCase($beanModelObj.name)}CreateMode;
+	
+	public boolean isIn${util.camelCase($beanModelObj.name)}CreateMode() {
+		return in${util.camelCase($beanModelObj.name)}CreateMode;
+	}
+
+	public void setIn${util.camelCase($beanModelObj.name)}Mode(boolean inCreateMode) {
+		in${util.camelCase($beanModelObj.name)}CreateMode = inCreateMode;
+	}
+
+	public void create${util.camelCase($beanModelObj.name)}AddToList(ActionEvent event) {
+		HibernateHelper.getCurrentSession().save(get${util.camelCase($beanModelObj.name)}());
+		found${util.camelCase($beanModelObj.name)}Items = new ArrayList<>();
+		found${util.camelCase($beanModelObj.name)}Items.add(get${util.camelCase($beanModelObj.name)}());
+		in${util.camelCase($beanModelObj.name)}CreateMode = false;
+	}
+	
+#if(!$stringElements.isEmpty())		private String ${beanModelObj.name}SearchText;
+	
+	public String get${util.camelCase($beanModelObj.name)}SearchText() {
+		return ${beanModelObj.name}SearchText;
+	}
+	
+	public void set${util.camelCase($beanModelObj.name)}SearchText(String ${beanModelObj.name}SearchText) {
+		this.${beanModelObj.name}SearchText = ${beanModelObj.name}SearchText;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void filter${util.camelCase($beanModelObj.name)}Items(AjaxBehaviorEvent event){
+		if(!isEmpty(${beanModelObj.name}SearchText)){
+			found${util.camelCase($beanModelObj.name)}Items = HibernateHelper.getCurrentSession().createQuery("select a from ${beanModelObj.beanClass.name} a where "
+					+"#foreach($element in $stringElements)a.${element.value} like :${element.value} #if($foreach.hasNext) or #end#end")
+					#foreach($element in $stringElements).setString("${element.value}", "%" + ${beanModelObj.name}SearchText + "%")#if(!$foreach.hasNext).list();
+#end#end
+		}
+	}
+#end
+#end
+	
+	private boolean isEmpty(String text){
+		return text ==null||text.trim().isEmpty();
+	}
 }

@@ -183,7 +183,8 @@ public final class ProcedureWizardPage extends WizardPage {
 								for(String[] procedure:procedures){
 									TreeItem item = new TreeItem(rootItem, 0);
 									item.setImage(CodeGenerators.getScriptImage());
-									item.setText(procedure[1]+"."+procedure[2]);
+									item.setText((procedure[1] != null && !procedure[1].trim().isEmpty()
+											? procedure[1] + "." : "") + procedure[2]);
 									item.setData(procedure);
 								}
 								monitor.worked(1);
@@ -252,7 +253,7 @@ public final class ProcedureWizardPage extends WizardPage {
                 if (!(e.item instanceof TreeItem)) return;
                 
                 final TreeItem item = (TreeItem)e.item;
-                if(!(item.getData() instanceof Parameter)) return;
+                if(item.getData()==null) return;
 
                 final Text parameterText = new Text(procedureViewTree, SWT.NONE);
                 parameterText.setText(item.getText());
@@ -261,11 +262,18 @@ public final class ProcedureWizardPage extends WizardPage {
 					@Override
 					public void focusLost(FocusEvent paramFocusEvent) {
                         Text text = (Text)procedureViewEditor.getEditor();
-                        if(!text.getText().isEmpty() && text.getText().matches("[a-zA-Z0-9_]+")){
+                        if(!text.getText().isEmpty()){
                         	item.setText(text.getText());
-                        	((Parameter)item.getData()).setVariableName(text.getText());
+                        	if(item.getData() instanceof Parameter){
+                        		if(text.getText().matches("[a-zA-Z0-9_]+"))
+                        			((Parameter)item.getData()).setVariableName(text.getText());
+                        		else
+                                	MessageDialog.openError(getShell(),"Invalid entry", "Text must be a valid java name (no spaces, capital or small letters, underscore and or numbers)");
+                        			
+                        	} else if(item.getData() instanceof Procedure)
+                        		((Procedure)item.getData()).setProcedureName(text.getText());
                         } else {
-                        	MessageDialog.openError(getShell(),"Invalid entry", "Text must be a valid java name (no spaces, capital or small letters, underscore and or numbers)");
+                        	MessageDialog.openError(getShell(),"Invalid entry", "Text cannot be empty");
                         }
 						parameterText.dispose();
 					}
@@ -312,6 +320,7 @@ public final class ProcedureWizardPage extends WizardPage {
 							TreeItem rootItem = new TreeItem(procedureViewTree, 0);
 							rootItem.setText(wrapperClass.getProcedure().getProcedureName());
 							rootItem.setImage(CodeGenerators.getScriptImage());
+							rootItem.setData(wrapperClass.getProcedure());
 							for(Parameter parameter:wrapperClass.getProcedure().getParameters()){
 								TreeItem item = new TreeItem(rootItem, 0);
 								item.setText(parameter.getVariableName());
