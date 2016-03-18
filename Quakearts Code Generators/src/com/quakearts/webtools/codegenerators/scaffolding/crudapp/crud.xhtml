@@ -10,14 +10,15 @@
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${componentName}.clientId}">#if($element.boolean)<h:selectBooleanCheckbox value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" 
+			binding="#{${componentName}}"#if($element.identity) 
+			disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
-		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
-    	</b:date>
+		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end></b:date>
 #end
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
@@ -29,7 +30,7 @@
 					<f:setPropertyActionListener value="#{true}" target="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
 				</h:commandLink>
 			</label>
-			<b:selectOneInput mainClass="#{loader.overlayClass}" 
+			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"
 				value="#{obj.${element.value}}" #if(!$stringValue.empty)autocomplete="true"
 				suggestion="#{crudapp.${elementModel.name}SearchText}" delay="1"
 				listener="#{crudapp.filter${util.camelCase($elementModel.name)}Items}"
@@ -41,17 +42,24 @@
 				<c:pojoConverter collection="#{crudapp.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
 			</b:selectOneInput>
 		</b:formGroup>
-		<b:panel rendered="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}">
-			<f:facet name="header"><span class="h4">Create ${util.splitCamelCase($element.value)}</span></f:facet>
+		<h:panelGroup rendered="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}">
+			<span class="h4">Create ${util.splitCamelCase($element.value)}</span>
 			<ui:include src="${elementModel.name}.crud.xhtml">
 				<ui:param name="obj" value="#{crudapp.${elementModel.name}}"></ui:param>
 			</ui:include>			
-			<b:button value="Save">
-				<c:executeAction listener="#{crudapp.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
-				<f:setPropertyActionListener value="#{crudapp.${elementModel.name}}" target="#{obj.${elementModel.name}}"></f:setPropertyActionListener>
-				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
-			</b:button>	
-		</b:panel>		
+			<b:buttonGroup>
+    			<b:button value="Save">
+    				<c:executeAction listener="#{crudapp.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
+    				<f:setPropertyActionListener value="#{crudapp.${elementModel.name}}" target="#{obj.${elementModel.name}}"></f:setPropertyActionListener>
+    				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
+    			</b:button>
+    			<b:button value="Cancel">
+					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
+					<f:setPropertyActionListener value="#{false}" target="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
+    			</b:button>
+			</b:buttonGroup>
+			<br />
+		</h:panelGroup>		
 	</h:panelGroup>	
 #end#end
 #end

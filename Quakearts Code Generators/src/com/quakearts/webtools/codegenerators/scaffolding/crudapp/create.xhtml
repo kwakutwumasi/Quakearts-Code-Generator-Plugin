@@ -8,7 +8,7 @@
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
 #set($id = $beanModel.generatorProperties["model.id"])#if($id)
-   		<b:form type="horizontal">
+   		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
             <span class="h4">#{crudapp.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${beanModel.beanClass.simpleName}</span>
     		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
@@ -34,7 +34,7 @@
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:buttonGroup>
-   		</b:form>
+   		</h:form>
 #end
 	</ui:define>
 </ui:composition>
