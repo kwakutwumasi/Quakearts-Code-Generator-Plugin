@@ -22,10 +22,6 @@ import com.quakearts.webapp.facelets.tag.BaseBean;
 @ViewScoped
 public class CRUDApplicationBean extends BaseBean {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5797127755522296661L;
 	private static Logger log = Logger.getLogger(CRUDApplicationBean.class.getName());
 	private String mode;
 	private Converter converter;
