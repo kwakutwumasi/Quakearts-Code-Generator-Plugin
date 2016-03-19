@@ -288,7 +288,13 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 						for(TemplateGroup templateGroup:scaffolding.getTemplateGroups()) {
 							if(canGenerate(beanModel,templateGroup)) {
 								for(Template template:templateGroup.getTemplates()){
-									String filename = beanModel.getName() +"."+ template.getFilename();
+									String filename;
+									if(template.getFilename().endsWith(".java")){
+										filename = beanModel.getBeanClass().getSimpleName() + template.getFilename();
+									} else {
+										filename = beanModel.getName() +"."+ template.getFilename();
+									}
+									
 									filename = resolve(filename, scaffolding.getProperties().getPropertyMap());
 									String name = (template.isPredefined()?"":scaffolding.getId()+"/")+template.getLocation();
 									

@@ -6,7 +6,14 @@
 	xmlns:b="http://quakearts.com/2.0/boot"
 	xmlns:ut="http://quakearts.com/utils">
 <h:head>
-  <title><ui:insert name="title">${apptitle}</ui:insert></title>
+<title><ui:insert name="title">${apptitle}</ui:insert></title>
+<style>
+.app-menu {
+	display: inline-block;
+	width: 110px;
+	margin-right: 5px;
+}
+</style>
 </h:head>
 <h:body>
 <b:ajaxLoader mainloaderimage="../resources/images/loading.gif" overlayloaderimage="../resources/images/loading-small.gif" miniloaderimage="../resources/images/loading-small.gif" startTimeout="1000" />
@@ -19,12 +26,12 @@
 		<b:nav>
 			<b:menu value="Create">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.create.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;"> Create ${beanModel.beanClass.simpleName}</span><b:glyph value="edit"></b:glyph></h:outputLink>
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.create.jsf"><span class="app-menu"> Create ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="edit"></b:glyph></h:outputLink>
 #end
 			</b:menu>
 			<b:menu value="View">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.list.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;">View ${beanModel.beanClass.simpleName}</span><b:glyph value="search"></b:glyph> </h:outputLink>
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.list.jsf"><span class="app-menu">View ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="search"></b:glyph> </h:outputLink>
 #end
 			</b:menu>
 		</b:nav>

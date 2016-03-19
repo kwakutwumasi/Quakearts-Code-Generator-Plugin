@@ -1,8 +1,10 @@
 package com.quakearts.webapp.beans;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
@@ -14,9 +16,9 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.HibernateException;
 import com.quakearts.webapp.facelets.tag.BaseBean;
+import com.quakearts.webapp.hibernate.HibernateBean;
 import com.quakearts.webapp.hibernate.HibernateHelper;
 #foreach($beanModelObj in $beanModels)import ${beanModelObj.beanClass.name};
 #end
@@ -104,15 +106,27 @@ public class CRUDApplicationBean extends BaseBean {
 		return ${beanModelObj.name}List;
 	}
 	
-	@SuppressWarnings("unchecked")
+	private class ${beanModelObj.beanClass.simpleName}Finder extends HibernateBean {
+    	private List<${beanModelObj.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters,QueryOrder...queryOrders) throws HibernateException, IOException{
+    		return findObjects(${beanModelObj.beanClass.simpleName}.class, parameters, HibernateHelper.getCurrentSession(), queryOrders);
+    	}
+    }
+	
 	public void find${util.camelCase($beanModelObj.name)}(ActionEvent event){
-		Criteria query = HibernateHelper.getCurrentSession().createCriteria(${beanModelObj.beanClass.simpleName}.class);
+		${beanModelObj.beanClass.simpleName}Finder finder = new ${beanModelObj.beanClass.simpleName}Finder();
+		HashMap<String, Serializable> parameters = new HashMap<>();
+		
 #foreach($element in ${beanModelObj.beanElements})#if(!$element.collection && !$element.map && !$element.identity)
 		if(${beanModelObj.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.primitiveNumber)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModelObj.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
-			query.add(Restrictions.#if($element.string)ilike#{else}eq#end("${element.value}", ${beanModelObj.name}.${element.descriptor.readMethod.name}()));
+			parameters.put("${element.value}", #if($element.descriptor.propertyType.name == "java.lang.String")new HibernateBean.VariableString(${beanModelObj.name}.${element.descriptor.readMethod.name}())#else${beanModelObj.name}.${element.descriptor.readMethod.name}()#end);
 		}
 #end#end
-		${beanModelObj.name}List = query.list();
+		
+		try {
+			${beanModelObj.name}List = finder.findObjects(parameters);
+		} catch (HibernateException | IOException e) {
+			addError("Search error", "An error occured while searching for Company", FacesContext.getCurrentInstance());
+		}		
 	}
 	
 	public void remove${util.camelCase($beanModelObj.name)}(ActionEvent event){
@@ -135,7 +149,7 @@ public class CRUDApplicationBean extends BaseBean {
 		return in${util.camelCase($beanModelObj.name)}CreateMode;
 	}
 
-	public void setIn${util.camelCase($beanModelObj.name)}Mode(boolean inCreateMode) {
+	public void setIn${util.camelCase($beanModelObj.name)}CreateMode(boolean inCreateMode) {
 		in${util.camelCase($beanModelObj.name)}CreateMode = inCreateMode;
 	}
 
@@ -146,7 +160,8 @@ public class CRUDApplicationBean extends BaseBean {
 		in${util.camelCase($beanModelObj.name)}CreateMode = false;
 	}
 	
-#if(!$stringElements.isEmpty())		private String ${beanModelObj.name}SearchText;
+#if(!$stringElements.isEmpty())
+	private String ${beanModelObj.name}SearchText;
 	
 	public String get${util.camelCase($beanModelObj.name)}SearchText() {
 		return ${beanModelObj.name}SearchText;

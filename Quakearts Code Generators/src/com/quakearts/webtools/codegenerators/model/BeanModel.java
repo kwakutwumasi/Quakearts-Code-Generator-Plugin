@@ -78,8 +78,7 @@ public class BeanModel {
 				
 				Field field=null;
 				try {
-					field = beanClass.getDeclaredField(descriptor.getName());
-				} catch (NoSuchFieldException e) {
+					field = getField(beanClass, descriptor.getName());
 				} catch (SecurityException e) {
 				}
 				
@@ -181,16 +180,18 @@ public class BeanModel {
 		if(managedBeanClass!=null)
 		try {
 			Annotation bean = beanClass.getAnnotation(managedBeanClass);
+			String name;
 			if(bean!=null){
 				Object value = getAnnotationProperty(managedBeanClass, bean, "name");
-				this.name = value!=null?value.toString():beanClass.getSimpleName().toLowerCase();
+				name = value!=null?value.toString():beanClass.getSimpleName();
 			} else {
-				this.name = beanClass.getSimpleName().toLowerCase();
-			}			
+				name = beanClass.getSimpleName();
+			}	
+			setName(name);
 		} catch (Exception e) {
 			CodeGenerators.logError("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
 					+ ". Exception occured whiles checking managed bean name: for "+beanClass.getName(),null);
-			this.name = beanClass.getSimpleName().toLowerCase();
+			setName(beanClass.getSimpleName());
 		}
 		
 		if(propertiesClass!=null && propertyClass!=null){
@@ -219,6 +220,20 @@ public class BeanModel {
 		Collections.sort(beanElements);
 	}
 
+	private Field getField(Class<?> clazz, String name) throws SecurityException {
+		Field field;
+		try {
+			field = clazz.getDeclaredField(name);
+		} catch (NoSuchFieldException e) {
+			if(clazz.getSuperclass()!=Object.class){
+				return getField(clazz.getSuperclass(), name);
+			} else
+				return null;
+		}
+		
+		return field;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private Class<? extends Annotation> checkForAnnotation(String className, ClassLoader loader){
 		Class<? extends Annotation> annotationClass;
@@ -245,8 +260,9 @@ public class BeanModel {
 	}
 
 	public void setName(String name) {
-		if(name!=null)
-			this.name = name.toLowerCase();
+		if(name!=null && name.length()>1)
+			this.name = new StringBuilder(name.substring(0, 1).toLowerCase())
+				.append(name.substring(1)).toString();
 	}
 
 	public Collection<BeanElement> getBeanElements() {

@@ -7,15 +7,15 @@
 	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
-		<b:form type="horizontal">
+		<h:form>
  			<b:messages showDetail="true"></b:messages>
-    		<span class="h4"> #{crudapp.mode eq 'edit'?'Edit ':'Search '} ${beanModel.beanClass.simpleName}
-				<h:outputLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}"
-					value="#{facesContext.externalContext.requestPathInfo}">
-					<b:glyph value="backward"></b:glyph>
-					Back to search...
-                </h:outputLink>
-            </span>
+    		<span class="h4">#{crudapp.mode eq 'edit'?'Edit ':'Search '} ${${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<br />
+            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}">
+				<b:glyph value="backward"></b:glyph>Back to search...
+				<c:set as="${null}" var="#{crudapp.mode}" />
+				<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+			</h:commandLink>
 			<b:row rendered="#{empty crudapp.mode}">		
 				<b:pagination for="#{table}" limit="10"></b:pagination>
 				<b:dataTable value="#{crudapp.${beanModel.name}List}" var="${beanModel.name}" binding="#{table}">
@@ -64,7 +64,7 @@
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:row>
-		</b:form>
+		</h:form>
     </ui:define>
 </ui:composition>
 </html>
