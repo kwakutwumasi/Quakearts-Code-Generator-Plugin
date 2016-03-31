@@ -57,7 +57,6 @@ public class BeanElement implements Comparable<BeanElement> {
 	}
 	
 	public boolean isPrimitiveNumber(){
-		System.out.println(descriptor.getPropertyType().getName()+"= primitive? "+descriptor.getPropertyType().isPrimitive()+" numeric?"+isNumeric());
 		return isNumeric() && descriptor.getPropertyType().isPrimitive();
 	}
 	

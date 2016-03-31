@@ -9,15 +9,16 @@
     <ui:define name="content">
 		<h:form>
  			<b:messages showDetail="true"></b:messages>
-    		<span class="h4">#{crudapp.mode eq 'edit'?'Edit ':'Search '} ${${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<span class="h4">#{!(crudapp.${beanModel.name} eq null) and crudapp.mode eq 'edit'?'Edit ':(crudapp.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<br />
-            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}">
+            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit' and (param.id eq null)}">
 				<b:glyph value="backward"></b:glyph>Back to search...
-				<c:set as="${null}" var="#{crudapp.mode}" />
+				<c:set as="#{null}" var="#{crudapp.mode}" />
+    			<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
 				<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 			</h:commandLink>
-			<b:row rendered="#{empty crudapp.mode}">		
-				<b:pagination for="#{table}" limit="10"></b:pagination>
+			<b:row rendered="#{empty crudapp.mode}">	
+				<b:pagination for="#{table}" pageSize="10"></b:pagination>
 				<b:dataTable value="#{crudapp.${beanModel.name}List}" var="${beanModel.name}" binding="#{table}">
 #foreach($element in $beanModel.beanElements)
 #if(!$element.collection && !$element.map)
@@ -25,7 +26,14 @@
     					<f:facet name="header">
     						${util.splitCamelCase($element.value)}
     					</f:facet>
-    					#{${beanModel.name}.${element.value}}
+						#if(${element.dateTimeType})<h:outputText value="#end#{${beanModel.name}.${element.value}}#if(${element.dateTimeType})" converter="#{crudapp.converter}"></h:outputText>#end
+
+#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
+#if($classModelMapping[${element.descriptor.propertyType.name}])
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${elementModel.name}.list.jsf">View
+							<f:param name="id" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
+						</h:outputLink>
+#end
     				</h:column>
 #end
 #end
@@ -41,7 +49,7 @@
     				</h:column>
     			</b:dataTable>
 			</b:row>
-			<b:row rendered="#{crudapp.mode eq 'edit' or empty crudapp.mode}">
+			<b:row>
 				<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 					<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
 				</ui:include>
@@ -58,6 +66,11 @@
 						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
 				</b:buttonGroup>
+				<b:button rendered="#{crudapp.mode eq 'read'}">
+					Edit
+					<c:set as="edit" var="#{crudapp.mode}" />
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
 				<b:button rendered="#{empty crudapp.mode}">
 					Search
 					<c:executeAction listener="#{crudapp.find${util.camelCase($beanModel.name)}}"></c:executeAction>

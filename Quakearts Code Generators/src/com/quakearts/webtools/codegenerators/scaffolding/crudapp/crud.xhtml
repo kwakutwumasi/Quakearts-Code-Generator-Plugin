@@ -10,13 +10,16 @@
 	<b:formGroup>
 		<label id="${element.value}_label">#if($element.boolean)<h:selectBooleanCheckbox value="#{obj.${element.value}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}"#if($element.identity) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
-		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end></b:date>
+		<b:date nullable="true" dayClass="btn-xs" monthClass="btn-xs" yearClass="btn-xs" 
+			value="#{obj.${element.value}}" converter="#{crudapp.converter}" 
+			disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
+		</b:date>
 #end
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
@@ -24,17 +27,18 @@
     	<h:panelGroup id="$insetId" layout="block" styleClass="#{loader.overlayClass}">
     		<b:formGroup>
     			<label id="${element.value}_label">${util.splitCamelCase($element.value)}
-    				<h:commandLink value="New" styleClass="#{!crudapp.in${util.camelCase($elementModel.name)}CreateMode?'':'collapse'}">
+    				<h:commandLink value="New" styleClass="#{!crudapp.in${util.camelCase($elementModel.name)}CreateMode?'':'collapse'}"
+						rendered="#{facesContext.viewRoot.viewId.endsWith('create.xhtml') or crudapp.mode eq 'edit'}">
     					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
     					<f:setPropertyActionListener value="#{true}" target="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
     				</h:commandLink>
     			</label>
-    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"
+    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{crudapp.mode eq 'read' || crudapp.in${util.camelCase($elementModel.name)}CreateMode}"
     				value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
     				suggestion="#{crudapp.${elementModel.name}SearchText}" delay="1"
     				listener="#{crudapp.filter${util.camelCase($elementModel.name)}Items}"
-    				onevent="#{loader.overlayAjaxLoader}">#end
-    				<f:selectItems value="#{crudapp.found${util.camelCase($elementModel.name)}Items}" 
+    				onevent="#{loader.overlayAjaxLoader}">
+#end    				<f:selectItems value="#{crudapp.found${util.camelCase($elementModel.name)}Items}" 
     					var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
     				</f:selectItems>
     				<c:pojoConverter collection="#{crudapp.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>

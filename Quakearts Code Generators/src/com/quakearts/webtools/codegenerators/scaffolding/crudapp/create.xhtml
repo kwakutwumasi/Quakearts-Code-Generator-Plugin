@@ -7,9 +7,9 @@
 	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
-#set($id = $beanModel.generatorProperties["model.id"])#if($id)
    		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
+#set($id = $beanModel.generatorProperties["model.id"])#if($beanModel.generatorProperties["model.id"])
             <span class="h4">#{crudapp.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 				<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
@@ -34,8 +34,27 @@
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:buttonGroup>
-   		</h:form>
+#else
+            <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
+				<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
+			</ui:include>
+			<b:buttonGroup>
+				<b:button value="Save">
+					<c:saveUpdate object="#{crudapp.${beanModel.name}}"></c:saveUpdate>
+                </b:button>
+				<b:button value="Delete">
+					<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
+					<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button value="Reset">
+					<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			<b:buttonGroup>
 #end
+   		</h:form>
 	</ui:define>
 </ui:composition>
 </html>

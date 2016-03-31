@@ -77,12 +77,20 @@ public class CRUDApplicationBean extends BaseBean {
 		}
 	}
 	
-#foreach($beanModelObj in $beanModels)
+#foreach($beanModelObj in $beanModels)#set($id = $beanModel.generatorProperties["model.id"])
 	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	
 
 	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
-		if(${beanModelObj.name}==null)
-			${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
+		if(${beanModelObj.name}==null){
+#if($beanModel.generatorProperties["model.id"]&&($id.descriptor.propertyType.name == "int" || $id.descriptor.propertyType.name == "java.lang.Integer" || $id.descriptor.propertyType.name == "long" || $id.descriptor.propertyType.name == "java.lang.Long" || $id.descriptor.propertyType.name == "java.lang.String"))			if(hasParameter("id")){
+				${beanModelObj.name} = HibernateHelper.getCurrentSession().get(${beanModelObj.beanClass.simpleName}.class,#if($id.descriptor.propertyType.name == "int" || $id.descriptor.propertyType.name == "java.lang.Integer")getParameterInt("id")#elseif($id.descriptor.propertyType.name == "long" || $id.descriptor.propertyType.name == "java.lang.Long")getParameter("id")#elseif($id.descriptor.propertyType.name == "java.lang.String")getParameter("id")#end);
+				mode="read";
+			} else {
+#end
+				${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
+#if($beanModel.generatorProperties["model.id"]&&($id.descriptor.propertyType.name == "int" || $id.descriptor.propertyType.name == "java.lang.Integer" || $id.descriptor.propertyType.name == "long" || $id.descriptor.propertyType.name == "java.lang.Long" || $id.descriptor.propertyType.name == "java.lang.String"))			}
+#end
+		}
 		
 		return ${beanModelObj.name};
 	}
