@@ -9,17 +9,18 @@
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
         <ga:checkRole roles="$readrole" message="You are not authorized to read from this table" severity="fatal">
-		<b:form type="horizontal">
+		<h:form>
  			<b:messages showDetail="true"></b:messages>
-    		<span class="h4"> #{crudapp.mode eq 'edit'?'Edit ':'Search '} ${beanModel.beanClass.simpleName}
-				<<h:outputLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit'}"
-					value="#{facesContext.externalContext.requestPathInfo}">
-					<b:glyph value="backward"></b:glyph>
-					Back to search...
-                </h:outputLink>
-            </span>
-			<b:row rendered="#{empty crudapp.mode}">		
-				<b:pagination for="#{table}" limit="10"></b:pagination>
+    		<span class="h4">#{!(crudapp.${beanModel.name} eq null) and crudapp.mode eq 'edit'?'Edit ':(crudapp.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<br />
+            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit' and (param.id eq null)}">
+				<b:glyph value="backward"></b:glyph>Back to search...
+				<c:set as="#{null}" var="#{crudapp.mode}" />
+    			<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+				<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+			</h:commandLink>
+			<b:row rendered="#{empty crudapp.mode}">	
+				<b:pagination for="#{table}" pageSize="10"></b:pagination>
 				<b:dataTable value="#{crudapp.${beanModel.name}List}" var="${beanModel.name}" binding="#{table}">
 #foreach($element in $beanModel.beanElements)
 #if(!$element.collection && !$element.map)
@@ -27,12 +28,19 @@
     					<f:facet name="header">
     						${util.splitCamelCase($element.value)}
     					</f:facet>
-    					#{${beanModel.name}.${element.value}}
+						#if(${element.dateTimeType})<h:outputText value="#end#{${beanModel.name}.${element.value}}#if(${element.dateTimeType})" converter="#{crudapp.converter}"></h:outputText>#end
+
+#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
+#if($classModelMapping[${element.descriptor.propertyType.name}])
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${elementModel.name}.list.jsf">View
+							<f:param name="id" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
+						</h:outputLink>
+#end
     				</h:column>
 #end
 #end
-					<ga:checkRole roles="$updaterole">
-					<h:column>
+    				<ga:checkRole roles="$updaterole">
+    				<h:column>
     					<f:facet name="header">
     						Action
     					</f:facet>
@@ -42,37 +50,42 @@
 							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
     					</h:commandLink>
     				</h:column>
-                    </ga:checkRole>
+    				</ga:checkRole>
     			</b:dataTable>
 			</b:row>
-			<b:row rendered="#{crudapp.mode eq 'edit' or empty crudapp.mode}">
+			<b:row>
 				<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 					<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
 				</ui:include>
 				<ga:checkRole roles="$updaterole">
-				<b:buttonGroup rendered="#{crudapp.mode eq 'edit'}">
-					<b:button value="Save">
-						<c:saveUpdate object="#{crudapp.${beanModel.name}}" action="update"></c:saveUpdate>
+					<b:buttonGroup rendered="#{crudapp.mode eq 'edit'}">
+						<b:button value="Save">
+							<c:saveUpdate object="#{crudapp.${beanModel.name}}" action="update"></c:saveUpdate>
+							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						</b:button>
+						<ga:checkRole roles="$deleterole">
+						<b:button value="Delete">
+							<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
+							<c:executeAction listener="#{crudapp.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
+							<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+							<c:set as="#{null}" var="#{crudapp.mode}"></c:set>
+							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						</b:button>
+						</ga:checkRole>
+					</b:buttonGroup>
+					<b:button rendered="#{crudapp.mode eq 'read'}">
+						Edit
+						<c:set as="edit" var="#{crudapp.mode}" />
 						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-					<ga:checkRole roles="$deleterole">
-					<b:button value="Delete">
-						<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
-						<c:executeAction listener="#{crudapp.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
-						<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
-						<c:set as="#{null}" var="#{crudapp.mode}"></c:set>
-						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-					</b:button>
-                    </ga:checkRole>
-				</b:buttonGroup>
-                </ga:checkRole>
+				</ga:checkRole>
 				<b:button rendered="#{empty crudapp.mode}">
 					Search
 					<c:executeAction listener="#{crudapp.find${util.camelCase($beanModel.name)}}"></c:executeAction>
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:row>
-		</b:form>
+		</h:form>
 		</ga:checkRole>
     </ui:define>
 </ui:composition>

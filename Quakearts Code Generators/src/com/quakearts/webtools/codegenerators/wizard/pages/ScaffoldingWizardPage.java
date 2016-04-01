@@ -52,17 +52,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 	private Scaffolding scaffolding;
 	private List<BeanModel> beanModels = new ArrayList<BeanModel>();
 	private Map<String, BeanModel> nameModelMapping = new HashMap<>();
-	private Map<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>(){
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public BeanModel get(Object key) {
-			System.out.println(key);
-			return super.get(key);
-		};
-	};
+	private Map<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>();
 	private Tree beanTree;
 	private ScaffoldingTemplateGenerator generator;
 
@@ -199,8 +189,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 		btnClearCache.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				CodeGenerators.getBeanModels().clear();
-				generator.clearUserTemplates();
+				CodeGenerators.clearCache();
 			}
 		});
 		

@@ -9,15 +9,16 @@ public class BeanElement implements Comparable<BeanElement> {
 	private String renderedText;
 	private PropertyDescriptor descriptor;
 	private Map<String, String> generatorProperties = new HashMap<>();
-	private boolean identity, id;
+	private boolean identity, id, nonFk;
 	private int order;
 	
-	public BeanElement(PropertyDescriptor descriptor, boolean identity, boolean id, int order) {
+	public BeanElement(PropertyDescriptor descriptor, boolean identity, boolean id, boolean nonFk, int order) {
 		this.descriptor = descriptor;
 		this.value = descriptor.getName();
 		this.identity = identity;
 		this.id = id;
 		this.order=order;
+		this.nonFk = nonFk;
 	}
 	
 	public String getRenderedText() {
@@ -56,6 +57,10 @@ public class BeanElement implements Comparable<BeanElement> {
 		return id;
 	}
 	
+	public boolean isNonFk() {
+		return nonFk;
+	}
+
 	public boolean isPrimitiveNumber(){
 		return isNumeric() && descriptor.getPropertyType().isPrimitive();
 	}

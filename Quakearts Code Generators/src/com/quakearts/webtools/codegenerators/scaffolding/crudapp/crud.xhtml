@@ -22,7 +22,7 @@
 		</b:date>
 #end
 	</b:formGroup>
-#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
+#elseif(${element.nonFk})#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
 #set($insetId=${beanModel.name}+${util.camelCase($elementModel.name)}+"Inset")	<c:unique>
     	<h:panelGroup id="$insetId" layout="block" styleClass="#{loader.overlayClass}">
     		<b:formGroup>

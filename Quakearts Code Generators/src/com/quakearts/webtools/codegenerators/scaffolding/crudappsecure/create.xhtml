@@ -5,15 +5,14 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:b="http://quakearts.com/2.0/boot"
 	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
-	xmlns:c="http://quakearts.com/2.0/common"
-	xmlns:ga="http://">
+	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
-		<ga:checkRole roles="$createrole" message="You are not authorized to insert into this table" severity="fatal">
-#set($id = $beanModel.generatorProperties["model.id"])#if($id)
-   		<b:form type="horizontal">
+ 		<ga:checkRole roles="$createrole" message="You are not authorized to insert into this table" severity="fatal">
+   		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
-            <span class="h4">#{crudapp.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${beanModel.beanClass.simpleName}</span>
+#set($id = $beanModel.generatorProperties["model.id"])#if($beanModel.generatorProperties["model.id"])
+            <span class="h4">#{crudapp.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 				<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
 			</ui:include>
@@ -28,19 +27,40 @@
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 				<ga:checkRole roles="$deleterole">
-				<b:button value="Delete" disabled="#{crudapp.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
-					<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
-					<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
-					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-				</b:button>
+					<b:button value="Delete" disabled="#{crudapp.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+						<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
+						<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					</b:button>
 				</ga:checkRole>
 				<b:button value="Reset" disabled="#{crudapp.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 					<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:buttonGroup>
-   		</b:form>
+#else
+            <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
+				<ui:param name="obj" value="#{crudapp.${beanModel.name}}"></ui:param>
+			</ui:include>
+			<b:buttonGroup>
+				<b:button value="Save">
+					<c:saveUpdate object="#{crudapp.${beanModel.name}}"></c:saveUpdate>
+                </b:button>
+				<ga:checkRole roles="$deleterole">
+					<b:button value="Delete">
+						<c:delete object="#{crudapp.${beanModel.name}}"></c:delete>
+						<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					</b:button>
+				</ga:checkRole>
+				<b:button value="Reset">
+					<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			<b:buttonGroup>
 #end
+   		</h:form>
 		</ga:checkRole>
 	</ui:define>
 </ui:composition>

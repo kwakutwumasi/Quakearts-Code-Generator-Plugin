@@ -31,7 +31,6 @@ public class BeanModel {
 	private String renderedText;
 	private Map<String, Object> generatorProperties = new HashMap<>();
 
-	@SuppressWarnings("unchecked")
 	public BeanModel(String fqn, IProject project) throws ClassNotFoundException, IntrospectionException {
 		final ClassLoader loader;
 		if(project==null){
@@ -46,6 +45,9 @@ public class BeanModel {
 		Class<? extends Annotation> propertiesClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.CodeGeneratorProperties", loader);
 		Class<? extends Annotation> orderClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.Order", loader);
 		Class<? extends Annotation> skipClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.Skip", loader);
+		Class<? extends Annotation> idClass =  checkForAnnotation("javax.persistence.Id", loader);
+		Class<? extends Annotation> generatedValueClass = checkForAnnotation("javax.persistence.GeneratedValue", loader);
+		Class<? extends Annotation> oneToOneClass = checkForAnnotation("javax.persistence.OneToOne", loader);
 		
 		HibernateMappingHandler handler = new HibernateMappingHandler();
 		if(!beanClass.isPrimitive() && !beanClass.isArray()){
@@ -85,21 +87,12 @@ public class BeanModel {
 				HashMap<String, String> fieldProperties = new HashMap<>();
 				
 				int order = 0;
+				boolean nonFk=false;
 				if(field!=null){
 					if(skipClass!=null && (field.getAnnotation(skipClass)!=null))
 						continue;
 					
 					if(!isId){
-						Class<? extends Annotation> idClass;
-						Class<? extends Annotation> generatedValueClass;
-						try {
-							idClass = (Class<? extends Annotation>) loader.loadClass("javax.persistence.Id");
-							generatedValueClass = (Class<? extends Annotation>) loader.loadClass("javax.persistence.GeneratedValue");
-						} catch (Exception e) {
-							idClass = null;
-							generatedValueClass = null;
-						}
-
 						if(idClass!=null)
 							try {
 								Annotation id = field.getAnnotation(idClass);
@@ -163,9 +156,17 @@ public class BeanModel {
 							order = ((Integer)value);
 						}
 					}
+					
+					if(oneToOneClass!=null){
+						Annotation oneToOneAnno = field.getAnnotation(oneToOneClass);
+						if(oneToOneAnno!=null){
+							Object value = getAnnotationProperty(oneToOneClass, oneToOneAnno, "mappedBy");
+							nonFk = value!=null && !value.toString().trim().isEmpty();
+						}
+					}
 				}
 				
-				BeanElement beanElement = new BeanElement(descriptor, isIdentity, isId, order);
+				BeanElement beanElement = new BeanElement(descriptor, isIdentity, isId, nonFk, order);
 				if(fieldProperties.size()>0)
 					beanElement.getGeneratorProperties().putAll(fieldProperties);
 

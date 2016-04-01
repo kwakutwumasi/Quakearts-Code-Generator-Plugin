@@ -210,5 +210,10 @@ public class CodeGenerators extends AbstractUIPlugin {
 		
 		return classLoader;
 	}
+	
+	public static void clearCache(){
+		classLoaders.clear();
+		beanModels.clear();
+	}
 
 }
