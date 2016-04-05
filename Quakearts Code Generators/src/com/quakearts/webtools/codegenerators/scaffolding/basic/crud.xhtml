@@ -8,31 +8,31 @@
 <ui:component>
 #foreach($element in $beanModel.beanElements)#if($element.knownInputType && !$element.identity)#set($componentName=${beanModel.name}+${util.camelCase($element.value)}+"Component")
 	<b:formGroup>
-		<label id="${element.value}_label" for="#{${componentName}Component.clientId}">#if($element.boolean)<h:selectBooleanCheckbox value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
+		<label id="${element.value}_label" for="#{${componentName}Component.clientId}">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{crudapp.mode eq 'read'}" value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}" disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
-		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}"#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
+		<b:date value="#{obj.${element.value}}" converter="#{crudapp.converter}" disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
     	</b:date>
 #end
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>
-		<b:selectOneMenu value="#{obj.${element.value}}" autocomplete="true" 
-			suggestion="#{autocomplete.${elementModel.name}SearchText}" delay="1"
-			fill="true" listener="#{autocomplete.filter${util.camelCase($elementModel.name)}Items}" 
-			onevent="#{loader.mainAjaxLoader}" binding="${componentName}"
-			#if($element.id) disabled="#{obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit'}"#end>
-			<f:selectItems value="#{autocomplete.found${util.camelCase($elementModel.name)}Items}" 
-				var="${element.value}" itemValue="#{${element.value}}" itemLabel= "$stringValue">
+		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{crudapp.mode eq 'read' || crudapp.in${util.camelCase($elementModel.name)}CreateMode}"
+			value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
+			suggestion="#{crudapp.${elementModel.name}SearchText}" delay="1"
+			listener="#{crudapp.filter${util.camelCase($elementModel.name)}Items}"
+			onevent="#{loader.overlayAjaxLoader}">
+#end    		<f:selectItems value="#{crudapp.found${util.camelCase($elementModel.name)}Items}" 
+				var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
 			</f:selectItems>
-			<c:pojoConverter collection="#{autocomplete.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
-		</b:selectOneMenu>
+			<c:pojoConverter collection="#{crudapp.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
+		</b:selectOneInput>
 	</b:formGroup>
 #end#end
 #end

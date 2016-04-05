@@ -54,7 +54,6 @@ public class CRUDApplicationBean extends BaseBean {
 			try {
 				result = super.getAsObject(context, component, dateString);
 				if (result instanceof Date) {
-					//make it a Timestamp, because that is what jBPM will make of it anyway
 					result = new java.sql.Timestamp(((Date) result).getTime());
 				}
 			} catch (ConverterException ex) {
@@ -82,8 +81,8 @@ public class CRUDApplicationBean extends BaseBean {
 
 	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
 		if(${beanModelObj.name}==null){
-#if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			if(hasParameter("id")){
-				${beanModelObj.name} = HibernateHelper.getCurrentSession().get(${beanModelObj.beanClass.simpleName}.class,#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")getParameterInt("id")#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")getParameterLong("id")#elseif(${id.descriptor.propertyType.name} == "java.lang.String")getParameter("id")#end);
+#if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			if(hasParameter("${beanModelObj.name}")){
+				set${util.camelCase($beanModelObj.name)}(HibernateHelper.getCurrentSession().get(${beanModelObj.beanClass.simpleName}.class,#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")getParameterInt("${beanModelObj.name}")#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")getParameterLong("${beanModelObj.name}")#elseif(${id.descriptor.propertyType.name} == "java.lang.String")getParameter("${beanModelObj.name}")#end));
 				mode="read";
 			} else {
 #end
@@ -124,7 +123,7 @@ public class CRUDApplicationBean extends BaseBean {
 		${beanModelObj.beanClass.simpleName}Finder finder = new ${beanModelObj.beanClass.simpleName}Finder();
 		HashMap<String, Serializable> parameters = new HashMap<>();
 		
-#foreach($element in ${beanModelObj.beanElements})#if(!$element.collection && !$element.map && !$element.identity)
+#foreach($element in ${beanModelObj.beanElements})#if(!$element.collection && !$element.map && !$element.identity && !$element.nonFk)
 		if(${beanModelObj.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.primitiveNumber)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModelObj.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
 			parameters.put("${element.value}", #if($element.descriptor.propertyType.name == "java.lang.String")new HibernateBean.VariableString(${beanModelObj.name}.${element.descriptor.readMethod.name}())#else${beanModelObj.name}.${element.descriptor.readMethod.name}()#end);
 		}
@@ -133,7 +132,9 @@ public class CRUDApplicationBean extends BaseBean {
 		try {
 			${beanModelObj.name}List = finder.findObjects(parameters);
 		} catch (HibernateException | IOException e) {
-			addError("Search error", "An error occured while searching for ${beanModelObj.beanClass.simpleName}", FacesContext.getCurrentInstance());
+			addError("Search error", "An error occured while searching for ${util.splitCamelCase($beanModelObj.beanClass.simpleName)}", FacesContext.getCurrentInstance());
+			log.severe("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
+					+ ". Exception occured whiles searching for ${beanModelObj.beanClass.simpleName}");
 		}		
 	}
 	

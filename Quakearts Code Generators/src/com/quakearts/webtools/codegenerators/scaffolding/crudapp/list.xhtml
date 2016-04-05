@@ -11,7 +11,7 @@
  			<b:messages showDetail="true"></b:messages>
     		<span class="h4">#{!(crudapp.${beanModel.name} eq null) and crudapp.mode eq 'edit'?'Edit ':(crudapp.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<br />
-            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit' and (param.id eq null)}">
+            <h:commandLink styleClass="btn btn-primary" rendered="#{crudapp.mode eq 'edit' and (param.${beanModel.name} eq null)}">
 				<b:glyph value="backward"></b:glyph>Back to search...
 				<c:set as="#{null}" var="#{crudapp.mode}" />
     			<c:set as="#{null}" var="#{crudapp.${beanModel.name}}"></c:set>
@@ -31,7 +31,7 @@
 #set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
 #if($classModelMapping[${element.descriptor.propertyType.name}])
 						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${elementModel.name}.list.jsf">View
-							<f:param name="id" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
+							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
 						</h:outputLink>
 #end
     				</h:column>
