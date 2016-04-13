@@ -86,7 +86,7 @@ public class BeanModel {
 				
 				HashMap<String, String> fieldProperties = new HashMap<>();
 				
-				int order = 0;
+				int order = 99;
 				boolean nonFk=false;
 				if(field!=null){
 					if(skipClass!=null && (field.getAnnotation(skipClass)!=null))
@@ -216,8 +216,10 @@ public class BeanModel {
 							generatorProperties.put(key.toString(), keyValue.toString());
 					}
 			}		
+			/* TODO for field type Array, Map or Collection, use bean introspection to obtain the underlying type
+			 * The type name will then be intropected and added as a sub element to bean element
+			 */
 		}
-		
 		Collections.sort(beanElements);
 	}
 

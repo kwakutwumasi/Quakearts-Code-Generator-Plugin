@@ -15,7 +15,8 @@ import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import com.quakearts.webapp.facelets.tag.BaseBean;
-#foreach($beanModelObj in $beanModels)import ${beanModelObj.beanClass.name};
+#foreach($beanModelObj in $beanModels)import ${beanModelObj.beanClass.canonicalName};
+#end#foreach($import in $util.getEnumImports($beanModels))import $import;
 #end
 
 @ManagedBean(name="crudapp")
@@ -71,6 +72,12 @@ public class CRUDApplicationBean extends BaseBean {
 			return result;
 		}
 	}
+#foreach($enumName in $util.getEnums($beanModels)) 
+
+	public $enumName[] get${enumName}s() {
+		return ${enumName}.values();
+	}
+#end
 	
 #foreach($beanModelObj in $beanModels)
 	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	

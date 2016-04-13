@@ -20,6 +20,14 @@
     	</b:date>
 #end
 	</b:formGroup>
+#elseif(${element.nonFk})#elseif(${element.enum})
+ 	<b:formGroup>
+ 		<label id="${element.value}_label">${util.splitCamelCase($element.value)}</label>
+ 		<b:selectOneInput disabled="#{crudapp.mode eq 'read'}"
+    		value="#{obj.${element.value}}">
+    		<f:selectItems value="#{crudapp.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
+    	</b:selectOneInput>
+	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>

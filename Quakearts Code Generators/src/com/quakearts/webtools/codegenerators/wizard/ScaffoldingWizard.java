@@ -283,7 +283,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 					context.put("nameModelMapping", scaffoldingPage.getNameModelMapping());
 					context.put("classModelMapping", scaffoldingPage.getClassModelMapping());
 										
-					for(BeanModel beanModel: scaffoldingPage.getBeanModels()){		
+					for(BeanModel beanModel: scaffoldingPage.getBeanModels()){
 						context.put("beanModel", beanModel);
 						for(TemplateGroup templateGroup:scaffolding.getTemplateGroups()) {
 							if(canGenerate(beanModel,templateGroup)) {

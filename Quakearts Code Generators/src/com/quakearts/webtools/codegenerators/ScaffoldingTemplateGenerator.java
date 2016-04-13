@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -99,6 +100,33 @@ public class ScaffoldingTemplateGenerator extends GenericGenerator {
 		}
 		
 		return foundElements;
+	}
+	
+	public Collection<String> getEnumImports(List<BeanModel> beanModels){
+		ArrayList<String> imports = new ArrayList<>();
+		for(BeanModel beanModel:beanModels){
+			for(BeanElement beanElement:beanModel.getBeanElements()){
+				if(beanElement.getDescriptor().getPropertyType().isEnum() 
+					&& !imports.contains(beanElement.getDescriptor().getPropertyType().getCanonicalName())){
+					imports.add(beanElement.getDescriptor().getPropertyType().getCanonicalName());
+				}
+			}
+		}
+		
+		return imports;
+	}
+	
+	public Collection<String> getEnums(List<BeanModel> beanModels){
+		ArrayList<String> enumNames = new ArrayList<>();
+		for(BeanModel beanModel:beanModels){
+			for(BeanElement beanElement:beanModel.getBeanElements()){
+				if(beanElement.getDescriptor().getPropertyType().isEnum() 
+					&& !enumNames.contains(beanElement.getDescriptor().getPropertyType().getSimpleName())){
+					enumNames.add(beanElement.getDescriptor().getPropertyType().getSimpleName());
+				}
+			}
+		}
+		return enumNames;
 	}
 	
 	public String[] getPredefinedScaffoldingTemplates() {

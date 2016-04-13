@@ -113,6 +113,14 @@ public class BeanElement implements Comparable<BeanElement> {
 		|| descriptor.getPropertyType().getName().equals("java.sql.Timestamp");
 	}
 	
+	public boolean isEnum(){
+		return descriptor.getPropertyType().isEnum();
+	}
+	
+	public boolean isArray(){
+		return descriptor.getPropertyType().isArray();		
+	}
+	
 	public boolean isCollection(){
 		return hasInterface("java.util.Collection");
 	}
@@ -181,7 +189,6 @@ public class BeanElement implements Comparable<BeanElement> {
 		if(this.order!= o.order)
 			return this.order - o.order;
 		
-
 		return this.value.compareTo(o.value);
 	}
 }
