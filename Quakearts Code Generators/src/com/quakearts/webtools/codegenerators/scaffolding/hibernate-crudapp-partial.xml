@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scaffolding id="hibernate-app-partial" xmlns="http://quakearts.com/scaffolding"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://quakearts.com/scaffolding ../model/scaffolding.xsd ">
+	<template-group folderID="tm">
+		<template filename="crud.xhtml" location="crudapp/crud.xhtml" />
+		<template filename="create.xhtml" location="crudapp/create.xhtml" />
+		<template filename="list.xhtml" location="crudapp/list.xhtml" />
+	</template-group>
+	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="CRUDApplicationBean.java" template="true" />
+	<folder-structure>
+		<folder name="Root Folder" folderID="root">
+			<folder name="src" folderID="src">
+				<folder folderID="com" name="com">
+					<folder folderID="quakearts" name="quakearts">
+						<folder folderID="webapp" name="webapp">
+							<folder folderID="beans" name="beans" />
+						</folder>
+					</folder>
+				</folder>
+			</folder>
+			<folder name="WebContent" folderID="web">
+				<folder name="tm" folderID="tm" />
+			</folder>
+		</folder>
+	</folder-structure>
+</scaffolding>
