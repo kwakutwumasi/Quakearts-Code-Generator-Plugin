@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scaffolding id="hibernate-app" xmlns="http://quakearts.com/scaffolding"
+<scaffolding id="basic-app" xmlns="http://quakearts.com/scaffolding"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://quakearts.com/scaffolding ../model/scaffolding.xsd ">
 	<properties>

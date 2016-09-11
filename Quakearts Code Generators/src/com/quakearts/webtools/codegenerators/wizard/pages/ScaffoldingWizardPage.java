@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -23,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.widgets.Composite;
 import com.quakearts.tools.CodeGenerators;
-import com.quakearts.webtools.codegenerators.ScaffoldingTemplateGenerator;
 import com.quakearts.webtools.codegenerators.model.BeanModel;
 import com.quakearts.webtools.codegenerators.model.Scaffolding;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,6 +41,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import static com.quakearts.webtools.codegenerators.wizard.ScaffoldingWizard.*;
 
 public class ScaffoldingWizardPage extends WizardPage {
 	private Text customScaffoldingText;
@@ -54,18 +53,17 @@ public class ScaffoldingWizardPage extends WizardPage {
 	private Map<String, BeanModel> nameModelMapping = new HashMap<>();
 	private Map<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>();
 	private Tree beanTree;
-	private ScaffoldingTemplateGenerator generator;
+	private Button btnMarkChanges;
 
 	/**
 	 * Create the wizard.
 	 */
-	public ScaffoldingWizardPage(IProject project, ScaffoldingTemplateGenerator generator) {
+	public ScaffoldingWizardPage(IProject project) {
 		super("scaffoldingWizardPage");
 		setTitle("Scaffolding Code Generation");
 		setDescription("Select beans to be used in the page generation.");
 		setImageDescriptor(CodeGenerators.getQuakeartDescriptor());
 		this.project=project;
-		this.generator = generator;
 	}
 
 	/**
@@ -88,7 +86,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				int i;
 				if((i=combo.getSelectionIndex())!=-1){
-					scaffolding = generator.getScaffoldingTemplates().get(combo.getItem(i));
+					scaffolding = getScaffoldingTemplates().get(combo.getItem(i));
 					checkPageComplete();
 				}
 			}
@@ -96,12 +94,14 @@ public class ScaffoldingWizardPage extends WizardPage {
 		
 		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_combo.widthHint = 200;
-		for(String template:generator.getPredefinedScaffoldingTemplates()){
+		for(String template:getPredefinedScaffoldingTemplates()){
 			combo.add(template);
 		}
 		
 		combo.setLayoutData(gd_combo);
-		new Label(container, SWT.NONE);
+		
+		btnMarkChanges = new Button(container, SWT.CHECK);
+		btnMarkChanges.setText("Mark changes");
 		
 		Label lblCustomScaffolding = new Label(container, SWT.NONE);
 		lblCustomScaffolding.setText("Custom Scaffolding");
@@ -135,8 +135,8 @@ public class ScaffoldingWizardPage extends WizardPage {
 					
 					customScaffoldingText.setText(scaffoldingFile.getName());
 					
-					if(generator.getScaffoldingTemplates().containsKey(project.getName()+":"+scaffoldingFile.getName())){
-						scaffolding = generator.getScaffoldingTemplates().get(scaffoldingFile.getName());
+					if(getScaffoldingTemplates().containsKey(project.getName()+":"+scaffoldingFile.getName())){
+						scaffolding = getScaffoldingTemplates().get(scaffoldingFile.getName());
 					}
 				}
 				
@@ -244,6 +244,10 @@ public class ScaffoldingWizardPage extends WizardPage {
 		});
 		
 		setPageComplete(false);
+	}
+	
+	public boolean markChangesSelected(){
+		return btnMarkChanges!=null? btnMarkChanges.getSelection():false;
 	}
 	
 	private void showError(String errorMessage) {

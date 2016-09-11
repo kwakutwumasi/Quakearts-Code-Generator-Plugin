@@ -157,7 +157,7 @@ public class $wrapperClass.javaClassName {
 #if(!$procedureResult.condition.empty)		$procedureResult.condition{
 
 #end
-		if(rs.next()){
+		if(resultSets){
 #if($procedureResult.multiRow)
 			do {
 				$procedureResult.javaClassName ${util.reverseCamelCase($procedureResult.javaClassName)} = new ${procedureResult.javaClassName}();

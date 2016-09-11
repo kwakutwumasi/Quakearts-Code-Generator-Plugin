@@ -1,10 +1,7 @@
 package com.quakearts.webtools.codegenerators;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -12,32 +9,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
-
 import com.quakearts.tools.CodeGenerators;
 import com.quakearts.tools.generatorbase.GenericGenerator;
 import com.quakearts.webtools.codegenerators.model.BeanElement;
 import com.quakearts.webtools.codegenerators.model.BeanModel;
-import com.quakearts.webtools.codegenerators.model.Resource;
-import com.quakearts.webtools.codegenerators.model.Scaffolding;
-import com.quakearts.webtools.codegenerators.model.Template;
-import com.quakearts.webtools.codegenerators.model.TemplateGroup;
-import static com.quakearts.tools.CodeGenerators.*;
 
 public class ScaffoldingTemplateGenerator extends GenericGenerator {
-	private static Map<String, String> forbiddenIds = new ConcurrentHashMap<String, String>();
-	private static String[] predefinedScaffoldingTemplates;
-	private static final String EMPTY ="";
-	private static Map<String, Scaffolding> scaffoldingTemplates = new ConcurrentHashMap<String, Scaffolding>();
 
 	public ScaffoldingTemplateGenerator() {
 		getEngine();
@@ -127,115 +105,5 @@ public class ScaffoldingTemplateGenerator extends GenericGenerator {
 			}
 		}
 		return enumNames;
-	}
-	
-	public String[] getPredefinedScaffoldingTemplates() {
-		if(predefinedScaffoldingTemplates==null){
-			
-			Bundle bundle = Platform.getBundle(PLUGIN_ID);
-			Properties props = new Properties();
-			InputStream is = null;
-			Unmarshaller unmarshaller;
-			try {
-				unmarshaller = getJAXBContext().createUnmarshaller();
-			} catch (JAXBException e) {
-				logError("Could not load predifined scaffolding entries", e);
-				return null;
-			}
-			
-			try {
-				is = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/predefined.properties").openStream();
-				props.load(is);
-				String[] templates = props.getProperty("templates").split(";");
-				ArrayList<String> tempList = new ArrayList<String>();
-				for(String templateEntry:templates){
-					String[] nameValue = templateEntry.split("/",2);
-					InputStream fis = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/"+nameValue[0]).openStream();
-					try {
-						Object scaffoldingObject= unmarshaller.unmarshal(fis);
-						if(scaffoldingObject instanceof Scaffolding){
-							tempList.add(nameValue[1]);
-							
-							Scaffolding scaffolding=(Scaffolding) scaffoldingObject;
-							forbiddenIds.put(scaffolding.getId(), EMPTY);
-							
-							for(Resource resource:scaffolding.getResources()){
-								if(resource.isTemplate()){
-									InputStream ris = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/"
-											+resource.getLocation()).openStream();
-									try {
-										loadTemplate(ris, scaffolding.getId()+"/"+resource.getLocation());
-									} finally {
-										ris.close();
-									}
-								}
-							}
-							
-							for(TemplateGroup templateGroup:scaffolding.getTemplateGroups()){
-								for(Template template:templateGroup.getTemplates()){
-									InputStream pis = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/"
-											+template.getLocation()).openStream();
-									try {
-										loadTemplate(pis, scaffolding.getId() + "/" + template.getLocation());
-									} finally {
-										try {
-											pis.close();
-										} catch (Exception e) {
-										}
-									}
-								}
-							}
-							scaffoldingTemplates.put(nameValue[1], (Scaffolding) scaffoldingObject);
-						}
-					} finally {
-						try {
-							fis.close();
-						} catch (Exception e) {
-						}
-					}
-				}
-				
-				predefinedScaffoldingTemplates = tempList.toArray(new String[tempList.size()]);
-			} catch (Exception e) {
-				logError("Could not load predifined scaffolding entries", e);
-			} finally {
-				try {
-					is.close();
-				} catch (Exception e2) {
-				}
-			}
-			
-		}
-		return predefinedScaffoldingTemplates;
-	}
-	
-	public void loadTemplate(InputStream in, String name) throws IOException{
-		StringBuilder builder = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		String line;
-		while((line=reader.readLine())!=null){
-			builder.append(line).append("\r\n");
-		}
-		StringResourceLoader.getRepository().putStringResource(name,
-				builder.toString());
-	}
-	
-	public boolean isInValidId(String scaffoldingId){
-		return forbiddenIds.containsKey(scaffoldingId);
-	}
-	
-	public Map<String, Scaffolding> getScaffoldingTemplates() {
-		return scaffoldingTemplates;
-	}
-	
-	public void clearUserTemplates(){
-		for(String key:scaffoldingTemplates.keySet()){
-			for(String predifinedKey:predefinedScaffoldingTemplates){
-				if(key.equals(predifinedKey))
-					continue;
-			}
-			
-			scaffoldingTemplates.remove(key);
-		}
 	}
 }

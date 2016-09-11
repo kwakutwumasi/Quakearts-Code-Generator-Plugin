@@ -13,7 +13,7 @@ import javax.faces.convert.DateTimeConverter;
 import javax.faces.event.ActionEvent;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import com.quakearts.webapp.facelets.tag.BaseBean;
+import com.quakearts.webapp.facelets.base.BaseBean;
 import com.quakearts.webapp.hibernate.HibernateHelper;
 import com.quakearts.test.hibernate.Guests;
 import com.quakearts.test.hibernate.Menu;
