@@ -192,8 +192,8 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 									}
 								}
 								
-								getScaffoldingTemplates()
-										.put(project.getName() + ":" + scaffoldingPage.getScaffoldingFile().getName(), scaffolding);
+								getScaffoldingTemplates().put(project.getName() 
+										+ ":" + scaffoldingPage.getScaffoldingFile().getName(), scaffolding);
 							} finally {
 								is.close();
 							}
@@ -308,13 +308,8 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 							if(canGenerate(beanModel,templateGroup)) {
 								for(Template template:templateGroup.getTemplates()){
 									String filename;
-									if(template.getFilename().endsWith(".java")){
-										filename = beanModel.getBeanClass().getSimpleName() + template.getFilename();
-									} else {
-										filename = beanModel.getName() +"."+ template.getFilename();
-									}
 									
-									filename = resolve(filename, scaffolding.getProperties().getPropertyMap());
+									filename = resolve(template.getFilename(), beanModel, scaffolding.getProperties().getPropertyMap());
 									String name = (template.isPredefined()?"":scaffolding.getId()+"/")+template.getLocation();
 									
 									IFile file;
@@ -380,7 +375,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 						} else {
 							filename = resource.getFilename();
 						}
-						filename = resolve(filename, scaffolding.getProperties().getPropertyMap());
+						filename = resolve(filename, null, scaffolding.getProperties().getPropertyMap());
 						
 						if(resource.getFolderID()==null 
 								|| resource.getFolderID().trim().isEmpty()
@@ -393,7 +388,6 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 						
 						InputStream is;
 						if(!resource.isTemplate()){
-							resourceFilename = resolve(resourceFilename, scaffolding.getProperties().getPropertyMap());
 							URL resourceURL = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/"+resourceFilename);
 							if(resourceURL==null){
 								IFile resourcefile = project.getFile(resourceFilename);
@@ -700,13 +694,20 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
     	return true;
     }
 	
-	private String resolve(String variableString, Map<String, String> context){
+	private String resolve(String variableString, BeanModel beanModel, Map<String, String> context){
     	Matcher matcher = VARIABLE.matcher(variableString);
     	while(matcher.find()){
     		String variable = matcher.group();
     		if(variable.length()>3){
     			String wrappedVariable = variable.substring(2,variable.length()-1);
-    			String resolved = context.get(wrappedVariable);
+    			String resolved;
+    			if(beanModel != null && wrappedVariable.equals("beanName")){
+    				resolved = beanModel.getName();
+    			} else if (beanModel != null && wrappedVariable.equals("beanClass")){
+    				resolved = beanModel.getBeanClassName();
+    			} else {
+	    			resolved = context.get(wrappedVariable);
+    			}
     			if(resolved!=null){
     				variableString = variableString.replace(variable, resolved);
     			}
@@ -738,7 +739,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 					String[] nameValue = templateEntry.split("/",2);
 					InputStream fis = bundle.getResource("com/quakearts/webtools/codegenerators/scaffolding/"+nameValue[0]).openStream();
 					try {
-						Object scaffoldingObject= unmarshaller.unmarshal(fis);
+						Object scaffoldingObject = unmarshaller.unmarshal(fis);
 						if(scaffoldingObject instanceof Scaffolding){
 							tempList.add(nameValue[1]);
 							

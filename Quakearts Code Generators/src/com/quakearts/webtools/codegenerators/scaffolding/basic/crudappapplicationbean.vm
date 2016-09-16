@@ -19,11 +19,11 @@ import com.quakearts.webapp.facelets.base.BaseBean;
 #end#foreach($import in $util.getEnumImports($beanModels))import $import;
 #end
 
-@ManagedBean(name="crudapp")
+@ManagedBean(name="${crudappBeanName}")
 @ViewScoped
-public class CRUDApplicationBean extends BaseBean {
+public class $crudappClassName extends BaseBean {
 
-	private static Logger log = Logger.getLogger(CRUDApplicationBean.class.getName());
+	private static Logger log = Logger.getLogger(${crudappClassName}.class.getName());
 	private String mode;
 	private Converter converter;
 	

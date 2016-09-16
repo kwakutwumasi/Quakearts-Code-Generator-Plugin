@@ -36,6 +36,7 @@ import com.quakearts.tools.CodeGenerators;
 import com.quakearts.webtools.codegenerators.GenericPageGenerator;
 import com.quakearts.webtools.codegenerators.model.BeanElement;
 import com.quakearts.webtools.codegenerators.model.BeanModel;
+import com.quakearts.webtools.codegenerators.model.BeanModelFactory;
 import com.quakearts.webtools.codegenerators.wizard.saxhandler.FacesConfigHandler;
 
 import org.eclipse.swt.events.SelectionAdapter;
@@ -237,7 +238,7 @@ public abstract class BeanBaseWizardPage extends WizardPage {
 					SelectionDialog dialog = JavaUI.createTypeDialog(getShell(),monitorDialog, project, IJavaElementSearchConstants.CONSIDER_CLASSES, false);
 					if(dialog.open()==SelectionDialog.OK){
 						IType iType = (IType)dialog.getResult()[0];
-						model = new BeanModel(iType.getFullyQualifiedName(),project);
+						model = BeanModelFactory.createBeanModel(iType.getFullyQualifiedName(),project);
 						beanClassText.setEditable(true);
 						populateTree();
 						beanClassText.setFocus();
@@ -288,7 +289,7 @@ public abstract class BeanBaseWizardPage extends WizardPage {
 					if(dialog.open()==ListSelectionDialog.OK){
 						String[] managedBean=(String[]) dialog.getFirstResult();
 						if(managedBean != null){
-							model = new BeanModel(managedBean[1],project);
+							model = BeanModelFactory.createBeanModel(managedBean[1],project);
 							model.setName(managedBean[0]);
 							populateTree();
 							beanClassText.setText(managedBean[0]);

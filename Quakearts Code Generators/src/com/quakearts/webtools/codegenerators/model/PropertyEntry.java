@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlValue;
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
  *       &lt;attribute name="property" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="displayName" use="optional" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/extension>
  *   &lt;/simpleContent>
  * &lt;/complexType>
@@ -42,6 +43,8 @@ public class PropertyEntry {
     protected String value;
     @XmlAttribute(name = "property", required = true)
     protected String property;
+    @XmlAttribute(name = "displayName", required = true)
+    protected String displayName;
 
     /**
      * Gets the value of the value property.
@@ -90,5 +93,29 @@ public class PropertyEntry {
     public void setProperty(String value) {
         this.property = value;
     }
+
+    /**
+     * Gets the value of the displayName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+    /**
+     * Sets the value of the displayName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 
 }

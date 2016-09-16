@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -68,8 +67,7 @@ public class ProjectClassLoader extends ClassLoader {
 					IPath outputPath = javaProject.getOutputLocation();
 					IFile file;
 					
-					IPath path = outputPath
-							.append(new Path(className.replace(".", "/") + ".class"));
+					IPath path = outputPath.append(new Path(className.replace(".", "/") + ".class"));
 					file = project.getFile(path.removeFirstSegments(1));
 					if(file==null||!file.exists()){
 						IClasspathEntry entry = root.getRawClasspathEntry();
@@ -93,16 +91,14 @@ public class ProjectClassLoader extends ClassLoader {
 						break;
 					}
 				} else if(root.getKind()==IPackageFragmentRoot.K_BINARY) {
-					for(IJavaElement child:root.getChildren()){
-						if(child.getElementType()==IJavaElement.PACKAGE_FRAGMENT){
-							IClassFile file = ((IPackageFragment)child).getClassFile(simplName+".class");
-							if(file!=null && file.exists()
-									&& child.getElementName().equals(packageName)){
-								classBytes = file.getBytes();
-								break;
-							}
+					IPackageFragment fragment = root.getPackageFragment(packageName);
+					if(fragment.exists()){
+						IClassFile file = fragment.getClassFile(simplName+".class");
+						if(file!=null && file.exists()){
+							classBytes = file.getBytes();
+							break;
 						}
-					}
+					}					
 				}
 			}
 		} catch (CoreException | IOException e){
@@ -122,7 +118,7 @@ public class ProjectClassLoader extends ClassLoader {
 					if(file.exists()){
 						return file.getLocationURI().toURL();
 					}
-				}  else if(root.getKind()==IPackageFragmentRoot.K_BINARY) {
+				} else if(root.getKind()==IPackageFragmentRoot.K_BINARY) {
 					IPath path = root.getPath();
 					if(!root.isExternal()){
 						path = project.getLocation().append(path.removeFirstSegments(1));

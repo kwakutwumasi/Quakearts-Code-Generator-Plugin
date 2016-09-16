@@ -78,12 +78,14 @@
 	<complexType name="property-entry">
 		<simpleContent>
 			<extension base="string">
-				<attribute name="property" use="required" type="string">
+				<attribute name="property" use="required"
+					type="string">
 				</attribute>
+				<attribute name="displayName" type="string" use="optional"></attribute>
 			</extension>
 		</simpleContent>
 	</complexType>
-	
+
 	<complexType name="bean">
 		<choice>
 			<element name="bean-class" type="tns:beanType" minOccurs="1" maxOccurs="1">

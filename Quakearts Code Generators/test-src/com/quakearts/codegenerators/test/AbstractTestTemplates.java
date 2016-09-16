@@ -25,6 +25,7 @@ import com.quakearts.test.hibernate.Seating;
 import com.quakearts.test.hibernate.SeatingType;
 import com.quakearts.webtools.codegenerators.ScaffoldingTemplateGenerator;
 import com.quakearts.webtools.codegenerators.model.BeanModel;
+import com.quakearts.webtools.codegenerators.model.BeanModelFactory;
 import com.quakearts.webtools.codegenerators.model.PropertyEntry;
 import com.quakearts.webtools.codegenerators.model.Scaffolding;
 
@@ -93,27 +94,27 @@ public abstract class AbstractTestTemplates {
 	
 			try {
 				BeanModel beanModel;
-				beanModel = new BeanModel(Guests.class.getName(), null);
+				beanModel = BeanModelFactory.createBeanModel(Guests.class.getName(), null);
 				beanModels.add(beanModel);
 				nameModelMapping.put(beanModel.getName(), beanModel);
 				classModelMapping.put(beanModel.getBeanClass().getName(), beanModel);
 	
-				beanModel = new BeanModel(Menu.class.getName(), null);
+				beanModel = BeanModelFactory.createBeanModel(Menu.class.getName(), null);
 				beanModels.add(beanModel);
 				nameModelMapping.put(beanModel.getName(), beanModel);
 				classModelMapping.put(beanModel.getBeanClass().getName(), beanModel);
 	
-				beanModel = new BeanModel(Party.class.getName(), null);
+				beanModel = BeanModelFactory.createBeanModel(Party.class.getName(), null);
 				beanModels.add(beanModel);
 				nameModelMapping.put(beanModel.getName(), beanModel);
 				classModelMapping.put(beanModel.getBeanClass().getName(), beanModel);
 	
-				beanModel = new BeanModel(Seating.class.getName(), null);
+				beanModel = BeanModelFactory.createBeanModel(Seating.class.getName(), null);
 				beanModels.add(beanModel);
 				nameModelMapping.put(beanModel.getName(), beanModel);
 				classModelMapping.put(beanModel.getBeanClass().getName(), beanModel);
 	
-				beanModel = new BeanModel(SeatingType.class.getName(), null);
+				beanModel = BeanModelFactory.createBeanModel(SeatingType.class.getName(), null);
 				beanModels.add(beanModel);
 				nameModelMapping.put(beanModel.getName(), beanModel);
 				classModelMapping.put(beanModel.getBeanClass().getName(), beanModel);

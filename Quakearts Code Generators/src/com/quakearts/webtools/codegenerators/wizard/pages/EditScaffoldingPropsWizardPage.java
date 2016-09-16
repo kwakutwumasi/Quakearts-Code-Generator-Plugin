@@ -108,7 +108,8 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 		tableViewerPropertyColumn.setLabelProvider(new ColumnLabelProvider(){
 			@Override
 			public String getText(Object element) {
-				return ((PropertyEntry)element).getProperty();
+				PropertyEntry entry = ((PropertyEntry)element);
+				return entry.getDisplayName()!=null?entry.getDisplayName():entry.getProperty();
 			}
 		});
 		
@@ -143,6 +144,7 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 				PropertyEntry entry = (PropertyEntry) propertyText.getData();
 				if(entry!=null){
 					entry.setValue(propertyText.getText());
+					scaffolding.getProperties().resetPropertyMap();
 					tableViewer.refresh();
 				}
 			}
@@ -226,6 +228,7 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 		@Override
 		protected void setValue(Object element, Object value) {
 			((PropertyEntry) element).setValue(value == null ? null : value.toString());
+			scaffolding.getProperties().resetPropertyMap();
 			tableViewer.update(element, null);
 		}
 	}

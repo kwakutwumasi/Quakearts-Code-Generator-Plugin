@@ -23,6 +23,7 @@ import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.widgets.Composite;
 import com.quakearts.tools.CodeGenerators;
 import com.quakearts.webtools.codegenerators.model.BeanModel;
+import com.quakearts.webtools.codegenerators.model.BeanModelFactory;
 import com.quakearts.webtools.codegenerators.model.Scaffolding;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
@@ -308,7 +309,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 				try {
 					BeanModel model = CodeGenerators.getBeanModels().get(beanType.getFullyQualifiedName());
 					if(model == null){
-						model = new BeanModel(beanType.getFullyQualifiedName(), project);
+						model = BeanModelFactory.createBeanModel(beanType.getFullyQualifiedName(), project);
 						CodeGenerators.getBeanModels().put(beanType.getFullyQualifiedName(),model);
 					}
 					beanModels.add(model);

@@ -31,7 +31,7 @@ public class CodeGenerators extends AbstractUIPlugin {
 	private static SAXParserFactory factory = SAXParserFactory.newInstance();
 	private static JAXBContext context;
 	private static HashMap<String, BeanModel> beanModels = new HashMap<String, BeanModel>();
-	private static final HashMap<IProject, ProjectClassLoader> classLoaders = new HashMap<>();
+	private static final HashMap<String, ProjectClassLoader> classLoaders = new HashMap<>();
 
 	/**
 	 * The constructor
@@ -202,10 +202,10 @@ public class CodeGenerators extends AbstractUIPlugin {
 	}
 	
 	public static ProjectClassLoader getProjectClassLoader(IProject project){
-		ProjectClassLoader classLoader = classLoaders.get(project);
+		ProjectClassLoader classLoader = classLoaders.get(project.getFullPath().toOSString());
 		if(classLoader == null){
 			classLoader = new ProjectClassLoader(project, CodeGenerators.class.getClassLoader());
-			classLoaders.put(project, classLoader);
+			classLoaders.put(project.getFullPath().toOSString(), classLoader);
 		}
 		
 		return classLoader;

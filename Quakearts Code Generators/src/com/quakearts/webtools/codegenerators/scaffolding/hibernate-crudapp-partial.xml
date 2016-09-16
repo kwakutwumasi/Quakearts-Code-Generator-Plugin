@@ -2,12 +2,16 @@
 <scaffolding id="hibernate-app-partial" xmlns="http://quakearts.com/scaffolding"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://quakearts.com/scaffolding ../model/scaffolding.xsd ">
+	<properties>
+		<entry displayName="CRUD Managed Bean Class Name" property="crudappClassName">CRUDApplicationBean</entry>
+		<entry displayName="CRUD Managed Bean Name" property="crudappBeanName">crudapp</entry>
+	</properties>
 	<template-group folderID="tm">
-		<template filename="crud.xhtml" location="crudapp/crud.xhtml" />
-		<template filename="create.xhtml" location="crudapp/create.xhtml" />
-		<template filename="list.xhtml" location="crudapp/list.xhtml" />
+		<template filename="@{beanName}.crud.xhtml" location="crudapp/crud.xhtml" />
+		<template filename="@{beanName}.create.xhtml" location="crudapp/create.xhtml" />
+		<template filename="@{beanName}.list.xhtml" location="crudapp/list.xhtml" />
 	</template-group>
-	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="CRUDApplicationBean.java" template="true" />
+	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
 	<folder-structure>
 		<folder name="Root Folder" folderID="root">
 			<folder name="src" folderID="src">

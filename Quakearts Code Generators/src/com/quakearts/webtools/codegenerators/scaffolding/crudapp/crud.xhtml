@@ -8,26 +8,26 @@
 <ui:component>
 #foreach($element in $beanModel.beanElements)#if($element.knownInputType && !$element.identity)
 	<b:formGroup>
-		<label id="${element.value}_label">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{crudapp.mode eq 'read'}" value="#{obj.${element.value}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
+		<label id="${element.value}_label">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{${crudappBeanName}.mode eq 'read'}" value="#{obj.${element.value}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" disabled="#{${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${crudappBeanName}.mode eq 'edit')#end}">
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
 		<b:date nullable="true" dayClass="btn-xs" monthClass="btn-xs" yearClass="btn-xs" 
-			value="#{obj.${element.value}}" converter="#{crudapp.converter}" 
-			disabled="#{crudapp.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and crudapp.mode eq 'edit')#end}">
+			value="#{obj.${element.value}}" converter="#{${crudappBeanName}.converter}" 
+			disabled="#{${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${crudappBeanName}.mode eq 'edit')#end}">
 		</b:date>
 #end
 	</b:formGroup>
 #elseif(${element.nonFk})#elseif(${element.enum})
  	<b:formGroup>
  		<label id="${element.value}_label">${util.splitCamelCase($element.value)}</label>
- 		<b:selectOneInput disabled="#{crudapp.mode eq 'read'}"
+ 		<b:selectOneInput disabled="#{${crudappBeanName}.mode eq 'read'}"
     		value="#{obj.${element.value}}">
-    		<f:selectItems value="#{crudapp.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
+    		<f:selectItems value="#{${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
     	</b:selectOneInput>
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
@@ -35,37 +35,37 @@
     	<h:panelGroup id="$insetId" layout="block" styleClass="#{loader.overlayClass}">
     		<b:formGroup>
     			<label id="${element.value}_label">${util.splitCamelCase($element.value)}
-    				<h:commandLink value="New" styleClass="#{!crudapp.in${util.camelCase($elementModel.name)}CreateMode?'':'collapse'}"
-						rendered="#{facesContext.viewRoot.viewId.endsWith('create.xhtml') or crudapp.mode eq 'edit'}">
+    				<h:commandLink value="New" styleClass="#{!${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode?'':'collapse'}"
+						rendered="#{facesContext.viewRoot.viewId.endsWith('create.xhtml') or ${crudappBeanName}.mode eq 'edit'}">
     					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
-    					<f:setPropertyActionListener value="#{true}" target="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
+    					<f:setPropertyActionListener value="#{true}" target="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
     				</h:commandLink>
     			</label>
-    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{crudapp.mode eq 'read' || crudapp.in${util.camelCase($elementModel.name)}CreateMode}"
+    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"
     				value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
-    				suggestion="#{crudapp.${elementModel.name}SearchText}" delay="1"
-    				listener="#{crudapp.filter${util.camelCase($elementModel.name)}Items}"
+    				suggestion="#{${crudappBeanName}.${elementModel.name}SearchText}" delay="1"
+    				listener="#{${crudappBeanName}.filter${util.camelCase($elementModel.name)}Items}"
     				onevent="#{loader.overlayAjaxLoader}">
-#end    				<f:selectItems value="#{crudapp.found${util.camelCase($elementModel.name)}Items}" 
+#end    				<f:selectItems value="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}" 
     					var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
     				</f:selectItems>
-    				<c:pojoConverter collection="#{crudapp.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
+    				<c:pojoConverter collection="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
     			</b:selectOneInput>
     		</b:formGroup>
-    		<h:panelGroup rendered="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}">
+    		<h:panelGroup rendered="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}">
     			<span class="h4">Create ${util.splitCamelCase($element.value)}</span>
     			<ui:include src="${elementModel.name}.crud.xhtml">
-    				<ui:param name="obj" value="#{crudapp.${elementModel.name}}"></ui:param>
+    				<ui:param name="obj" value="#{${crudappBeanName}.${elementModel.name}}"></ui:param>
     			</ui:include>			
     			<b:buttonGroup>
         			<b:button value="Save ${util.splitCamelCase($element.value)}">
-        				<c:executeAction listener="#{crudapp.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
-        				<f:setPropertyActionListener value="#{crudapp.${elementModel.name}}" target="#{obj.${elementModel.name}}"></f:setPropertyActionListener>
+        				<c:executeAction listener="#{${crudappBeanName}.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
+        				<f:setPropertyActionListener value="#{${crudappBeanName}.${elementModel.name}}" target="#{obj.${elementModel.name}}"></f:setPropertyActionListener>
         				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
         			</b:button>
         			<b:button value="Cancel">
     					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
-    					<f:setPropertyActionListener value="#{false}" target="#{crudapp.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
+    					<f:setPropertyActionListener value="#{false}" target="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
         			</b:button>
     			</b:buttonGroup>
     			<br />

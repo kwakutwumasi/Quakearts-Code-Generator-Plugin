@@ -88,4 +88,8 @@ public class ScaffoldingProperties {
     	}
 		return propertyMap;
 	}
+    
+    public void resetPropertyMap(){
+    	propertyMap = null;
+    }
 }
