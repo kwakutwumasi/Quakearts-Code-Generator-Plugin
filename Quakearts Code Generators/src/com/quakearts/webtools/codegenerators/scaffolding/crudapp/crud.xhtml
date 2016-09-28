@@ -60,7 +60,7 @@
     			<b:buttonGroup>
         			<b:button value="Save ${util.splitCamelCase($element.value)}">
         				<c:executeAction listener="#{${crudappBeanName}.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
-        				<f:setPropertyActionListener value="#{${crudappBeanName}.${elementModel.name}}" target="#{obj.${elementModel.name}}"></f:setPropertyActionListener>
+        				<f:setPropertyActionListener value="#{${crudappBeanName}.${elementModel.name}}" target="#{obj.${element.value}}"></f:setPropertyActionListener>
         				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
         			</b:button>
         			<b:button value="Cancel">
