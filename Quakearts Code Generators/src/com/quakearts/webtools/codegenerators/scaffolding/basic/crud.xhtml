@@ -28,18 +28,20 @@
     		<f:selectItems value="#{${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
     	</b:selectOneInput>
 	</b:formGroup>
-#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
+#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
+#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
+#set($dropDownHelper=${crudappBeanName}+"."+${util.reverseCamelCase($elementModel.beanClass.simpleName)}+"DropdownHelper")
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>
-		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"
+		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
 			value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
-			suggestion="#{${crudappBeanName}.${elementModel.name}SearchText}" delay="1"
-			listener="#{${crudappBeanName}.filter${util.camelCase($elementModel.name)}Items}"
+			suggestion="#{${dropDownHelper}.searchText}" delay="1"
+			listener="#{${dropDownHelper}.filterItems}"
 			onevent="#{loader.overlayAjaxLoader}">
-#end    		<f:selectItems value="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}" 
+#end    		<f:selectItems value="#{${dropDownHelper}.foundItems}" 
 				var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
 			</f:selectItems>
-			<c:pojoConverter collection="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
+			<c:pojoConverte></c:pojoConverter>
 		</b:selectOneInput>
 	</b:formGroup>
 #end#end

@@ -30,42 +30,45 @@
     		<f:selectItems value="#{${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
     	</b:selectOneInput>
 	</b:formGroup>
-#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
-#set($insetId=${beanModel.name}+${util.camelCase($elementModel.name)}+"Inset")	<c:unique>
+#else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")
+#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
+#set($insetId=${beanModel.name}+${util.camelCase($elementModel.name)}+"Inset")
+#set($dropDownHelper=${crudappBeanName}+"."+${util.reverseCamelCase($elementModel.beanClass.simpleName)}+"DropdownHelper")	<c:unique>
     	<h:panelGroup id="$insetId" layout="block" styleClass="#{loader.overlayClass}">
     		<b:formGroup>
     			<label id="${element.value}_label">${util.splitCamelCase($element.value)}
-    				<h:commandLink value="New" styleClass="#{!${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode?'':'collapse'}"
+    				<h:commandLink value="New" styleClass="#{!${dropDownHelper}.inCreateMode?'':'collapse'}"
 						rendered="#{facesContext.viewRoot.viewId.endsWith('create.xhtml') or ${crudappBeanName}.mode eq 'edit'}">
     					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
-    					<f:setPropertyActionListener value="#{true}" target="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
+    					<f:setPropertyActionListener value="#{true}" target="#{${dropDownHelper}.inCreateMode}"></f:setPropertyActionListener>
     				</h:commandLink>
     			</label>
-    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"
+    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
     				value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
-    				suggestion="#{${crudappBeanName}.${elementModel.name}SearchText}" delay="1"
-    				listener="#{${crudappBeanName}.filter${util.camelCase($elementModel.name)}Items}"
+    				suggestion="#{${dropDownHelper}.searchText}" delay="1"
+    				listener="#{${dropDownHelper}.filterItems}"
     				onevent="#{loader.overlayAjaxLoader}">
-#end    				<f:selectItems value="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}" 
+#end    				<f:selectItems value="#{${dropDownHelper}.foundItems}" 
     					var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
     				</f:selectItems>
-    				<c:pojoConverter collection="#{${crudappBeanName}.found${util.camelCase($elementModel.name)}Items}"></c:pojoConverter>
+    				<c:pojoConverter></c:pojoConverter>
     			</b:selectOneInput>
     		</b:formGroup>
-    		<h:panelGroup rendered="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}">
+    		<h:panelGroup rendered="#{${dropDownHelper}.inCreateMode}">
     			<span class="h4">Create ${util.splitCamelCase($element.value)}</span>
     			<ui:include src="${elementModel.name}.crud.xhtml">
-    				<ui:param name="obj" value="#{${crudappBeanName}.${elementModel.name}}"></ui:param>
-    			</ui:include>			
+    				<ui:param name="obj" value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}"></ui:param>
+    			</ui:include>
     			<b:buttonGroup>
         			<b:button value="Save ${util.splitCamelCase($element.value)}">
-        				<c:executeAction listener="#{${crudappBeanName}.create${util.camelCase($elementModel.name)}AddToList}"></c:executeAction>
-        				<f:setPropertyActionListener value="#{${crudappBeanName}.${elementModel.name}}" target="#{obj.${element.value}}"></f:setPropertyActionListener>
+						<c:saveUpdate object="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}" action="save" />
+        				<f:setPropertyActionListener value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}" target="#{obj.${element.value}}"></f:setPropertyActionListener>
+    					<f:setPropertyActionListener value="#{false}" target="#{${dropDownHelper}.inCreateMode}"></f:setPropertyActionListener>
         				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
         			</b:button>
         			<b:button value="Cancel">
     					<f:ajax onevent="#{loader.overlayAjaxLoader}" execute="@this" render="$insetId"></f:ajax>
-    					<f:setPropertyActionListener value="#{false}" target="#{${crudappBeanName}.in${util.camelCase($elementModel.name)}CreateMode}"></f:setPropertyActionListener>
+    					<f:setPropertyActionListener value="#{false}" target="#{${dropDownHelper}.inCreateMode}"></f:setPropertyActionListener>
         			</b:button>
     			</b:buttonGroup>
     			<br />

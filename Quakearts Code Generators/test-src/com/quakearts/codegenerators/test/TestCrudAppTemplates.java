@@ -46,14 +46,6 @@ public class TestCrudAppTemplates extends AbstractTestTemplates {
 	}
 	
 	@Test
-	public void testAutoCompleteXhtml() {	
-		String template = "C:\\Users\\Public\\luna-workspace\\Quakearts Code Generators\\src\\com\\quakearts\\webtools\\codegenerators\\scaffolding\\crudapp\\autocompletebean.vm";
-		getContext();
-		loadTemplate(template);
-		loadForModel(template, "test-out\\autocompletebean.vm.java", null);
-	}
-	
-	@Test
 	public void testCrudAppBeanXhtml() {	
 		String template = "C:\\Users\\Public\\luna-workspace\\Quakearts Code Generators\\src\\com\\quakearts\\webtools\\codegenerators\\scaffolding\\crudapp\\crudappapplicationbean.vm";
 		getContext();
@@ -85,7 +77,7 @@ public class TestCrudAppTemplates extends AbstractTestTemplates {
 			}
 		} catch (IOException e) {
 			fail("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
-					+ ". Exception occured whiles generating guests.crud.xhtml");
+					+ ". Exception occured whiles generating "+fileName);
 		} finally {
 			try {
 				fos.close();

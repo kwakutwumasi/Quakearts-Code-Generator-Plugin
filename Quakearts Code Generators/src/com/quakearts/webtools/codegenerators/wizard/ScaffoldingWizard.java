@@ -245,7 +245,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 		
 		errors = false;
 		
-		final boolean markChanges = scaffoldingPage.markChangesSelected();
+		final boolean updateAndMarkChanges = scaffoldingPage.updateAndMarkChangesSelected();
 		
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {							
@@ -331,10 +331,17 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 									InputStream is = generator.generatePage(context, name);
 									
 									if(file.exists()){
-										try(InputStream oldIs = file.getContents();) {
-											is = consolidateDifferences(oldIs, is, markChanges);
+										if(updateAndMarkChanges)
+											try(InputStream oldIs = file.getContents();) {
+												is = consolidateDifferences(oldIs, is);
+											} catch (CoreException | IOException e){
+												CodeGenerators.logError("Error generating page "+template.getLocation()+" for beans "+beanModel.getName(), e);
+												errors = true;
+											}
+										
+										try {
 											file.setContents(is, true, true, monitor);
-										} catch (CoreException | IOException e) {
+										} catch (CoreException e) {
 											CodeGenerators.logError("Error generating page "+template.getLocation()+" for beans "+beanModel.getName(), e);
 											errors = true;
 										}
@@ -438,10 +445,17 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 						
 						if(file.exists()){
 							if(resource.isTemplate()){
-								try(InputStream oldIs = file.getContents();) {
-									is = consolidateDifferences(oldIs, is, markChanges);
+								if(updateAndMarkChanges)
+									try(InputStream oldIs = file.getContents();) {
+										is = consolidateDifferences(oldIs, is);
+									} catch (CoreException | IOException e) {
+										CodeGenerators.logError("Error generating resource "+resourceFilename+". Resource could not be written.", e);
+										errors = true;
+									}
+
+								try {
 									file.setContents(is, true, true, monitor);
-								} catch (CoreException | IOException e) {
+								} catch (CoreException e) {
 									CodeGenerators.logError("Error generating resource "+resourceFilename+". Resource could not be written.", e);
 									errors = true;
 								} finally {
@@ -506,7 +520,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 	}
 
 	@SuppressWarnings("unchecked")
-	private InputStream consolidateDifferences(InputStream oldIs, InputStream newIs, boolean markChanges) throws IOException {
+	private InputStream consolidateDifferences(InputStream oldIs, InputStream newIs) throws IOException {
 		BufferedReader oldBuffer = new BufferedReader(new InputStreamReader(oldIs)),
 				newBuffer = new BufferedReader(new InputStreamReader(newIs));
 		
@@ -542,7 +556,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 		while ((line = oldBuffer.readLine())!=null && lineCount < newLines.size()) {
 			comparator = newLines.get(lineCount);
 			if(line.equals(comparator)){
-				if(markChanges && ineditedportion){
+				if(ineditedportion){
 					bos.write("<<<End: Edited Portion>>>\r\n".getBytes());
 					ineditedportion = false;
 				}
@@ -552,7 +566,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 				lineCount++;
 			} else {
 				if(newLinesMap.containsKey(line)){
-					if(markChanges && ineditedportion){
+					if(ineditedportion){
 						bos.write("<<<End: Edited Portion>>>\r\n".getBytes());
 						ineditedportion = false;
 					}
@@ -569,16 +583,14 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 						}
 					}
 					
-					if(markChanges)
-						bos.write("<<<Start: New Changes>>>\r\n".getBytes());
+					bos.write("<<<Start: New Changes>>>\r\n".getBytes());
 					for(;lineCount<scantill;lineCount++){
 						line = newLines.get(lineCount);
 						bos.write(line.getBytes());
 						bos.write("\r\n".getBytes());
 					}
 
-					if(markChanges)
-						bos.write("<<<End: New Changes>>>\r\n".getBytes());
+					bos.write("<<<End: New Changes>>>\r\n".getBytes());
 
 					line = newLines.get(lineCount);
 					bos.write(line.getBytes());
@@ -587,7 +599,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 					lineCount++;					
 
 				} else {
-					if(markChanges && !ineditedportion){
+					if(!ineditedportion){
 						bos.write("<<<Start: Edited Portion>>>\r\n".getBytes());
 						ineditedportion = true;
 					}
@@ -599,22 +611,20 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 			}
 		}
 
-		if(markChanges && ineditedportion){
+		if(ineditedportion){
 			bos.write("<<<End: Edited Portion>>>\r\n".getBytes());
 			ineditedportion = false;
 		}
 		
 		if(line!=null){
-			if(markChanges)
-				bos.write("<<<Start: New Changes>>>\r\n".getBytes());
+			bos.write("<<<Start: New Changes>>>\r\n".getBytes());
 			
 			do {				
 				bos.write(line.getBytes());
 				bos.write("\r\n".getBytes());
 			} while((line = oldBuffer.readLine())!=null);
 
-			if(markChanges)
-				bos.write("<<<End: New Changes>>>\r\n".getBytes());
+			bos.write("<<<End: New Changes>>>\r\n".getBytes());
 		} else if(lineCount < newLines.size()){
 			for(;lineCount<newLines.size();lineCount++){
 				line = newLines.get(lineCount);

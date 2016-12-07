@@ -4,8 +4,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,14 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-
 import org.eclipse.core.resources.IProject;
-import org.xml.sax.SAXException;
-
 import com.quakearts.tools.CodeGenerators;
-import com.quakearts.webtools.codegenerators.wizard.saxhandler.HibernateMappingHandler;
 
 public class BeanModelFactory {
 	private BeanModelFactory() {
@@ -43,7 +35,6 @@ public class BeanModelFactory {
 		Map<String, Object> generatorProperties = new HashMap<>();
 		String name="";
 		
-
 		Class<? extends Annotation> propertyClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.CodeGeneratorProperty", loader);
 		Class<? extends Annotation> propertiesClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.CodeGeneratorProperties", loader);
 		Class<? extends Annotation> orderClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.Order", loader);
@@ -51,36 +42,12 @@ public class BeanModelFactory {
 		Class<? extends Annotation> idClass =  checkForAnnotation("javax.persistence.Id", loader);
 		Class<? extends Annotation> generatedValueClass = checkForAnnotation("javax.persistence.GeneratedValue", loader);
 		Class<? extends Annotation> oneToOneClass = checkForAnnotation("javax.persistence.OneToOne", loader);
-		
-		HibernateMappingHandler handler = new HibernateMappingHandler();
-		if(!beanClass.isPrimitive() && !beanClass.isArray()){
-			String hbmFile = beanClass.getName().replace(".", "/")+".hbm.xml";
-			InputStream is = loader.getResourceAsStream(hbmFile);
-			try {
-				if(is != null){
-					SAXParser parser = CodeGenerators.getFactory().newSAXParser();
-					parser.parse(is, handler);
-				}
-			} catch (ParserConfigurationException | SAXException | IOException e) {
-				CodeGenerators.logError("Error parsing hbm.xml file for "+beanClass.getName(), e);
-			} finally {
-				try {
-					is.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-		
+				
 		for(PropertyDescriptor descriptor:beanInfo.getPropertyDescriptors()){
 			if(!descriptor.getName().equals("class")){
 				boolean isIdentity = false;
 				boolean isId = false;
 
-				if(handler.getFieldName()!=null && handler.getFieldName().equals(descriptor.getName())){
-					isId=true;
-					isIdentity = handler.isIdentity();
-				}
-				
 				Field field=null;
 				try {
 					field = getField(beanClass, descriptor.getName());
@@ -91,81 +58,91 @@ public class BeanModelFactory {
 				
 				int order = 99;
 				boolean nonFk=false;
-				if(field!=null){
-					if(skipClass!=null && (field.getAnnotation(skipClass)!=null))
-						continue;
+				if(field!=null && skipClass!=null && field.isAnnotationPresent(skipClass))
+					continue;
+				else if(skipClass!=null && descriptor.getReadMethod().isAnnotationPresent(skipClass))
+					continue;
+				
+				if(!isId){
+					if(field!=null && idClass!=null)
+						try {
+							isId = field.isAnnotationPresent(idClass);
+							isIdentity = field.isAnnotationPresent(generatedValueClass);
+						} catch (Exception e) {
+							CodeGenerators.logError("Exception of type " + e.getClass().getName() + " was thrown. Message is "
+									+ e.getMessage() + ". Exception occured whiles checking identity specification", e);
+						}
+				}
+				
+				if(propertyClass != null){
+					Annotation property = descriptor.getReadMethod().getAnnotation(propertyClass);
+					if(field!=null && property == null)
+						property = field.getAnnotation(propertyClass);
 					
-					if(!isId){
-						if(idClass!=null)
-							try {
-								Annotation id = field.getAnnotation(idClass);
-								isId = id !=null;
-								Annotation generatedValue = field.getAnnotation(generatedValueClass);
-								isIdentity = generatedValue != null;
-							} catch (Exception e) {
-								CodeGenerators.logError("Exception of type " + e.getClass().getName() + " was thrown. Message is "
-										+ e.getMessage() + ". Exception occured whiles checking identity specification", e);
+					if(property != null){
+						Object key = getAnnotationProperty(propertyClass, property, "key");
+						Object value = getAnnotationProperty(propertyClass, property, "property");
+						if(key !=null && value!=null){
+							if(key.equals("identity") && !isId){
+								isId = Boolean.parseBoolean(value.toString());
+								isIdentity = isId;
+							} else if(key.equals("id") && !isId){
+								isId = Boolean.parseBoolean(value.toString());
 							}
+							
+							if(!key.equals("identity") && !key.equals("id")) {
+								fieldProperties.put(key.toString(), value.toString());
+							}
+						}
 					}
+				}
+				
+				if(propertiesClass!=null && propertyClass!=null){
+					Annotation properties = descriptor.getReadMethod().getAnnotation(propertiesClass);
+					if(field!=null && properties == null)
+						properties = field.getAnnotation(propertiesClass);
 					
-					if(propertyClass!=null){
-						Annotation property = field.getAnnotation(propertyClass);
-						if(property!=null ){
+					if(properties!=null){
+						Object value = getAnnotationProperty(propertiesClass, properties, "value");
+						if(value instanceof Annotation[])
+						for(Annotation property:(Annotation[])value){
 							Object key = getAnnotationProperty(propertyClass, property, "key");
-							Object value = getAnnotationProperty(propertyClass, property, "property");
+							Object keyValue = getAnnotationProperty(propertyClass, property, "property");
 							if(key !=null && value!=null){
 								if(key.equals("identity") && !isId){
-									isId = Boolean.parseBoolean(value.toString());
+									isId = Boolean.parseBoolean(keyValue.toString());
 									isIdentity = isId;
 								} else if(key.equals("id") && !isId){
-									isId = Boolean.parseBoolean(value.toString());
+									isId = Boolean.parseBoolean(keyValue.toString());
 								}
 								
 								if(!key.equals("identity") && !key.equals("id")) {
-									fieldProperties.put(key.toString(), value.toString());
+									fieldProperties.put(key.toString(), keyValue.toString());
 								}
 							}
 						}
 					}
+				}
+				
+				if(orderClass!=null){
+					Annotation orderAnno = descriptor.getReadMethod().getAnnotation(orderClass);
+					if(field!=null && orderAnno == null)
+						orderAnno = field.getAnnotation(orderClass);
 					
-					if(propertiesClass!=null && propertyClass!=null){
-						Annotation properties = field.getAnnotation(propertiesClass);
-						if(properties!=null){
-							Object value = getAnnotationProperty(propertiesClass, properties, "value");
-							if(value instanceof Annotation[])
-							for(Annotation property:(Annotation[])value){
-								Object key = getAnnotationProperty(propertyClass, property, "key");
-								Object keyValue = getAnnotationProperty(propertyClass, property, "property");
-								if(key !=null && value!=null){
-									if(key.equals("identity") && !isId){
-										isId = Boolean.parseBoolean(keyValue.toString());
-										isIdentity = isId;
-									} else if(key.equals("id") && !isId){
-										isId = Boolean.parseBoolean(keyValue.toString());
-									}
-									
-									if(!key.equals("identity") && !key.equals("id")) {
-										fieldProperties.put(key.toString(), keyValue.toString());
-									}
-								}
-							}
-						}
+					Object value = getAnnotationProperty(orderClass, orderAnno, "value");
+					if(value instanceof Integer){
+						order = ((Integer)value);
 					}
-					
-					if(orderClass!=null){
-						Annotation orderAnno = field.getAnnotation(orderClass);
-						Object value = getAnnotationProperty(orderClass, orderAnno, "value");
-						if(value instanceof Integer){
-							order = ((Integer)value);
-						}
-					}
-					
-					if(oneToOneClass!=null){
-						Annotation oneToOneAnno = field.getAnnotation(oneToOneClass);
-						if(oneToOneAnno!=null){
-							Object value = getAnnotationProperty(oneToOneClass, oneToOneAnno, "mappedBy");
-							nonFk = value!=null && !value.toString().trim().isEmpty();
-						}
+				}
+				
+				if(oneToOneClass!=null){
+					Annotation oneToOneAnno = descriptor.getReadMethod().getAnnotation(oneToOneClass);
+					if(field!=null && oneToOneAnno == null)
+						oneToOneAnno = field.getAnnotation(oneToOneClass);
+						
+					if(oneToOneAnno!=null){
+						Object value = getAnnotationProperty(oneToOneClass, oneToOneAnno, "mappedBy");
+						nonFk = value!=null && !value.toString().trim().isEmpty();
 					}
 				}
 				
@@ -196,7 +173,7 @@ public class BeanModelFactory {
 				name = beanClass.getSimpleName();
 			}
 		
-		if(propertiesClass!=null && propertyClass!=null){
+		if(propertiesClass!=null && propertyClass!=null) {
 			Annotation property = beanClass.getAnnotation(propertyClass);
 			if(property!=null ){
 				Object key = getAnnotationProperty(propertyClass, property, "key");
@@ -217,9 +194,6 @@ public class BeanModelFactory {
 							generatorProperties.put(key.toString(), keyValue.toString());
 					}
 			}		
-			/* TODO for field type Array, Map or Collection, use bean introspection to obtain the underlying type
-			 * The type name will then be intropected and added as a sub element to bean element
-			 */
 		}
 		Collections.sort(beanElements);
 		

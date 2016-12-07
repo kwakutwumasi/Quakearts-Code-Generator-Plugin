@@ -3,9 +3,9 @@
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 import java.sql.Types;
 #if($wrapperClass.facesType)import javax.faces.application.FacesMessage;
+import javax.sql.DataSource;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import com.quakearts.webapp.facelets.util.UtilityMethods; #end

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test-src"/>
 	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar" sourcepath="C:/Users/Public/Utilities/velocity-1.7/src/java">

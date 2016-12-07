@@ -54,7 +54,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 	private Map<String, BeanModel> nameModelMapping = new HashMap<>();
 	private Map<String, BeanModel> classModelMapping = new HashMap<String, BeanModel>();
 	private Tree beanTree;
-	private Button btnMarkChanges;
+	private Button btnUpdateAndMarkChanges;
 
 	/**
 	 * Create the wizard.
@@ -101,8 +101,8 @@ public class ScaffoldingWizardPage extends WizardPage {
 		
 		combo.setLayoutData(gd_combo);
 		
-		btnMarkChanges = new Button(container, SWT.CHECK);
-		btnMarkChanges.setText("Mark changes");
+		btnUpdateAndMarkChanges = new Button(container, SWT.CHECK);
+		btnUpdateAndMarkChanges.setText("Update and mark changes");
 		
 		Label lblCustomScaffolding = new Label(container, SWT.NONE);
 		lblCustomScaffolding.setText("Custom Scaffolding");
@@ -247,8 +247,8 @@ public class ScaffoldingWizardPage extends WizardPage {
 		setPageComplete(false);
 	}
 	
-	public boolean markChangesSelected(){
-		return btnMarkChanges!=null? btnMarkChanges.getSelection():false;
+	public boolean updateAndMarkChangesSelected(){
+		return btnUpdateAndMarkChanges!=null? btnUpdateAndMarkChanges.getSelection():false;
 	}
 	
 	private void showError(String errorMessage) {
