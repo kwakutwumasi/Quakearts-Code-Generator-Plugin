@@ -4,11 +4,10 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:b="http://quakearts.com/2.0/boot"
-	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
 	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
-        <ga:checkRole roles="$readrole" message="You are not authorized to read from this table" severity="fatal">
+        <c:secure roles="$readrole" message="You are not authorized to read from this table">
 		<h:form>
  			<b:messages showDetail="true" dismissible="true"></b:messages>
     		<span class="h4">#{!(${crudappBeanName}.${beanModel.name}Page.${beanModel.name} eq null) and ${crudappBeanName}.mode eq 'edit'?'Edit ':(${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
@@ -32,53 +31,62 @@
 
 #set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
 #if($classModelMapping[${element.descriptor.propertyType.name}])
-						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
 							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
 						</h:outputLink>
 #end
     				</h:column>
 #end
 #end
-    				<ga:checkRole roles="$updaterole">
+    				<c:secure roles="$updaterole">
     				<h:column>
     					<f:facet name="header">
     						Action
     					</f:facet>
-    					<h:commandLink value="Edit">
+    					<c:secure roles="$updaterole">
+	    					<h:commandLink value="Edit">
+	    						<c:set as="#{$beanModel.name}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+	    						<c:set as="edit" var="#{${crudappBeanName}.mode}" />
+								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+	    					</h:commandLink>
+    					</c:secure>
+    					<h:commandLink value="View">
     						<c:set as="#{$beanModel.name}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
-    						<c:set as="edit" var="#{${crudappBeanName}.mode}" />
+    						<c:set as="read" var="#{${crudappBeanName}.mode}" />
 							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
     					</h:commandLink>
     				</h:column>
-    				</ga:checkRole>
+    				</c:secure>
     			</b:dataTable>
 			</b:row>
 			<b:row>
 				<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 					<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
-				<ga:checkRole roles="$updaterole">
+				<c:secure roles="$updaterole">
 					<b:buttonGroup rendered="#{${crudappBeanName}.mode eq 'edit'}">
-						<b:button value="Save">
+						<b:button>
+							Save
 							<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="update"></c:saveUpdate>
 							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 						</b:button>
-						<ga:checkRole roles="$deleterole">
-						<b:button value="Delete">
-							<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
-							<c:executeAction listener="#{${crudappBeanName}.${beanModel.name}Page.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
-							<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
-							<c:set as="#{null}" var="#{${crudappBeanName}.mode}"></c:set>
-							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-						</b:button>
-						</ga:checkRole>
+						<c:secure roles="$deleterole">
+							<b:button>
+								Delete
+								<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
+								<c:executeAction listener="#{${crudappBeanName}.${beanModel.name}Page.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
+								<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+								<c:set as="#{null}" var="#{${crudappBeanName}.mode}"></c:set>
+								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+							</b:button>
+						</c:secure>
 					</b:buttonGroup>
 					<b:button rendered="#{${crudappBeanName}.mode eq 'read'}">
 						Edit
 						<c:set as="edit" var="#{${crudappBeanName}.mode}" />
 						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-				</ga:checkRole>
+				</c:secure>
 				<b:button rendered="#{empty ${crudappBeanName}.mode}">
 					Search
 					<c:executeAction listener="#{${crudappBeanName}.${beanModel.name}Page.find${util.camelCase($beanModel.name)}}"></c:executeAction>
@@ -86,7 +94,7 @@
 				</b:button>
 			</b:row>
 		</h:form>
-		</ga:checkRole>
+		</c:secure>
     </ui:define>
 </ui:composition>
 </html>

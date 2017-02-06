@@ -9,7 +9,7 @@
     <ui:define name="content">
 		<h:form>
  			<b:messages showDetail="true" dismissible="true"></b:messages>
-    		<span class="h4">#{!(${crudappBeanName}.${beanModel.name}Page.${beanModel.name}Page.${beanModel.name} eq null) and ${crudappBeanName}.mode eq 'edit'?'Edit ':(${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<span class="h4">#{!(${crudappBeanName}.${beanModel.name}Page.${beanModel.name} eq null) and ${crudappBeanName}.mode eq 'edit'?'Edit ':(${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<br />
             <h:commandLink styleClass="btn btn-primary" rendered="#{${crudappBeanName}.mode eq 'edit' and (param.${beanModel.name} eq null)}">
 				<b:glyph value="backward"></b:glyph>Back to search...
@@ -30,7 +30,7 @@
 
 #set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
 #if($classModelMapping[${element.descriptor.propertyType.name}])
-						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
+						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/cp/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
 							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
 						</h:outputLink>
 #end
@@ -54,11 +54,13 @@
 					<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
 				<b:buttonGroup rendered="#{${crudappBeanName}.mode eq 'edit'}">
-					<b:button value="Save">
+					<b:button>
+						Save
 						<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="update"></c:saveUpdate>
 						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-					<b:button value="Delete">
+					<b:button>
+						Delete
 						<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
 						<c:executeAction listener="#{${crudappBeanName}.${beanModel.name}Page.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
 						<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>

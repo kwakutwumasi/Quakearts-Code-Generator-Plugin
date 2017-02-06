@@ -1,6 +1,5 @@
 package com.quakearts.webapp.beans;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +84,7 @@ public class $crudappClassName {
 
 #foreach($beanModelObj in $beanModels)#set($id = $beanModelObj.generatorProperties["model.id"])#set($stringElements=[])#foreach($element in $beanModelObj.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
 	public class ${beanModelObj.beanClass.simpleName}Finder extends HibernateBean {
-    	public List<${beanModelObj.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters,QueryOrder...queryOrders) throws HibernateException, IOException{
+    	public List<${beanModelObj.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters,QueryOrder...queryOrders) throws HibernateException{
     		return findObjects(${beanModelObj.beanClass.simpleName}.class, parameters, HibernateHelper.getCurrentSession(), queryOrders);
     	}
 #if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
@@ -157,7 +156,7 @@ public class $crudappClassName {
     		
     		try {
     			${beanModelObj.name}List = finder.findObjects(parameters);
-    		} catch (HibernateException | IOException e) {
+    		} catch (HibernateException e) {
     			addError("Search error", "An error occured while searching for ${util.splitCamelCase($beanModelObj.beanClass.simpleName)}", FacesContext.getCurrentInstance());
     			log.severe("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
     					+ ". Exception occured whiles searching for ${beanModelObj.beanClass.simpleName}");

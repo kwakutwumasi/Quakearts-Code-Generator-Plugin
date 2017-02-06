@@ -15,7 +15,8 @@
 				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
-				<b:button value="Save">
+				<b:button>
+					Save
 #if($id.identity)
 					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
 					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
@@ -24,12 +25,14 @@
 #end
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
-				<b:button value="Delete" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+				<b:button disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+					Delete
 					<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
-				<b:button value="Reset" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+				<b:button disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+					Reset
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
@@ -40,15 +43,18 @@
 				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
-				<b:button value="Save">
+				<b:button>
+					Save
 					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
                 </b:button>
-				<b:button value="Delete">
+				<b:button>
+					Delete
 					<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
-				<b:button value="Reset">
+				<b:button>
+					Reset
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>

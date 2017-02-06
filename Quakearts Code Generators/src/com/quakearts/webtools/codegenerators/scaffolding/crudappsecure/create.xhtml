@@ -4,11 +4,10 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:b="http://quakearts.com/2.0/boot"
-	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
 	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
- 		<ga:checkRole roles="$createrole" message="You are not authorized to insert into this table" severity="fatal">
+ 		<c:secure roles="$createrole" message="You are not authorized to insert into this table">
    		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
 #set($id = $beanModel.generatorProperties["model.id"])#if($beanModel.generatorProperties["model.id"])
@@ -26,13 +25,13 @@
 #end
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
-				<ga:checkRole roles="$deleterole">
+				<c:secure roles="$deleterole">
 					<b:button value="Delete" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 						<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
 						<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-				</ga:checkRole>
+				</c:secure>
 				<b:button value="Reset" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
@@ -44,24 +43,27 @@
 				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
-				<b:button value="Save">
+				<b:button>
+					Save
 					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
                 </b:button>
-				<ga:checkRole roles="$deleterole">
-					<b:button value="Delete">
+				<c:secure roles="$deleterole">
+					<b:button>
+						Delete
 						<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
 						<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-				</ga:checkRole>
-				<b:button value="Reset">
+				</c:secure>
+				<b:button>
+					Reset
 					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			<b:buttonGroup>
 #end
    		</h:form>
-		</ga:checkRole>
+		</c:secure>
 	</ui:define>
 </ui:composition>
 </html>
