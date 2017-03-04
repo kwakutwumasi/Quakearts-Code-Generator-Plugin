@@ -82,12 +82,12 @@ public class $crudappClassName {
 	}
 #end
 
-#foreach($beanModelObj in $beanModels)#set($id = $beanModelObj.generatorProperties["model.id"])#set($stringElements=[])#foreach($element in $beanModelObj.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
-	public class ${beanModelObj.beanClass.simpleName}Finder extends HibernateBean {
+#foreach($beanModelObj in $beanModels)#set($id = $beanModelObj.idElement.id)#set($stringElements=[])#foreach($element in $beanModelObj.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
+	public static class ${beanModelObj.beanClass.simpleName}Finder extends HibernateBean {
     	public List<${beanModelObj.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters,QueryOrder...queryOrders) throws HibernateException{
     		return findObjects(${beanModelObj.beanClass.simpleName}.class, parameters, HibernateHelper.getCurrentSession(), queryOrders);
     	}
-#if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+#if($beanModelObj.idElement && !$beanModelObj.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
 		public ${beanModelObj.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
 			return HibernateHelper.getCurrentSession().get(${beanModelObj.beanClass.simpleName}.class,id);
 		}
@@ -107,18 +107,24 @@ public class $crudappClassName {
 #end
     }
     
-	public class ${beanModelObj.beanClass.simpleName}Page extends BaseBean {
+	public static class ${beanModelObj.beanClass.simpleName}Page extends BaseBean {
     	private ${beanModelObj.beanClass.simpleName} ${beanModelObj.name};	
-    
+    	
+    	private $crudappClassName applicationBean;
+    	
+    	public ${beanModelObj.beanClass.simpleName}Page($crudappClassName applicationBean){
+    		this.applicationBean = applicationBean;
+    	}
+    	
     	public ${beanModelObj.beanClass.simpleName} get${util.camelCase($beanModelObj.name)}() {
     		if(${beanModelObj.name}==null){
-#if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))				if(hasParameter("${beanModelObj.name}")){
+#if($beanModelObj.idElement && !$beanModelObj.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))				if(hasParameter("${beanModelObj.name}")){
     				set${util.camelCase($beanModelObj.name)}(finder.getById(#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")getParameterInt("${beanModelObj.name}")#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")getParameterLong("${beanModelObj.name}")#elseif(${id.descriptor.propertyType.name} == "java.lang.String")getParameter("${beanModelObj.name}")#end));
-    				mode="read";
+    				applicationBean.setMode("read");
     			} else {
 #end
     				${beanModelObj.name} = new ${beanModelObj.beanClass.simpleName}();
-#if($beanModel.generatorProperties["model.id"]&&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))				}
+#if($beanModelObj.idElement && !$beanModelObj.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))				}
 #end
     		}
     		
@@ -131,7 +137,7 @@ public class $crudappClassName {
 #foreach($element in $beanModelObj.beanElements)#if(!$element.knownInputType)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
     			${elementModel.beanClass.simpleName} ${element.value} = ${beanModelObj.name}.get${util.camelCase(${element.value})}();
     			if(${element.value}!=null){
-					get${element.descriptor.propertyType.simpleName}DropdownHelper().addToFoundItemsList(${element.value});
+					applicationBean.get${element.descriptor.propertyType.simpleName}DropdownHelper().addToFoundItemsList(${element.value});
     			}
 #end#end#end
     		}
@@ -174,12 +180,12 @@ public class $crudappClassName {
 	
 	public ${beanModelObj.beanClass.simpleName}Page get${util.camelCase($beanModelObj.name)}Page(){
 		if(${beanModelObj.name}Page == null)
-			${beanModelObj.name}Page = new ${beanModelObj.beanClass.simpleName}Page();
+			${beanModelObj.name}Page = new ${beanModelObj.beanClass.simpleName}Page(this);
 		
 		return ${beanModelObj.name}Page;
 	}
 	
-	public class ${beanModelObj.beanClass.simpleName}DropdownHelper implements Serializable{
+	public static class ${beanModelObj.beanClass.simpleName}DropdownHelper implements Serializable{
 		private ${beanModelObj.beanClass.simpleName}Finder finder = new ${beanModelObj.beanClass.simpleName}Finder();
 		
 		private List<${beanModelObj.beanClass.simpleName}> foundItems;
@@ -231,7 +237,7 @@ public class $crudappClassName {
     	}
     	
     	public void filterItems(AjaxBehaviorEvent event){
-    		if(!isEmpty(searchText)){
+    		if(searchText !=null && !searchText.trim().isEmpty()){
     			foundItems = finder.filterByText(searchText);
     		}
     	}
@@ -248,8 +254,4 @@ public class $crudappClassName {
 	}
 	
 #end
-	
-	private boolean isEmpty(String text){
-		return text ==null||text.trim().isEmpty();
-	}
 }

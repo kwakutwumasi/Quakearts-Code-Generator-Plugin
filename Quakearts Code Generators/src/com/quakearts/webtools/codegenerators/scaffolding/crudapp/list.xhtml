@@ -31,7 +31,7 @@
 #set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
 #if($classModelMapping[${element.descriptor.propertyType.name}])
 						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/cp/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
-							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.generatorProperties["model.id"]).${elementModel.generatorProperties["model.id"].value}#end}"></f:param>
+							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.idElement).${elementModel.idElement.id.value}#end}"></f:param>
 						</h:outputLink>
 #end
     				</h:column>

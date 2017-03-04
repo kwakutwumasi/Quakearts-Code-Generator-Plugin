@@ -9,7 +9,7 @@
     <ui:define name="content">
    		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
-#set($id = $beanModel.generatorProperties["model.id"])#if($beanModel.generatorProperties["model.id"])
+#set($id = $beanModel.idElement.id)#if($beanModel.idElement)
             <span class="h4">#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
 				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>

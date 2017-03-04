@@ -9,15 +9,17 @@ import java.util.Map;
 public class BeanModel {
 
 	private String name;
+	private IdElement idElement;
 	private List<BeanElement> beanElements;
 	private Class<?> beanClass;
 	private BeanInfo beanInfo;
 	private String renderedText;
 	private Map<String, Object> generatorProperties;
 
-	BeanModel(String name, List<BeanElement> beanElements, Class<?> beanClass, BeanInfo beanInfo,
+	BeanModel(String name, IdElement idElement, List<BeanElement> beanElements, Class<?> beanClass, BeanInfo beanInfo,
 			Map<String, Object> generatorProperties) {
 		setName(name);
+		this.idElement = idElement;
 		this.beanElements = beanElements;
 		this.beanClass = beanClass;
 		this.beanInfo = beanInfo;
@@ -32,6 +34,10 @@ public class BeanModel {
 		if(name!=null && name.length()>1)
 			this.name = new StringBuilder(name.substring(0, 1).toLowerCase())
 				.append(name.substring(1)).toString();
+	}
+	
+	public IdElement getIdElement() {
+		return idElement;
 	}
 
 	public Collection<BeanElement> getBeanElements() {

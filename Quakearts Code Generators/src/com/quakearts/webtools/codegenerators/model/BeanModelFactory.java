@@ -33,6 +33,7 @@ public class BeanModelFactory {
 		BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 		List<BeanElement> beanElements = new ArrayList<BeanElement>();
 		Map<String, Object> generatorProperties = new HashMap<>();
+		IdElement idElement = null;
 		String name="";
 		
 		Class<? extends Annotation> propertyClass = checkForAnnotation("com.quakearts.webapp.codegeneration.annotations.CodeGeneratorProperty", loader);
@@ -151,7 +152,10 @@ public class BeanModelFactory {
 					beanElement.getGeneratorProperties().putAll(fieldProperties);
 
 				if(isId)
-					generatorProperties.put("model.id", beanElement);
+					if(idElement == null)
+						idElement = new IdElement(beanElement);
+					else
+						idElement.getIds().add(beanElement);
 				
 				beanElements.add(beanElement);
 			}
@@ -197,7 +201,7 @@ public class BeanModelFactory {
 		}
 		Collections.sort(beanElements);
 		
-		return new BeanModel(name, beanElements, beanClass, beanInfo, generatorProperties);
+		return new BeanModel(name, idElement, beanElements, beanClass, beanInfo, generatorProperties);
 	}
 	
 
