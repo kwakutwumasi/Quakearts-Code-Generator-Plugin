@@ -8,10 +8,17 @@
 		<entry displayName="CRUD Managed Bean Class Name" property="crudappClassName">CRUDApplicationBean</entry>
 		<entry displayName="CRUD Managed Bean Name" property="crudappBeanName">crudapp</entry>	
 	</properties>
-	<template-group folderID="tm">
+	<template-group folderID="cp">
 		<template filename="@{beanName}.crud.xhtml" location="crudapp/crud.xhtml" />
+	</template-group>
+	<template-group folderID="tm">
 		<template filename="@{beanName}.create.xhtml" location="crudappsecure/create.xhtml" />
 		<template filename="@{beanName}.list.xhtml" location="crudappsecure/list.xhtml" />
+	</template-group>
+	<template-group folderID="beans">
+		<template location="crudapp/finder.vm" filename="@{beanClassSimpleName}Finder.java"/>
+		<template location="crudapp/dropdownhelper.vm" filename="@{beanClassSimpleName}DropdownHelper.java"/>
+		<template location="crudapp/page.vm" filename="@{beanClassSimpleName}Page.java"/>
 	</template-group>
 	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
 	<folder-structure>
@@ -27,6 +34,7 @@
 			</folder>
 			<folder name="WebContent" folderID="web">
 				<folder name="tm" folderID="tm" />
+				<folder name="tm" folderID="cp" />
 			</folder>
 		</folder>
 	</folder-structure>

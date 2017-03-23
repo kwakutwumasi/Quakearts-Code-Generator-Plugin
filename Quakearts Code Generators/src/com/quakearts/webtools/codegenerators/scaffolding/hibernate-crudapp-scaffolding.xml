@@ -15,6 +15,11 @@
 		<template filename="@{beanName}.create.xhtml" location="crudapp/create.xhtml" />
 		<template filename="@{beanName}.list.xhtml" location="crudapp/list.xhtml" />
 	</template-group>
+	<template-group folderID="beans">
+		<template location="crudapp/finder.vm" filename="@{beanClassSimpleName}Finder.java"/>
+		<template location="crudapp/dropdownhelper.vm" filename="@{beanClassSimpleName}DropdownHelper.java"/>
+		<template location="crudapp/page.vm" filename="@{beanClassSimpleName}Page.java"/>
+	</template-group>
 	<resource folderID="images" location="crudapp/images/loading.gif" />
 	<resource folderID="images" location="crudapp/images/loading-small.gif" />
 	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />

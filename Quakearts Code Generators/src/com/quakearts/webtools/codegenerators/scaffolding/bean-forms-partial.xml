@@ -9,7 +9,12 @@
 	<template-group folderID="tm">
 		<template filename="@{beanName}.crud.xhtml" location="basic/crud.xhtml" />
 	</template-group>
-	<resource folderID="beans" location="basic/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
+	<template-group folderID="beans">
+		<template location="basic/finder.vm" filename="@{beanClassSimpleName}Finder.java"/>
+		<template location="crudapp/dropdownhelper.vm" filename="@{beanClassSimpleName}DropdownHelper.java"/>
+		<template location="crudapp/page.vm" filename="@{beanClassSimpleName}Page.java"/>
+	</template-group>
+	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
 	<folder-structure>
 		<folder name="Root Folder" folderID="root">
 			<folder name="src" folderID="src">

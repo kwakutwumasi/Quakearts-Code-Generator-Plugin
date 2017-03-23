@@ -1,0 +1,34 @@
+package com.quakearts.webapp.beans;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import ${beanModel.beanClass.canonicalName};
+
+#set($stringElements=[])#foreach($element in $beanModel.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
+public class ${beanModel.beanClass.simpleName}Finder {
+	public ${beanModel.beanClass.simpleName}Finder(){
+	}
+
+	public List<${beanModel.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters){
+		//TODO
+		return null;
+	}
+#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
+		//TODO
+		return null;
+	}
+#end
+#if($stringElements.isEmpty())
+	public List<${beanModel.beanClass.simpleName}> getAll(){
+		//TODO
+		return null;
+	}
+#else
+	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
+		//TODO
+		return null;
+	}
+#end
+}

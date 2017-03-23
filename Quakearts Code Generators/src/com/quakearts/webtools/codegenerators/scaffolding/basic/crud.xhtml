@@ -8,32 +8,32 @@
 <ui:component>
 #foreach($element in $beanModel.beanElements)#if($element.knownInputType && !$element.identity)#set($componentName=${beanModel.name}+${util.camelCase($element.value)}+"Component")
 	<b:formGroup>
-		<label id="${element.value}_label" for="#{${componentName}Component.clientId}">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{${crudappBeanName}.mode eq 'read'}" value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
+		<label id="${element.value}_label" for="#{${componentName}Component.clientId}">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}" value="#{obj.${element.value}}" binding="#{${componentName}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}" disabled="#{${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${crudappBeanName}.mode eq 'edit')#end}">
+		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" binding="#{${componentName}}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
-		<b:date value="#{obj.${element.value}}" converter="#{${crudappBeanName}.converter}" disabled="#{${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${crudappBeanName}.mode eq 'edit')#end}">
+		<b:date value="#{obj.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.converter}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
     	</b:date>
 #end
 	</b:formGroup>
 #elseif(${element.nonFk})#elseif(${element.enum})
  	<b:formGroup>
  		<label id="${element.value}_label">${util.splitCamelCase($element.value)}</label>
- 		<b:selectOneInput disabled="#{${crudappBeanName}.mode eq 'read'}"
+ 		<b:selectOneInput disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}"
     		value="#{obj.${element.value}}">
-    		<f:selectItems value="#{${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
+    		<f:selectItems value="#{${beanModel.name}Page.${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
     	</b:selectOneInput>
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
 #set($stringValue = "")#foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
-#set($dropDownHelper=${crudappBeanName}+"."+${util.reverseCamelCase($elementModel.beanClass.simpleName)}+"DropdownHelper")
+#set($dropDownHelper=${beanModel.name}+"Page."+${util.reverseCamelCase($elementModel.beanClass.simpleName)}+"DropdownHelper")
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>
-		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
+		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
 			value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
 			suggestion="#{${dropDownHelper}.searchText}" delay="1"
 			listener="#{${dropDownHelper}.filterItems}"

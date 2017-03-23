@@ -11,53 +11,53 @@
    		<h:form>
 			<b:messages showDetail="true" dismissible="true"></b:messages>
 #set($id = $beanModelObj.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId)
-            <span class="h4">#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
-    		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
-				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
+            <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:param name="obj" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
 				<b:button value="Save">
 #if($id.identity)
-					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
-					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
 #else
-					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
 #end
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 				<c:secure roles="$deleterole">
-					<b:button value="Delete" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
-						<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
-						<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<b:button value="Delete" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+						<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
 				</c:secure>
-				<b:button value="Reset" disabled="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
-					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+				<b:button value="Reset" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			</b:buttonGroup>
 #else
             <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
-    		<ui:include src="/tm/${beanModel.name}.crud.xhtml">
-				<ui:param name="obj" value="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></ui:param>
+    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:param name="obj" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
 				<b:button>
 					Save
-					<c:saveUpdate object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
                 </b:button>
 				<c:secure roles="$deleterole">
 					<b:button>
 						Delete
-						<c:delete object="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:delete>
-						<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+						<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
 				</c:secure>
 				<b:button>
 					Reset
-					<c:set as="#{null}" var="#{${crudappBeanName}.${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 				</b:button>
 			<b:buttonGroup>

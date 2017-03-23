@@ -1,0 +1,40 @@
+#set($stringElements=[])#foreach($element in $beanModel.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
+package com.quakearts.webapp.beans;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.List;
+import com.quakearts.webapp.orm.DataStore;
+import com.quakearts.webapp.orm.DataStoreFactory;
+import com.quakearts.webapp.orm.query.QueryOrder;
+import ${beanModel.beanClass.canonicalName};
+#if(!$stringElements.isEmpty())import static com.quakearts.webapp.orm.query.helper.ParameterMapBuilder.createParameters;
+#end
+
+public class ${beanModel.beanClass.simpleName}Finder {
+	private DataStore dataStore;
+	
+	public ${beanModel.beanClass.simpleName}Finder(){
+		dataStore = DataStoreFactory.getInstance().getDataStore();
+	}
+
+	public List<${beanModel.beanClass.simpleName}> findObjects(Map<String, Serializable> parameters,QueryOrder...queryOrders){
+		return dataStore.list(${beanModel.beanClass.simpleName}.class, parameters, queryOrders);
+	}
+#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
+		return dataStore.get(${beanModel.beanClass.simpleName}.class,id);
+	}
+#end
+#if($stringElements.isEmpty())
+	public List<${beanModel.beanClass.simpleName}> getAll(){
+		return dataStore.list(${beanModel.beanClass.simpleName}.class, null);
+	}
+#else
+	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
+		return dataStore.list(${beanModel.beanClass.simpleName}.class, createParameters()
+					#foreach($element in $stringElements).addVariableString("${element.value}", searchString)
+					#if(!$foreach.hasNext).build());#end#end
+	}
+#end
+}

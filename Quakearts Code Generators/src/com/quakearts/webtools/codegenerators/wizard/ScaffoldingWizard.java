@@ -715,6 +715,8 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
     				resolved = beanModel.getName();
     			} else if (beanModel != null && wrappedVariable.equals("beanClass")){
     				resolved = beanModel.getBeanClassName();
+    			} else if (beanModel != null && wrappedVariable.equals("beanClassSimpleName")){
+    				resolved = beanModel.getBeanClass().getSimpleName();
     			} else {
 	    			resolved = context.get(wrappedVariable);
     			}
