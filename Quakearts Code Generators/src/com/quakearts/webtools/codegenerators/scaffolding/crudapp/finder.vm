@@ -11,28 +11,23 @@ import ${beanModel.beanClass.canonicalName};
 #if(!$stringElements.isEmpty())import static com.quakearts.webapp.orm.query.helper.ParameterMapBuilder.createParameters;
 #end
 
-public class ${beanModel.beanClass.simpleName}Finder {
-	private DataStore dataStore;
-	
-	public ${beanModel.beanClass.simpleName}Finder(){
-		dataStore = DataStoreFactory.getInstance().getDataStore();
-	}
+public class ${beanModel.beanClass.simpleName}Finder {	
 
 	public List<${beanModel.beanClass.simpleName}> findObjects(Map<String, Serializable> parameters,QueryOrder...queryOrders){
-		return dataStore.list(${beanModel.beanClass.simpleName}.class, parameters, queryOrders);
+		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, parameters, queryOrders);
 	}
 #if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
 	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
-		return dataStore.get(${beanModel.beanClass.simpleName}.class,id);
+		return DataStoreFactory.getInstance().getDataStore().get(${beanModel.beanClass.simpleName}.class,id);
 	}
 #end
 #if($stringElements.isEmpty())
 	public List<${beanModel.beanClass.simpleName}> getAll(){
-		return dataStore.list(${beanModel.beanClass.simpleName}.class, null);
+		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, null);
 	}
 #else
 	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
-		return dataStore.list(${beanModel.beanClass.simpleName}.class, createParameters()
+		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, createParameters()#if($stringElements.size()>1).disjoin()#end
 					#foreach($element in $stringElements).addVariableString("${element.value}", searchString)
 					#if(!$foreach.hasNext).build());#end#end
 	}

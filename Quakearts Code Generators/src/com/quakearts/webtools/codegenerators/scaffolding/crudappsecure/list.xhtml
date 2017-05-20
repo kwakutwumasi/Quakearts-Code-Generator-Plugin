@@ -61,7 +61,7 @@
 			</b:row>
 			<b:row>
 				<ui:include src="/cp/${beanModel.name}.crud.xhtml">
-					<ui:param name="obj" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
 				<c:secure roles="$updaterole">
 					<b:buttonGroup rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'}">

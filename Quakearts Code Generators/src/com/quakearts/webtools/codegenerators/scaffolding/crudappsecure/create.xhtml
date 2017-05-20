@@ -13,7 +13,7 @@
 #set($id = $beanModelObj.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId)
             <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
-				<ui:param name="obj" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
 				<b:button value="Save">
@@ -40,7 +40,7 @@
 #else
             <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
-				<ui:param name="obj" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 			</ui:include>
 			<b:buttonGroup>
 				<b:button>

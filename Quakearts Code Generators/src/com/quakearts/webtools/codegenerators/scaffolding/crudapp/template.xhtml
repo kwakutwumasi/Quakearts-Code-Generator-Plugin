@@ -26,12 +26,12 @@
 		<b:nav>
 			<b:menu value="Create">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.create.jsf"><span class="app-menu"> Create ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="edit"></b:glyph></h:outputLink>
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.create.jsf"><span class="app-menu"> Create ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="edit"></b:glyph></h:outputLink>
 #end
 			</b:menu>
 			<b:menu value="View">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.list.jsf"><span class="app-menu">View ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="search"></b:glyph> </h:outputLink>
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.list.jsf"><span class="app-menu">View ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="search"></b:glyph> </h:outputLink>
 #end
 			</b:menu>
 		</b:nav>

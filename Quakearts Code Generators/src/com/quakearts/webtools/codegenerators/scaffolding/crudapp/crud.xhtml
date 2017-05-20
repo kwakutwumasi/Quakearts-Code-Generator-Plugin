@@ -8,17 +8,17 @@
 <ui:component>
 #foreach($element in $beanModel.beanElements)#if($element.knownInputType && !$element.identity)
 	<b:formGroup>
-		<label id="${element.value}_label">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}" value="#{obj.${element.value}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
+		<label id="${element.value}_label">#if($element.boolean)<h:selectBooleanCheckbox disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}" value="#{${beanModel.name}.${element.value}}"></h:selectBooleanCheckbox>#end${util.splitCamelCase($element.value)}</label>
 #if($element.string || $element.numeric)
-		<h:inputText styleClass="form-control" value="#{obj.${element.value}}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
+		<h:inputText styleClass="form-control" value="#{${beanModel.name}.${element.value}}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(${beanModel.name}.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
 #if($element.numeric)
 			<f:convertNumber></f:convertNumber>
 #end
 		</h:inputText>
 #elseif(${element.dateTimeType})
 		<b:date nullable="true" dayClass="btn-xs" monthClass="btn-xs" yearClass="btn-xs" 
-			value="#{obj.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.converter}" 
-			disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(obj.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
+			value="#{${beanModel.name}.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.converter}" 
+			disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(${beanModel.name}.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
 		</b:date>
 #end
 	</b:formGroup>
@@ -26,7 +26,7 @@
  	<b:formGroup>
  		<label id="${element.value}_label">${util.splitCamelCase($element.value)}</label>
  		<b:selectOneInput disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}"
-    		value="#{obj.${element.value}}">
+    		value="#{${beanModel.name}.${element.value}}">
     		<f:selectItems value="#{${beanModel.name}Page.${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
     	</b:selectOneInput>
 	</b:formGroup>
@@ -44,7 +44,7 @@
     				</h:commandLink>
     			</label>
     			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
-    				value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
+    				value="#{${beanModel.name}.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
     				suggestion="#{${dropDownHelper}.searchText}" delay="1"
     				listener="#{${dropDownHelper}.filterItems}"
     				onevent="#{loader.overlayAjaxLoader}">
@@ -57,12 +57,12 @@
     		<h:panelGroup rendered="#{${dropDownHelper}.inCreateMode}">
     			<span class="h4">Create ${util.splitCamelCase($element.value)}</span>
     			<ui:include src="${elementModel.name}.crud.xhtml">
-    				<ui:param name="obj" value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}"></ui:param>
+    				<ui:param name="${elementModel.name}" value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}"></ui:param>
     			</ui:include>
     			<b:buttonGroup>
         			<b:button value="Save ${util.splitCamelCase($element.value)}">
 						<c:saveUpdate object="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}" action="save" />
-        				<f:setPropertyActionListener value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}" target="#{obj.${element.value}}"></f:setPropertyActionListener>
+        				<f:setPropertyActionListener value="#{${dropDownHelper}.${util.reverseCamelCase($elementModel.beanClass.simpleName)}}" target="#{${beanModel.name}.${element.value}}"></f:setPropertyActionListener>
     					<f:setPropertyActionListener value="#{false}" target="#{${dropDownHelper}.inCreateMode}"></f:setPropertyActionListener>
         				<f:ajax execute="$insetId" render="$insetId" onevent="#{loader.overlayAjaxLoader}"></f:ajax>
         			</b:button>
