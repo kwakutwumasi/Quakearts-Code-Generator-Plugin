@@ -1,0 +1,111 @@
+package com.quakearts.webapp.beans;
+
+#set($id = $beanModel.idElement.id)import java.util.List;
+import java.util.logging.Logger;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import com.quakearts.webapp.facelets.base.BaseBean;
+import com.quakearts.webapp.orm.query.helper.ParameterMapBuilder;
+import com.quakearts.webapp.orm.exception.DataStoreException;
+import ${beanModel.beanClass.canonicalName};
+#foreach($element in $beanModel.beanElements)#if(!$element.primitiveOrString)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
+import ${elementModel.beanClass.canonicalName};
+#end#end#end
+
+@ManagedBean(name="${beanModel.name}Page")
+@ViewScoped
+public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
+
+	private static Logger log = Logger.getLogger(${beanModel.beanClass.simpleName}Page.class.getName());
+
+	private ${beanModel.beanClass.simpleName} ${beanModel.name};
+	
+	@ManagedProperty(value="#{${crudappBeanName}}")
+	private $crudappClassName $crudappBeanName;
+	private transient ${beanModel.beanClass.simpleName}Finder finder = new ${beanModel.beanClass.simpleName}Finder();
+			
+	public $crudappClassName get${util.camelCase($crudappBeanName)}(){
+		if($crudappBeanName == null)
+			$crudappBeanName = new ${crudappClassName}();
+			
+		return $crudappBeanName;
+	}
+	
+	public $crudappClassName set${util.camelCase($crudappBeanName)}($crudappClassName $crudappBeanName){
+		this.$crudappBeanName = $crudappBeanName;
+	}
+	
+	public ${beanModel.beanClass.simpleName} get${util.camelCase($beanModel.name)}() {
+		if(${beanModel.name}==null){
+#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			if(hasParameter("${beanModel.name}")){
+				set${util.camelCase($beanModel.name)}(finder.getById(#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")getParameterInt("${beanModel.name}")#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")getParameterLong("${beanModel.name}")#elseif(${id.descriptor.propertyType.name} == "java.lang.String")getParameter("${beanModel.name}")#end));
+				${crudappBeanName}.setMode("read");
+			} else {
+#end
+    			${beanModel.name} = new ${beanModel.beanClass.simpleName}();
+#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			}
+#end
+		}
+		
+		return ${beanModel.name};
+	}
+    	
+	public void set${util.camelCase($beanModel.name)}(${beanModel.beanClass.simpleName} ${beanModel.name}) {
+		this.${beanModel.name} = ${beanModel.name};
+		if(${beanModel.name}!=null){
+#foreach($element in $beanModel.beanElements)#if(!$element.knownInputType)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
+			${elementModel.beanClass.simpleName} ${element.value} = ${beanModel.name}.get${util.camelCase(${element.value})}();
+			if(${element.value}!=null){
+				get${element.descriptor.propertyType.simpleName}DropdownHelper().addToFoundItemsList(${element.value});
+			}
+#end#end#end
+		}
+	}
+	
+#foreach($elementType in $beanModel.beanElementClassesForUnKnownTypes)#if($classModelMapping[${elementType}])
+	private ${elementType.simpleName}DropdownHelper ${util.reverseCamelCase($elementType.simpleName)}DropdownHelper;
+
+	public ${elementType.simpleName}DropdownHelper get${elementType.simpleName}DropdownHelper(){
+		if(${util.reverseCamelCase($elementType.simpleName)}DropdownHelper == null)
+			${util.reverseCamelCase($elementType.simpleName)}DropdownHelper = new ${elementType.simpleName}DropdownHelper();
+			
+		return ${util.reverseCamelCase($elementType.simpleName)}DropdownHelper;
+	}
+#end#end
+	
+	private List<${beanModel.beanClass.simpleName}> ${beanModel.name}List;
+	
+	public List<${beanModel.beanClass.simpleName}> get${util.camelCase($beanModel.name)}List(){
+		return ${beanModel.name}List;
+	}
+	
+	public void find${util.camelCase($beanModel.name)}(ActionEvent event){
+		ParameterMapBuilder parameterBuilder = new ParameterMapBuilder();
+#foreach($element in ${beanModel.beanElements})#if(!$element.collection && !$element.map && !$element.identity && !$element.nonFk)
+		if(${beanModel.name}.${element.descriptor.readMethod.name}()#if(${element.boolean})#else != #if($element.primitiveNumber)0#{else}null#if($element.descriptor.propertyType.name == "java.lang.String") && ! ${beanModel.name}.${element.descriptor.readMethod.name}().trim().isEmpty()#end#end#end){
+			parameterBuilder.#if($element.descriptor.propertyType.name == "java.lang.String")addVariableString#{else}add#end("${element.value}", ${beanModel.name}.${element.descriptor.readMethod.name}());
+		}
+#end#end
+    		
+		try {
+			${beanModel.name}List = finder.findObjects(parameterBuilder.build());
+		} catch (DataStoreException e) {
+			addError("Search error", "An error occured while searching for ${util.splitCamelCase($beanModel.beanClass.simpleName)}", FacesContext.getCurrentInstance());
+			log.severe("Exception of type " + e.getClass().getName() + " was thrown. Message is " + e.getMessage()
+					+ ". Exception occured whiles searching for ${beanModel.beanClass.simpleName}");
+		}		
+	}
+    	
+	public void remove${util.camelCase($beanModel.name)}(ActionEvent event){
+		if(${beanModel.name}!=null && ${beanModel.name}List!=null){
+			${beanModel.name}List.remove(${beanModel.name});
+		}
+	}
+	
+	public boolean isInCreateOrEditMode(){
+		return FacesContext.getCurrentInstance().getViewRoot().getViewId().endsWith("create.xhtml") || "edit".equals(${crudappBeanName}.getMode());
+	}
+}

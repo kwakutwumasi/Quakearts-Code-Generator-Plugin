@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:b="http://quakearts.com/2.0/boot"
+	xmlns:c="http://quakearts.com/2.0/common">
+<ui:composition template="/base/template.xhtml">
+    <ui:define name="content">
+   		<h:form>
+			<b:messages showDetail="true" dismissible="true" id="messages"></b:messages>
+#set($id = $beanModel.idElement.id)#if($beanModel.idElement)
+            <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+			</ui:include>
+			<b:buttonGroup>
+				<b:button>
+					Save
+#if($id.identity)
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+#else
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+#end
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+					Delete
+					<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+					Reset
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			</b:buttonGroup>
+#else
+            <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+			</ui:include>
+			<b:buttonGroup>
+				<b:button>
+					Save
+					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+                </b:button>
+				<b:button>
+					Delete
+					<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+				<b:button>
+					Reset
+					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+				</b:button>
+			</b:buttonGroup>
+#end
+   		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

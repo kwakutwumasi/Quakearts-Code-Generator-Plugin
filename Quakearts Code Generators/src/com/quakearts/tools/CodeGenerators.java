@@ -21,10 +21,11 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wb.swt.ResourceManager;
 import org.osgi.framework.BundleContext;
-import com.quakearts.datatools.abstraction.WrapperClass;
+
+import com.quakearts.tools.data.model.WrapperClass;
 import com.quakearts.tools.utils.ProjectClassLoader;
-import com.quakearts.webtools.codegenerators.model.BeanModel;
-import com.quakearts.webtools.codegenerators.model.Scaffolding;
+import com.quakearts.tools.web.model.BeanModel;
+import com.quakearts.tools.web.model.Scaffolding;
 
 /**
  * The activator class controls the plug-in life cycle

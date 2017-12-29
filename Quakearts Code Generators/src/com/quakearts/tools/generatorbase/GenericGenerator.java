@@ -19,12 +19,18 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 
 import com.quakearts.tools.CodeGenerators;
+import com.quakearts.tools.utils.GenerationUtilMethods;
 
 public abstract class GenericGenerator implements LogChute{
 
 	protected Template template;
 	private VelocityEngine engine;
+	private static GenerationUtilMethods generationUtilMethods = new GenerationUtilMethods();
 
+	public static GenerationUtilMethods getGenerationUtilMethods() {
+		return generationUtilMethods;
+	}
+	
 	protected VelocityEngine getEngine() {
 		ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(VelocityEngine.class.getClassLoader());
@@ -73,35 +79,5 @@ public abstract class GenericGenerator implements LogChute{
 			return true;
 		
 		return false;
-	}
-	
-	public String camelCase(String javaName) {
-		String name = javaName;
-		if(name.startsWith("_"))
-			name = name.substring(1);
-		
-		return name.substring(0,1).toUpperCase()+name.substring(1);
-	}
-	
-	public String reverseCamelCase(String javaName) {
-		return javaName.substring(0,1).toLowerCase()+javaName.substring(1);
-	}
-	
-	public String splitCamelCase(String string){
-		StringBuilder builder = new StringBuilder();
-		char[] chars = string.toCharArray();
-		boolean start=true;
-		for(char c:chars){
-			if(start){
-				builder.append(Character.toUpperCase(c));
-				start=false;
-			}else{
-				if(Character.isUpperCase(c))
-					builder.append(" ");
-				builder.append(c);
-			}
-		}
-		
-		return builder.toString();
 	}
 }

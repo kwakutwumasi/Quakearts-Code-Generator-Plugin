@@ -2,19 +2,22 @@
 <classpath>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test-src"/>
-	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar" sourcepath="C:/Users/Public/Utilities/velocity-1.7/src/java">
+	<classpathentry kind="src" output="test-bin" path="test-src"/>
+	<classpathentry kind="lib" path="lib/velocity-1.7-dep.jar" sourcepath="lib/velocity-1.7-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/Users/Public/Utilities/velocity-1.7/docs/api/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/velocity-1.7.jar" sourcepath="C:/Users/Public/Utilities/velocity-1.7/src/java">
+	<classpathentry kind="lib" path="lib/velocity-1.7.jar" sourcepath="lib/velocity-1.7-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Public/Utilities/velocity-1.7/docs/api/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/Quakearts%20Code%20Generators/lib/velocity-1.7-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/qa-common-2.3.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate-jpa-2.0-api.jar"/>
+	<classpathentry kind="lib" path="lib/javaee-api-7.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
