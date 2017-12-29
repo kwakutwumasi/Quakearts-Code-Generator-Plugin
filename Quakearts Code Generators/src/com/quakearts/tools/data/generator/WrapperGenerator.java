@@ -152,7 +152,7 @@ public class WrapperGenerator extends GenericGenerator {
 		Marshaller marshaller = CodeGenerators.getJAXBContext().createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(wrapperClass, bos);
-		return new String(bos.toByteArray());
+		return new String(bos.toByteArray()).replace("\n", "\r\n");
 	}
 
 }

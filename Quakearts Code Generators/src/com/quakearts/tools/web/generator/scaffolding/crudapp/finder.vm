@@ -28,8 +28,10 @@ public class ${beanModel.beanClass.simpleName}Finder {
 #else
 	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
 		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, createParameters()#if($stringElements.size()>1).disjoin()#end
-					#foreach($element in $stringElements).addVariableString("${element.value}", searchString)
-					#if(!$foreach.hasNext).build());#end#end
+
+#foreach($element in $stringElements)															.addVariableString("${element.value}", searchString)
+#if(!$foreach.hasNext)															.build());
+#end#end
 	}
 #end
 }

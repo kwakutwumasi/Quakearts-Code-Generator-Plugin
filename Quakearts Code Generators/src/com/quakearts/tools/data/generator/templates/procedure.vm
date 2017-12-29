@@ -117,14 +117,14 @@ public class $wrapperClass.javaClassName {
 		call = con.prepareCall(CALLSTATEMENT);
 
 #if($wrapperClass.procedure.returnCodeEnabled)
-		call.registerOutParameter(1,java.sql.Types.INTEGER);
+		call.registerOutParameter(1,Types.INTEGER);
 #end
 #foreach($parameter in $wrapperClass.procedure.parameters)
 #if($parameter.outputEnabled)
-		call.registerOutParameter($parameter.callPosition,$parameter.sqlTypesString);
+		call.registerOutParameter($parameter.callPosition,$parameter.type);
 #else
 #if($parameter.inoutEnabled)
-		call.registerOutParameter($parameter.callPosition,$parameter.sqlTypesString);
+		call.registerOutParameter($parameter.callPosition,$parameter.type);
 #end
 #if($parameter.nullable)
 #if($parameter.javaTypeName=="int")		if($parameter.variableName ==-1)#elseif($parameter.javaTypeName=="long")		if($parameter.variableName ==-1l)#elseif($parameter.javaTypeName=="double")		if($parameter.variableName ==-1d)#elseif($parameter.javaTypeName!="int"&&$parameter.javaTypeName!="long"&&$parameter.javaTypeName!="double")		if($parameter.variableName == null)#end
@@ -150,13 +150,13 @@ public class $wrapperClass.javaClassName {
 #else
 		ResultSet rs = call.executeQuery();
 		boolean resultSets = rs.next();
+		if(resultSets){
 #end
 #if(!$wrapperClass.updater && !$wrapperClass.executor)
 #foreach($procedureResult in $wrapperClass.procedure.procedureResults)
-#if(!$procedureResult.condition.empty)		$procedureResult.condition{
+#if(!$procedureResult.condition.empty)		if($procedureResult.condition){
 
 #end
-		if(resultSets){
 #if($procedureResult.multiRow)
 			do {
 				$procedureResult.javaClassName ${util.reverseCamelCase($procedureResult.javaClassName)} = new ${procedureResult.javaClassName}();
@@ -168,8 +168,9 @@ public class $wrapperClass.javaClassName {
 				${util.reverseCamelCase($procedureResult.javaClassName)}s.add(${util.reverseCamelCase($procedureResult.javaClassName)});
 			} while(rs.next());
 #end
+#if(!$wrapperClass.updater && !$wrapperClass.executor && !$wrapperClass.multipleSets)
 		}
-#if(!$procedureResult.condition.empty)		}
+#end#if(!$procedureResult.condition.empty)		}
 
 #end
 #end

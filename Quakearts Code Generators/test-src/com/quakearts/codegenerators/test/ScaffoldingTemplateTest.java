@@ -160,22 +160,22 @@ public class ScaffoldingTemplateTest {
 
 	@Test
 	public void testDropDownHelperJAVAScaffoldingCrudapp() throws Exception {
-		generateAndWriteToFile("crudapp/dropdownhelper.vm","dropdownhelper.crudapp.xhtml.template.out", false, getHibernateCrudAppProperties());
+		generateAndWriteToFile("crudapp/dropdownhelper.vm","dropdownhelper.crudapp.xhtml.template.out", true, getHibernateCrudAppProperties());
 	}
 
 	@Test
 	public void testFinderJAVAScaffoldingCrudapp() throws Exception {
-		generateAndWriteToFile("crudapp/finder.vm","finder.crudapp.xhtml.template.out", false, getHibernateCrudAppProperties());
+		generateAndWriteToFile("crudapp/finder.vm","finder.crudapp.xhtml.template.out", true, getHibernateCrudAppProperties());
 	}
 	
 	@Test
 	public void testListXHTMLScaffoldingCrudapp() throws Exception {
-		generateAndWriteToFile("crudapp/list.xhtml","list.crudapp.xhtml.template.out", false, getHibernateCrudAppProperties());
+		generateAndWriteToFile("crudapp/list.xhtml","list.crudapp.xhtml.template.out", true, getHibernateCrudAppProperties());
 	}
 	
 	@Test
 	public void testPageJAVAScaffoldingCrudapp() throws Exception {
-		generateAndWriteToFile("crudapp/page.vm","page.crudapp.xhtml.template.out", false, getHibernateCrudAppProperties());
+		generateAndWriteToFile("crudapp/page.vm","page.crudapp.xhtml.template.out", true, getHibernateCrudAppProperties());
 	}
 
 	@Test
@@ -190,7 +190,7 @@ public class ScaffoldingTemplateTest {
 
 	@Test
 	public void testListXHTMLScaffoldingCrudappSecure() throws Exception {
-		generateAndWriteToFile("crudappsecure/list.xhtml","list.crudappsecure.xhtml.template.out", false, getHibernateCrudAppProperties());
+		generateAndWriteToFile("crudappsecure/list.xhtml","list.crudappsecure.xhtml.template.out", true, getHibernateCrudAppProperties());
 	}
 
 	@Test

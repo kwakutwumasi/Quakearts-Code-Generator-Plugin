@@ -65,7 +65,7 @@ public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 		}
 	}
 	
-#foreach($elementType in $beanModel.beanElementClassesForUnKnownTypes)#if($classModelMapping[${elementType}])
+#foreach($elementType in $beanModel.beanElementClassesForUnKnownTypes)#if($classModelMapping[${elementType.name}])
 	private ${elementType.simpleName}DropdownHelper ${util.reverseCamelCase($elementType.simpleName)}DropdownHelper;
 
 	public ${elementType.simpleName}DropdownHelper get${elementType.simpleName}DropdownHelper(){
