@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.quakearts.codegenerators
 Bundle-SymbolicName: com.quakearts.plugins.codegenerators;singleton:=true
-Bundle-Version: 1.0.0.201510011738
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.quakearts.tools.CodeGenerators
 Bundle-Vendor: Quakearts Inc
 Require-Bundle: org.eclipse.ui,
