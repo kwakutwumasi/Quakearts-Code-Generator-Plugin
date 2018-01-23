@@ -9,7 +9,7 @@
 	<template-group folderID="cp">
 		<template filename="@{beanName}.crud.xhtml" location="crudapp/crud.xhtml" />
 	</template-group>
-	<template-group folderID="tm">
+	<template-group folderID="ui">
 		<template filename="@{beanName}.create.xhtml" location="crudapp/create.xhtml" />
 		<template filename="@{beanName}.list.xhtml" location="crudapp/list.xhtml" />
 	</template-group>

@@ -8,7 +8,7 @@
 		<entry displayName="CRUD Managed Bean Class Name" property="crudappClassName">CRUDApplicationBean</entry>
 		<entry displayName="CRUD Managed Bean Name" property="crudappBeanName">crudapp</entry>
 	</properties>
-	<template-group folderID="tm">
+	<template-group folderID="cp">
 		<template filename="@{beanName}.crud.xhtml" location="basic/crud.xhtml" />
 	</template-group>
 	<template-group folderID="beans">
@@ -43,7 +43,7 @@
 					<folder name="classes" folderID="classes" />
 				</folder>
 				<folder name="ui" folderID="ui" />
-				<folder name="tm" folderID="tm" />
+				<folder name="cp" folderID="cp" />
 			</folder>
 		</folder>
 	</folder-structure>
