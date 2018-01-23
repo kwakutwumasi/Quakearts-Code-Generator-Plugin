@@ -19,7 +19,6 @@
 package com.quakearts.tools.web.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -66,6 +65,8 @@ public class Folder {
     protected List<Folder> folders;
     @XmlTransient
     protected Folder parentFolder;
+    @XmlTransient
+	private boolean parentFolderSet;
     
     /**
      * Gets the value of the name property.
@@ -138,57 +139,30 @@ public class Folder {
      * 
      */
     public List<Folder> getFolders() {
-        if (folders == null) {
-            folders = new ArrayList<Folder>() {
-            	/**
-				 * 
-				 */
-				private static final long serialVersionUID = -6757140835883970165L;
-
-				@Override
-            	public boolean add(Folder e) {
-            		e.setParentFolder(Folder.this);
-            		return super.add(e);
-            	}
-            	
-            	@Override
-            	public void add(int index, Folder element) {
-            		element.setParentFolder(Folder.this);
-            		super.add(index, element);
-            	}
-            	
-            	@Override
-            	public boolean addAll(Collection<? extends Folder> c) {
-            		c.stream().parallel().forEach((e)->{
-            			e.setParentFolder(Folder.this);
-            		});
-            		return super.addAll(c);
-            	}
-            	
-            	@Override
-            	public boolean addAll(int index, Collection<? extends Folder> c) {
-            		c.stream().parallel().forEach((e)->{
-            			e.setParentFolder(Folder.this);
-            		});
-            		return super.addAll(index, c);
-            	}
-            	
-            	@Override
-            	public Folder set(int index, Folder element) {
-            		element.setParentFolder(Folder.this);
-            		return super.set(index, element);
-            	}
-            };
-        }
+    		if(folders == null)
+    			folders = new ArrayList<>();
+    			
+    		setParentFolders();
         return this.folders;
     }
     
+    private void setParentFolders() {
+    		if(!parentFolderSet) {
+    			if(folders != null)
+    				folders.parallelStream().forEach((subFolder)->{
+	    				subFolder.setParentFolder(this);
+	    				subFolder.setParentFolders();
+	    			});
+    			parentFolderSet = true;
+    		}
+    }
+    
     public int getFolderCount(){
-    	int count=1;
-    	for(Folder folder:getFolders()){
-    		count += folder.getFolderCount();
-    	}
-    	return count;
+    		int count=1;
+	    	for(Folder folder:getFolders()){
+	    		count += folder.getFolderCount();
+	    	}
+	    	return count;
     }
 
 	public Folder getParentFolder() {

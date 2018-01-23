@@ -34,19 +34,19 @@ public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 		return $crudappBeanName;
 	}
 	
-	public $crudappClassName set${util.camelCase($crudappBeanName)}($crudappClassName $crudappBeanName){
+	public void set${util.camelCase($crudappBeanName)}($crudappClassName $crudappBeanName){
 		this.$crudappBeanName = $crudappBeanName;
 	}
 	
 	public ${beanModel.beanClass.simpleName} get${util.camelCase($beanModel.name)}() {
 		if(${beanModel.name}==null){
-#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			if(hasParameter("${beanModel.name}")){
+#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			if(hasParameter("${beanModel.name}")){
 				set${util.camelCase($beanModel.name)}(finder.getById(#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")getParameterInt("${beanModel.name}")#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")getParameterLong("${beanModel.name}")#elseif(${id.descriptor.propertyType.name} == "java.lang.String")getParameter("${beanModel.name}")#end));
 				${crudappBeanName}.setMode("read");
 			} else {
-#end
+	#end
     			${beanModel.name} = new ${beanModel.beanClass.simpleName}();
-#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			}
+#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))			}
 #end
 		}
 		

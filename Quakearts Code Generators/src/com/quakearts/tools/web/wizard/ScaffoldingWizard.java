@@ -500,7 +500,6 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 		if(!folder.exists()){
 			try {
 				folder.create(false, true, monitor);
-				monitor.worked(1);
 			} catch (CoreException e) {
 				CodeGenerators.logError("Could not create folder "+folder.getName(), e);
 				return false;									
@@ -511,6 +510,7 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 		for(Folder subFolder:scaffoldFolder.getFolders()){
 			result = result && createFolder(folder.getFolder(subFolder.getName()), subFolder, monitor, folderStructure); 
 		}
+		monitor.worked(1);
 		return result;
 	}
 

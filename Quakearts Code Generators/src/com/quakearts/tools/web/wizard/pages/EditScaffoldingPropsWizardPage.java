@@ -62,6 +62,7 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 	private TableViewer tableViewer;
 	private Tree folderTree;
 	private Text propertyText;
+	private int newfolderindex = 0;
 	
 	public EditScaffoldingPropsWizardPage(IProject project) {
 		super("editPropertiesWizardPage");
@@ -180,22 +181,20 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 						Folder parentFolder = folder.getParentFolder();
 						if(parentFolder != null) {
 							parentFolder.getFolders().remove(folder);
+							
 							Folder newFolder = new Folder();
-							newFolder.setFolderID("newFolder"+parentFolder.getFolders().size()+1);
+							newFolder.setFolderID("newFolder"+(++newfolderindex));
 							newFolder.setName("New Folder");
 							newFolder.setParentFolder(parentFolder);
-							newFolder.getFolders().add(folder);
-
-							folderTree.clearAll(true);
-							TreeItem rootItem = new TreeItem(folderTree, 0);
-							rootItem.setData(null);
-							rootItem.setText(project.getName());
-							rootItem.setImage(CodeGenerators.getFolderImage());
-							if(scaffolding.getFolderStructure()!=null && scaffolding.getFolderStructure().getFolder()!=null){
-								for(Folder sfolder:scaffolding.getFolderStructure().getFolder().getFolders())
-									createFolderView(sfolder, rootItem);
-							}
+							parentFolder.getFolders().add(newFolder);
 							
+							folder.setParentFolder(newFolder);
+							newFolder.getFolders().add(folder);
+													
+							item.removeAll();
+							item.setText(newFolder.getName());
+							item.setData(newFolder);
+							createFolderView(folder, item);
 						} else {
 							MessageBox box = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK);
 							box.setText("Invalid Action");
@@ -257,6 +256,22 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 		});
 	}
 	
+	public void setScaffolding(Scaffolding scaffolding) {
+		this.scaffolding = scaffolding;
+		tableViewer.setInput(scaffolding.getProperties().getEntries());
+		
+		folderTree.clearAll(true);
+		TreeItem rootItem = new TreeItem(folderTree, 0);
+		rootItem.setData(null);
+		rootItem.setText(project.getName());
+		rootItem.setImage(CodeGenerators.getFolderImage());
+		
+		if(scaffolding.getFolderStructure()!=null && scaffolding.getFolderStructure().getFolder()!=null){
+			for(Folder folder:scaffolding.getFolderStructure().getFolder().getFolders())
+				createFolderView(folder, rootItem);
+		}
+	}
+
 	private void createFolderView(Folder folder, TreeItem parentItem){
 		TreeItem item = new TreeItem(parentItem, 0);
 		item.setImage(CodeGenerators.getFolderImage());
@@ -311,21 +326,5 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 	
 	public void setProject(IProject project) {
 		this.project = project;
-	}
-	
-	public void setScaffolding(Scaffolding scaffolding) {
-		this.scaffolding = scaffolding;
-		tableViewer.setInput(scaffolding.getProperties().getEntries());
-		
-		folderTree.clearAll(true);
-		TreeItem rootItem = new TreeItem(folderTree, 0);
-		rootItem.setData(null);
-		rootItem.setText(project.getName());
-		rootItem.setImage(CodeGenerators.getFolderImage());
-		
-		if(scaffolding.getFolderStructure()!=null && scaffolding.getFolderStructure().getFolder()!=null){
-			for(Folder folder:scaffolding.getFolderStructure().getFolder().getFolders())
-				createFolderView(folder, rootItem);
-		}
 	}
 }

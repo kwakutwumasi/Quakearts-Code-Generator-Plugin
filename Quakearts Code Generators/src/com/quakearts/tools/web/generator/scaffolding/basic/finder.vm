@@ -14,7 +14,7 @@ public class ${beanModel.beanClass.simpleName}Finder {
 		//TODO
 		return null;
 	}
-#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
 	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
 		//TODO
 		return null;

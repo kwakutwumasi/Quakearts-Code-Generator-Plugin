@@ -16,7 +16,7 @@ public class ${beanModel.beanClass.simpleName}Finder {
 	public List<${beanModel.beanClass.simpleName}> findObjects(Map<String, Serializable> parameters,QueryOrder...queryOrders){
 		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, parameters, queryOrders);
 	}
-#if($beanModel.idElement && !$beanModel.idElement.compositId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+#set($id=$beanModel.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
 	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
 		return DataStoreFactory.getInstance().getDataStore().get(${beanModel.beanClass.simpleName}.class,id);
 	}

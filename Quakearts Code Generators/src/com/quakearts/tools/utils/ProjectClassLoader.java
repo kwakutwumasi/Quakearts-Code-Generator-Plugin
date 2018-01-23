@@ -72,20 +72,22 @@ public class ProjectClassLoader extends ClassLoader {
 		IJavaProject javaProject = JavaCore.create(project);
 		
 		try{
-			for(IPackageFragmentRoot root:javaProject.getPackageFragmentRoots()){
+			for(IPackageFragmentRoot root:javaProject.getAllPackageFragmentRoots()){
 				if(root.getKind()==IPackageFragmentRoot.K_SOURCE){
-					IPath outputPath = javaProject.getOutputLocation();
+					IPath outputPath = root.getJavaProject().getOutputLocation();
 					IFile file;
 					
 					IPath path = outputPath.append(new Path(className.replace(".", "/") + ".class"));
-					file = project.getFile(path.removeFirstSegments(1));
+					file = root.getJavaProject().getProject().getFile(path.removeFirstSegments(1));
 					if(file==null||!file.exists()){
 						IClasspathEntry entry = root.getRawClasspathEntry();
-						outputPath = entry.getOutputLocation();
-						if(outputPath!=null){
-							path = outputPath
-									.append(new Path(className.replace(".", "/") + ".class"));
-							file = project.getFile(path.removeFirstSegments(1));
+						if(entry != null) {
+							outputPath = entry.getOutputLocation();
+							if(outputPath!=null){
+								path = outputPath
+										.append(new Path(className.replace(".", "/") + ".class"));
+								file = root.getJavaProject().getProject().getFile(path.removeFirstSegments(1));
+							}
 						}
 					}
 					
@@ -109,6 +111,8 @@ public class ProjectClassLoader extends ClassLoader {
 							break;
 						}
 					}					
+				} else {
+					CodeGenerators.logWarn("Unknown IPackageFragmentRoot of kind "+root.getKind());
 				}
 			}
 		} catch (CoreException | IOException e){
