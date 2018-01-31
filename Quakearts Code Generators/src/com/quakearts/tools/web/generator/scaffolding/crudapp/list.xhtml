@@ -55,7 +55,7 @@
     			</b:dataTable>
 			</b:row>
 			<b:row>
-				<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:include src="../cp/${beanModel.name}.crud.xhtml">
 					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
 				<b:buttonGroup rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'}">

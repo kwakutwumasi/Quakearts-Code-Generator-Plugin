@@ -7,6 +7,10 @@
 		<entry displayName="Company" property="company">Quake Arts Inc.</entry>
 		<entry displayName="CRUD Managed Bean Class Name" property="crudappClassName">CRUDApplicationBean</entry>
 		<entry displayName="CRUD Managed Bean Name" property="crudappBeanName">crudapp</entry>	
+		<entry displayName="Create Role" property="createrole">Create</entry>
+		<entry displayName="Update Role" property="updaterole">Update</entry>
+		<entry displayName="Read Role" property="readrole">Read</entry>
+		<entry displayName="Delete Role" property="deleterole">Delete</entry>
 	</properties>
 	<template-group folderID="cp">
 		<template filename="@{beanName}.crud.xhtml" location="crudapp/crud.xhtml" />

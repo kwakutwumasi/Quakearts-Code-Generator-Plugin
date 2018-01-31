@@ -32,7 +32,7 @@
 #set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])
 #if($classModelMapping[${element.descriptor.propertyType.name}])
 						<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${elementModel.name}.list.jsf" rendered="#{${beanModel.name}.${element.value} != null}">View
-							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.idElement).${$elementModel.idElement.id.value}#end}"></f:param>
+							<f:param name="${elementModel.name}" value="#{${beanModel.name}.${element.value}#if($elementModel.idElement).${elementModel.idElement.id.value}#end}"></f:param>
 						</h:outputLink>
 #end
     				</h:column>
@@ -60,7 +60,7 @@
     			</b:dataTable>
 			</b:row>
 			<b:row>
-				<ui:include src="/cp/${beanModel.name}.crud.xhtml">
+				<ui:include src="../cp/${beanModel.name}.crud.xhtml">
 					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
 				<c:secure roles="$updaterole">

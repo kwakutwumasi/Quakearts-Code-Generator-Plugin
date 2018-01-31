@@ -29,6 +29,7 @@ import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.widgets.Composite;
 import com.quakearts.tools.CodeGenerators;
 import com.quakearts.tools.web.context.ScaffoldingContext;
+import com.quakearts.tools.web.model.BeanElement;
 import com.quakearts.tools.web.model.BeanModel;
 import com.quakearts.tools.web.model.BeanModelBuilder;
 import com.quakearts.tools.web.model.Scaffolding;
@@ -60,7 +61,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 	private Scaffolding scaffolding;
 	private ScaffoldingContext scaffoldingContext = new ScaffoldingContext();
 	private Tree beanTree;
-	private Button btnUpdateAndMarkChanges;
+	private Button btnUpdateAndMarkChanges, btnResolveBeanModels;
 
 	/**
 	 * Create the wizard.
@@ -88,7 +89,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 		container.setLayout(new GridLayout(3, false));
 		
 		Label lblPredefinedScaffolding = new Label(container, SWT.NONE);
-		lblPredefinedScaffolding.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblPredefinedScaffolding.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblPredefinedScaffolding.setText("Predefined Scaffolding");
 		
 		final Combo combo = new Combo(container, SWT.NONE);
@@ -110,9 +111,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 		}
 		
 		combo.setLayoutData(gd_combo);
-		
-		btnUpdateAndMarkChanges = new Button(container, SWT.CHECK);
-		btnUpdateAndMarkChanges.setText("Update and mark changes");
+		new Label(container, SWT.NONE);
 		
 		Label lblCustomScaffolding = new Label(container, SWT.NONE);
 		lblCustomScaffolding.setText("Custom Scaffolding");
@@ -177,7 +176,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 				try {
 					dialog = JavaUI.createTypeDialog(getShell(),monitorDialog, project, IJavaElementSearchConstants.CONSIDER_CLASSES, true);
 					if(dialog.open()==SelectionDialog.OK){
-						getWizard().getContainer().run(false, true, new GenerateBeanModels(dialog.getResult()));
+						getWizard().getContainer().run(false, true, new GenerateBeanModels(dialog.getResult(), btnResolveBeanModels.getSelection()));
 					}
 					checkPageComplete();
 				} catch (JavaModelException ex) {
@@ -212,7 +211,7 @@ public class ScaffoldingWizardPage extends WizardPage {
 		new Label(container, SWT.NONE);
 		
 		beanTree = new Tree(container, SWT.BORDER);
-		beanTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		beanTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		
 		final TreeEditor beanTreeEditor = new TreeEditor(beanTree);
 		beanTreeEditor.grabHorizontal = true;
@@ -253,14 +252,20 @@ public class ScaffoldingWizardPage extends WizardPage {
                 beanTreeEditor.setEditor(beanNameText, item);
         	}
 		});
+
+        btnResolveBeanModels = new Button(container, SWT.CHECK);
+		btnResolveBeanModels.setText("Resolve Bean Models");
 		
+		btnUpdateAndMarkChanges = new Button(container, SWT.CHECK);
+		btnUpdateAndMarkChanges.setText("Update and mark changes");
+
 		setPageComplete(false);
 	}
 	
 	public boolean updateAndMarkChangesSelected(){
 		return btnUpdateAndMarkChanges!=null? btnUpdateAndMarkChanges.getSelection():false;
 	}
-	
+		
 	private void showError(String errorMessage) {
 		if(defaultDescription==null)
 			defaultDescription=getDescription();
@@ -302,9 +307,11 @@ public class ScaffoldingWizardPage extends WizardPage {
 	
 	private final class GenerateBeanModels implements IRunnableWithProgress{
 		private Object[] beanTypes;
+		private boolean resolveBeanModels;
 		
-		public GenerateBeanModels(Object[] beanTypes) {
+		public GenerateBeanModels(Object[] beanTypes, boolean resolveBeanModels) {
 			this.beanTypes = beanTypes;
+			this.resolveBeanModels = resolveBeanModels;
 		}
 
 		@Override
@@ -321,6 +328,19 @@ public class ScaffoldingWizardPage extends WizardPage {
 					}
 
 					scaffoldingContext.addBeanModel(model);
+					if(resolveBeanModels) {						
+						for(BeanElement element:model.getBeanElements()) {
+							if(!element.isKnownInputType() 
+									&& !scaffoldingContext.getClassModelMappings()
+									.containsKey(element.getElementClass())) {
+								scaffoldingContext.getClassModelMappings()
+									.put(element.getElementClass(),
+										BeanModelBuilder	.createBeanModel(element.getElementClass(), 
+												CodeGenerators.getProjectClassLoader(project)));
+								
+							}
+						}
+					}
 					
 					TreeItem item = new TreeItem(beanTree, 0);
 					item.setImage(CodeGenerators.getBeanImage());

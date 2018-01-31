@@ -8,61 +8,61 @@
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
  		<c:secure roles="$createrole" message="You are not authorized to insert into this table">
-   		<h:form>
-			<b:messages showDetail="true" dismissible="true"></b:messages>
-#set($id = $beanModelObj.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId)
-            <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
-    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
-				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
-			</ui:include>
-			<b:buttonGroup>
-				<b:button value="Save">
+	   		<h:form>
+				<b:messages showDetail="true" dismissible="true"></b:messages>
+#set($id = $beanModel.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId)
+	            <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+	    			<ui:include src="../cp/${beanModel.name}.crud.xhtml">
+					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+				</ui:include>
+				<b:buttonGroup>
+					<b:button value="Save">
 #if($id.identity)
-					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
-					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
+						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
 #else
-					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
 #end
-					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-				</b:button>
-				<c:secure roles="$deleterole">
-					<b:button value="Delete" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
-						<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					</b:button>
+					<c:secure roles="$deleterole">
+						<b:button value="Delete" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						</b:button>
+					</c:secure>
+					<b:button value="Reset" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-				</c:secure>
-				<b:button value="Reset" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
-					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-				</b:button>
-			</b:buttonGroup>
+				</b:buttonGroup>
 #else
-            <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
-    		<ui:include src="/cp/${beanModel.name}.crud.xhtml">
-				<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
-			</ui:include>
-			<b:buttonGroup>
-				<b:button>
-					Save
-					<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
-                </b:button>
-				<c:secure roles="$deleterole">
+	            <span class="h4">Create or Edit ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+	    		<ui:include src="../cp/${beanModel.name}.crud.xhtml">
+					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
+				</ui:include>
+				<b:buttonGroup>
 					<b:button>
-						Delete
-						<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+						Save
+						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+	                </b:button>
+					<c:secure roles="$deleterole">
+						<b:button>
+							Delete
+							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
+							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						</b:button>
+					</c:secure>
+					<b:button>
+						Reset
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
 					</b:button>
-				</c:secure>
-				<b:button>
-					Reset
-					<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-					<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
-				</b:button>
-			<b:buttonGroup>
+				<b:buttonGroup>
 #end
-   		</h:form>
+	   		</h:form>
 		</c:secure>
 	</ui:define>
 </ui:composition>

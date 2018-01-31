@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:b="http://quakearts.com/2.0/boot"
-	xmlns:ga="http://gravel.jboss.org/jsf/2.0/action"
+	xmlns:c="http://quakearts.com/2.0/common"
 	xmlns:ut="http://quakearts.com/utils">
 <h:head>
   <title><ui:insert name="title">${apptitle}</ui:insert></title>
@@ -18,20 +18,20 @@
 	</f:facet>
 	<h:form>
 		<b:nav>
-			<ga:checkRole roles="$createrole">
-			<b:menu value="Create">
+ 			<c:secure roles="$createrole">
+				<b:menu value="Create">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.create.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;"> Create ${beanModel.beanClass.simpleName}</span><b:glyph value="edit"></b:glyph></h:outputLink>
+					<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.create.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;"> Create ${beanModel.beanClass.simpleName}</span><b:glyph value="edit"></b:glyph></h:outputLink>
 #end
-			</b:menu>
-			</ga:checkRole>
-			<ga:checkRole roles="$readrole">
-			<b:menu value="View">
+				</b:menu>
+			</c:secure>
+			<c:secure roles="$readrole">
+				<b:menu value="View">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/tm/${beanModel.name}.list.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;">View ${beanModel.beanClass.simpleName}</span><b:glyph value="search"></b:glyph> </h:outputLink>
+					<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.list.jsf"><span style="display: inline-block; width: 100px; margin-right: 5px;">View ${beanModel.beanClass.simpleName}</span><b:glyph value="search"></b:glyph> </h:outputLink>
 #end
-			</b:menu>
-			</ga:checkRole>
+				</b:menu>
+			</c:secure>
 		</b:nav>
 	</h:form>
 </b:navbar>

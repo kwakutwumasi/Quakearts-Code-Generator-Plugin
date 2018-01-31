@@ -17,7 +17,7 @@ public class ${beanModel.beanClass.simpleName}DropdownHelper implements Serializ
 #if($stringElements.isEmpty())		if(foundItems == null)
 			foundItems = finder.getAll();
 #end
-    	return foundItems;
+    		return foundItems;
     }
     	
 	private ${beanModel.beanClass.simpleName} ${util.reverseCamelCase($beanModel.beanClass.simpleName)};

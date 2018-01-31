@@ -1,5 +1,8 @@
 package com.quakearts.codegenerators.test;
 
+import static org.junit.Assert.*;
+import static org.hamcrest.core.Is.*;
+
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +24,7 @@ import com.quakearts.test.hibernate.TestBean5;
 import com.quakearts.test.hibernate.TestBean6;
 import com.quakearts.tools.web.context.ScaffoldingContext;
 import com.quakearts.tools.web.generator.ScaffoldingTemplateGenerator;
+import com.quakearts.tools.web.model.BeanElement;
 import com.quakearts.tools.web.model.BeanModel;
 import com.quakearts.tools.web.model.BeanModelBuilder;
 import com.quakearts.tools.web.model.Folder;
@@ -31,7 +35,6 @@ import com.quakearts.tools.web.model.ScaffoldingProperties;
 
 public class ScaffoldingTemplateTest {
 	
-
 	private String generateTestTemplates(String templateName, boolean generateForEach, Collection<? extends PropertyEntry> entries) throws IOException, ClassNotFoundException, IntrospectionException {
 		ScaffoldingTemplateGenerator generator = new ScaffoldingTemplateGenerator();
 		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("com/quakearts/tools/web/generator/scaffolding/"+templateName);
@@ -198,4 +201,28 @@ public class ScaffoldingTemplateTest {
 		generateAndWriteToFile("crudappsecure/template.xhtml","template.crudappsecure.xhtml.template.out", false, getHibernateCrudAppProperties());
 	}
 
+	@Test
+	public void testResolveBeanElements() throws Exception {
+		ScaffoldingContext scaffoldingContext = new ScaffoldingContext();
+		BeanModel beanModel;
+		beanModel = BeanModelBuilder.createBeanModel(TestBean1.class.getName(), Thread.currentThread().getContextClassLoader());
+		for(BeanElement element:beanModel.getBeanElements()) {
+			if(!element.isKnownInputType() 
+					&& !element.isEnum()
+					&& !element.isArray()
+					&& !element.isCollection()
+					&& !element.isMap()
+					&& !scaffoldingContext.getClassModelMappings()
+					.containsKey(element.getElementClass())) {
+				scaffoldingContext.getClassModelMappings()
+					.put(element.getElementClass(),
+						BeanModelBuilder	.createBeanModel(element.getElementClass(),
+								Thread.currentThread().getContextClassLoader()));
+				
+			}
+		}
+		
+		assertThat(scaffoldingContext.getClassModelMappings().size(), is(1));
+		assertThat(scaffoldingContext.getClassModelMappings().containsKey(TestBean2.class.getName()), is(true));
+	}
 }
