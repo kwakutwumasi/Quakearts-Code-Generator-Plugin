@@ -26,9 +26,9 @@
  	<b:formGroup>
  		<label id="${element.value}_label">${util.splitCamelCase($element.value)}</label>
  		<b:selectOneInput disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}"
-    		value="#{${beanModel.name}.${element.value}}">
-    		<f:selectItems value="#{${beanModel.name}Page.${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
-    	</b:selectOneInput>
+    			value="#{${beanModel.name}.${element.value}}">
+    			<f:selectItems value="#{${beanModel.name}Page.${crudappBeanName}.${util.reverseCamelCase($element.descriptor.propertyType.simpleName)}s}"></f:selectItems>
+    		</b:selectOneInput>
 	</b:formGroup>
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")
 #foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
