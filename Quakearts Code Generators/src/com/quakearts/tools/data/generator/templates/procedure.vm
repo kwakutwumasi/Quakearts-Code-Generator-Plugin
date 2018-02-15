@@ -38,6 +38,7 @@ public class $wrapperClass.javaClassName implements DataStoreFunction {
 #end
 #end
 	private CallableStatement call;
+	private boolean resultSets;
 #if($wrapperClass.procedure.returnCodeEnabled)
 	private int returnCode;
 #end
@@ -76,6 +77,10 @@ public class $wrapperClass.javaClassName implements DataStoreFunction {
 	public CallableStatement getCall() {
 		return call;
 	}
+	
+	public boolean hasResultSets(){
+		return resultSets;
+	}
 #if($wrapperClass.procedure.returnCodeEnabled)
 	public int getReturnCode(){
 		return returnCode;
@@ -87,7 +92,7 @@ public class $wrapperClass.javaClassName implements DataStoreFunction {
 	}
 #end
 
-	public boolean execute(DataStoreConnection<?> dataStoreCon) throws DataStoreException{
+	public void execute(DataStoreConnection<?> dataStoreCon) throws DataStoreException{
 		Connection con = dataStoreCon.getConnection(Connection.class);
 		try {
 #foreach($parameter in $wrapperClass.procedure.parameters)
@@ -124,16 +129,16 @@ public class $wrapperClass.javaClassName implements DataStoreFunction {
 #if($wrapperClass.updater)
 			updateCount = call.executeUpdate();
 #elseif($wrapperClass.executor)
-			boolean resultSets = call.execute();
+			resultSets = call.execute();
 #elseif($wrapperClass.multipleSets)
-			boolean resultSets = call.execute();
+			resultSets = call.execute();
 			if(resultSets){
 				do {
 //TODO: Complete results processing for multiple sets
 /*					ResultSet rs = call.getResultSet();
 #else
 			ResultSet rs = call.executeQuery();
-			boolean resultSets = rs.next();
+			resultSets = rs.next();
 			if(resultSets){
 #end
 #if(!$wrapperClass.updater && !$wrapperClass.executor)
@@ -169,8 +174,6 @@ public class $wrapperClass.javaClassName implements DataStoreFunction {
 			$parameter.variableName = call.get${util.camelCase($parameter.javaTypeName)}($parameter.callPosition);
 #end
 #end
-#if($wrapperClass.updater)			return false#else			return resultSets;#end
-
 		} catch(SQLException e){
 			throw new DataStoreException(e);
 		}

@@ -160,6 +160,8 @@ public class WrapperGeneratorTest {
 		stringBuilder.append(result).append("\r\n")
 		.append("-------------------------------------------------------------------------------------------------")
 		.append("\r\n");
+		
+		System.out.println(stringBuilder);
 	}
 
 }
