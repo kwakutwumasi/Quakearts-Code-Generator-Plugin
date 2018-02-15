@@ -108,7 +108,6 @@ public class ProcedureResultsWizard extends AbstractWrapperWizard {
 	@Override
 	public boolean performFinish() {
 		wrapperClass.setMultipleSets(configurationPage.isMultipleSets());
-		wrapperClass.setFacesType(configurationPage.isFacesType());
 		wrapperClass.setUpdater(configurationPage.isUpdater());
 		wrapperClass.setExecutor(configurationPage.isExecutor());
 		return completeProcessing(project, sourceFolder.getElementName());

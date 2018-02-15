@@ -79,8 +79,10 @@ public class Parameter {
 
 	public void setOutputEnabled(boolean outputEnabled) {
 		this.outputEnabled = outputEnabled;
-		if(outputEnabled)
+		if(outputEnabled) {
 			inoutEnabled = false;
+			nullable = true;
+		}
 	}
 
 	public int getCallPosition() {
@@ -97,6 +99,8 @@ public class Parameter {
 
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
+		if(nullable)
+			outputEnabled = false;
 	}
 
 	public boolean isInoutEnabled() {

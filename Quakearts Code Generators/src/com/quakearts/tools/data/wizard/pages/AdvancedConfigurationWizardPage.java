@@ -32,16 +32,12 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class AdvancedConfigurationWizardPage extends WizardPage {
 
-	private boolean facesType, multipleSets, updater, executor;
+	private boolean multipleSets, updater, executor;
 	private WrapperClass wrapperClass;
 	private Tree procedureTree;
 	private Button btnMultipleSets;
 	private Button btnUpdater;
 	private Button btnExecutor;
-	
-	public boolean isFacesType() {
-		return facesType;
-	}
 
 	public boolean isMultipleSets() {
 		return multipleSets;
@@ -76,15 +72,6 @@ public class AdvancedConfigurationWizardPage extends WizardPage {
 
 		setControl(container);
 		container.setLayout(new GridLayout(2, false));
-		
-		final Button btnFacesType = new Button(container, SWT.CHECK);
-		btnFacesType.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				facesType = btnFacesType.getSelection();
-			}
-		});
-		btnFacesType.setText("Faces Type");
 		
 		btnMultipleSets = new Button(container, SWT.CHECK);
 		btnMultipleSets.addSelectionListener(new SelectionAdapter() {

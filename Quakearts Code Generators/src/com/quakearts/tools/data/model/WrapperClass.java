@@ -38,8 +38,6 @@ public class WrapperClass {
     @XmlAttribute
     private boolean updater;
     @XmlAttribute
-    private boolean facesType;
-    @XmlAttribute
     private boolean separate;
 
 	public Procedure getProcedure() {
@@ -112,14 +110,6 @@ public class WrapperClass {
 			this.executor = false;
 			this.multipleSets = false;
 		}
-	}
-
-	public boolean isFacesType() {
-		return facesType;
-	}
-
-	public void setFacesType(boolean facesType) {
-		this.facesType = facesType;
 	}
 	
 	public boolean isSeparate() {

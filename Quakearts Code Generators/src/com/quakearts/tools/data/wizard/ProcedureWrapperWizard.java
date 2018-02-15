@@ -76,7 +76,6 @@ public class ProcedureWrapperWizard extends AbstractWrapperWizard{
 		wrapperClass.setJavaClassName(classPage.getTypeName());
 		wrapperClass.setPackageName(classPage.getPackageText());
 		wrapperClass.setMultipleSets(advancedPage.isMultipleSets());
-		wrapperClass.setFacesType(advancedPage.isFacesType());
 		wrapperClass.setUpdater(advancedPage.isUpdater());
 		wrapperClass.setExecutor(advancedPage.isExecutor());
 		return completeProcessing(classPage.getJavaProject().getProject(),
