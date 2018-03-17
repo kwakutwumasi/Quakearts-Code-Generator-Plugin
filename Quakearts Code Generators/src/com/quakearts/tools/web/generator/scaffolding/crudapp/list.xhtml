@@ -9,7 +9,7 @@
     <ui:define name="content">
 		<h:form>
  			<b:messages showDetail="true" dismissible="true"></b:messages>
-    		<span class="h4">#{!(${beanModel.name}Page.${beanModel.name} eq null) and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'?'Edit ':(${beanModel.name}Page.${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+    		<span class="h4">#{(${beanModel.name}Page.${beanModel.name} ne null) and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'?'Edit ':(${beanModel.name}Page.${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
     		<br />
             <h:commandLink styleClass="btn btn-primary" rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit' and (param.${beanModel.name} eq null)}">
 				<b:glyph value="backward"></b:glyph>Back to search...

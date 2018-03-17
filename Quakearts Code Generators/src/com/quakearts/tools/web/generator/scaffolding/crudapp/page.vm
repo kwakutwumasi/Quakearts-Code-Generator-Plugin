@@ -23,7 +23,7 @@ public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 
 	private ${beanModel.beanClass.simpleName} ${beanModel.name};
 	
-	@ManagedProperty(value="#{${crudappBeanName}}")
+	@ManagedProperty("#{${crudappBeanName}}")
 	private $crudappClassName $crudappBeanName;
 	private transient ${beanModel.beanClass.simpleName}Finder finder = new ${beanModel.beanClass.simpleName}Finder();
 			
