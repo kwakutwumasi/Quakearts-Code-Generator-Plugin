@@ -38,9 +38,9 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="properties" type="{http://quakearts.com/scaffolding}scaffolding-properties" minOccurs="0"/>
- *         &lt;element name="page" type="{http://quakearts.com/scaffolding}page" maxOccurs="unbounded"/>
- *         &lt;element name="resource" type="{http://quakearts.com/scaffolding}resource" maxOccurs="unbounded"/>
+ *         &lt;element name="properties" type="{http://quakearts.com/scaffolding}scaffolding-properties" minOccurs="0" maxOccurs="1"/>
+ *         &lt;element name="template-group" type="{http://quakearts.com/scaffolding}page" minOccurs="0" maxOccurs="unbounded"/>
+ *         &lt;element name="resource" type="{http://quakearts.com/scaffolding}resource" minOccurs="0" maxOccurs="unbounded"/>
  *         &lt;element name="folder-structure" type="{http://quakearts.com/scaffolding}folder-structure"/>
  *       &lt;/sequence>
  *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scaffolding id="" xmlns="http://quakearts.com/scaffolding"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://quakearts.com/scaffolding ../../model/scaffolding.xsd ">
+	<properties>
+		<entry property="applicationPath" displayName="Application Path">rest</entry>
+	</properties>
+	<template-group folderID="rest">
+		<template filename="@{beanName}Resource.java" location="crudrest/resource.vm" />
+	</template-group>
+	<resource folderID="rest" filename="ApplicationConfig"
+		location="crudrest/applicationconfig.vm" />
+	<folder-structure>
+		<folder folderID="src" name="src">
+			<folder folderID="main" name="main">
+				<folder folderID="java" name="java">
+					<folder folderID="com" name="com">
+						<folder folderID="quakearts" name="quakearts">
+							<folder folderID="webapp" name="webapp">
+								<folder folderID="rest" name="rest" />
+							</folder>
+						</folder>
+					</folder>
+				</folder>
+			</folder>
+		</folder>
+	</folder-structure>
+</scaffolding>

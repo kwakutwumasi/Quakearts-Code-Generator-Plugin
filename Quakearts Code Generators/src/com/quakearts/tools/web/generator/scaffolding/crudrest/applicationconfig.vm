@@ -1,0 +1,23 @@
+package com.quakearts.webapp.rest;
+
+import java.util.HashSet;
+import java.util.Set;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("${applicationPath}")
+public class ApplicationConfig extends Application {
+	
+	private Set<Class<?>> classes = new HashSet<>();
+	
+	public ApplicationConfig() {
+#foreach($beanModel in $beanModels)
+		classes.add(${beanModel.beanClass.simpleName}Resource.class);
+#end
+	}
+	
+	@Override
+	public Set<Class<?>> getClasses() {
+		return classes;
+	}
+}

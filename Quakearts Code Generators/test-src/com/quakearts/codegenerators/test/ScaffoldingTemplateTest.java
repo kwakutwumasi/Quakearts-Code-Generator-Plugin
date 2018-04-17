@@ -97,6 +97,10 @@ public class ScaffoldingTemplateTest {
 	
 	private void generateAndWriteToFile(String templateName, String outputFileName, boolean generateForEach, Collection<? extends PropertyEntry> entries) throws ClassNotFoundException, IOException, IntrospectionException {
 		String result = generateTestTemplates(templateName, generateForEach, entries);
+		File file = new File("test-out");
+		if(!file.isDirectory())
+			file.mkdir();
+		
 		try(FileOutputStream fos = new FileOutputStream("test-out"+File.separator+outputFileName)) {
 			fos.write(result.getBytes());
 			fos.flush();
@@ -131,6 +135,17 @@ public class ScaffoldingTemplateTest {
 		entry.setDisplayName("CRUD Managed Bean Name");
 		entry.setProperty("crudappBeanName");
 		entry.setValue("crudapp");
+		entries.add(entry);
+		
+		return entries;
+	}
+	
+	private Collection<PropertyEntry> getCrudRestProperties(){
+		ArrayList<PropertyEntry> entries = new ArrayList<>();
+		PropertyEntry entry = new PropertyEntry();
+		entry.setDisplayName("Application Path");
+		entry.setProperty("applicationPath");
+		entry.setValue("rest");
 		entries.add(entry);
 		
 		return entries;
@@ -199,6 +214,16 @@ public class ScaffoldingTemplateTest {
 	@Test
 	public void testTemplateXHTMLScaffoldingCrudappSecure() throws Exception {
 		generateAndWriteToFile("crudappsecure/template.xhtml","template.crudappsecure.xhtml.template.out", false, getHibernateCrudAppProperties());
+	}
+
+	@Test
+	public void testApplicationConfigCrudRest() throws Exception {
+		generateAndWriteToFile("crudrest/applicationconfig.vm","applicationconfig.java.template.out", false, getCrudRestProperties());
+	}
+
+	@Test
+	public void testResourceCrudRest() throws Exception {
+		generateAndWriteToFile("crudrest/resource.vm","resource.java.template.out", true, getCrudRestProperties());
 	}
 
 	@Test

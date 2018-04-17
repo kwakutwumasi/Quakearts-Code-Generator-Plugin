@@ -35,10 +35,14 @@
 	<folder-structure>
 		<folder name="Root Folder" folderID="root">
 			<folder name="src" folderID="src">
-				<folder folderID="com" name="com">
-					<folder folderID="quakearts" name="quakearts">
-						<folder folderID="webapp" name="webapp">
-							<folder folderID="beans" name="beans" />
+				<folder name="main" folderID="main">
+					<folder name="java" folderID="java">
+						<folder folderID="com" name="com">
+							<folder folderID="quakearts" name="quakearts">
+								<folder folderID="webapp" name="webapp">
+									<folder folderID="beans" name="beans" />
+								</folder>
+							</folder>
 						</folder>
 					</folder>
 				</folder>

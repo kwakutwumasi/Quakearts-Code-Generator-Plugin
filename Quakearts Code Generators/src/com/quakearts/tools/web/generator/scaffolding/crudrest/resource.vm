@@ -1,0 +1,105 @@
+package com.quakearts.webapp.rest;
+
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.quakearts.appbase.cdi.annotation.Transactional;
+import com.quakearts.appbase.cdi.annotation.Transactional.TransactionType;
+import com.quakearts.webapp.orm.DataStore;
+import com.quakearts.webapp.orm.cdi.annotation.DataStoreHandle;
+import com.quakearts.webapp.orm.exception.DataStoreException;
+import ${beanModel.beanClassName};
+
+@RequestScoped
+@Path("${beanModel.name}") @Transactional(TransactionType.SINGLETON)
+public class ${beanModel.beanClass.simpleName}Resource {
+	
+	@Inject @DataStoreHandle
+	private DataStore dataStore;
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<${beanModel.beanClass.simpleName}> getAll${beanModel.beanClass.simpleName}s() {
+		return dataStore.list(${beanModel.beanClass.simpleName}.class);
+	}
+
+#set($id = $beanModel.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ${beanModel.beanClass.simpleName} get${beanModel.beanClass.simpleName}(@PathParam("id")#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")Integer#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")Long#elseif(${id.descriptor.propertyType.name} == "java.lang.String")String#end id) {
+		return dataStore.get(${beanModel.beanClass.simpleName}.class, id);
+	}
+#else
+// TODO Create Composite ID converter and converter provider
+//	@GET
+//	@Path("{id}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public ${beanModel.beanClass.simpleName} get${beanModel.beanClass.simpleName}(@PathParam("id"){Composite Id Class} id) {
+//		return dataStore.get(${beanModel.beanClass.simpleName}.class, id);
+//	}
+//	
+#end	
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void post${beanModel.beanClass.simpleName}(${beanModel.beanClass.simpleName} ${beanModel.beanClass.simpleName.toLowerCase()}) {
+		try {
+			dataStore.save(${beanModel.beanClass.simpleName.toLowerCase()});
+		} catch (DataStoreException e) {
+			throw new WebApplicationException(Response.status(400).build());
+		}
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void put${beanModel.beanClass.simpleName}(${beanModel.beanClass.simpleName} ${beanModel.beanClass.simpleName.toLowerCase()}){
+		try {
+			dataStore.update(${beanModel.beanClass.simpleName.toLowerCase()});
+		} catch (DataStoreException e) {
+			throw new WebApplicationException(Response.status(400).build());
+		}
+	}
+	
+#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+	@DELETE
+	@Path("{id}")
+	public void delete${beanModel.beanClass.simpleName}(@PathParam("id")#if(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer")Integer#elseif(${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long")Long#elseif(${id.descriptor.propertyType.name} == "java.lang.String")String#end id) {
+		${beanModel.beanClass.simpleName} ${beanModel.beanClass.simpleName.toLowerCase()} = get${beanModel.beanClass.simpleName}(id);
+		if(${beanModel.beanClass.simpleName.toLowerCase()} != null) {
+			try {
+				dataStore.delete(${beanModel.beanClass.simpleName.toLowerCase()});
+			} catch (DataStoreException e) {
+				throw new WebApplicationException(Response.status(400).build());
+			}
+		}
+	}
+#else
+// TODO Create Composite ID converter and converter provider
+//	@DELETE
+//	@Path("{id}")
+//	public ${beanModel.beanClass.simpleName} delete${beanModel.beanClass.simpleName}(@PathParam("id"){Composite Id Class} id) {
+//		${beanModel.beanClass.simpleName} ${beanModel.beanClass.simpleName.toLowerCase()} = get${beanModel.beanClass.simpleName}(id);
+//		if(${beanModel.beanClass.simpleName.toLowerCase()} != null) {
+//			try {
+//				dataStore.delete(${beanModel.beanClass.simpleName.toLowerCase()});
+//			} catch (DataStoreException e) {
+//				throw new WebApplicationException(Response.status(400).build());
+//			}
+//		}
+//	}
+//	
+#end	
+}

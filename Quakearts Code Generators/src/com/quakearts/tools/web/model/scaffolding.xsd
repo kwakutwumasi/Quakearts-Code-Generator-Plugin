@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (C) 2017 Kwaku Twumasi-Afriyie <kwaku.twumasi@quakearts.com>.
-  All rights reserved. This program and the accompanying materials
-  are made available under the terms of the Eclipse Public License v1.0
-  which accompanies this distribution, and is available at
-  http://www.eclipse.org/legal/epl-v10.html
-  
-  Contributors:
-      Kwaku Twumasi-Afriyie <kwaku.twumasi@quakearts.com> - initial API and implementation
--->
-<schema targetNamespace="http://quakearts.com/scaffolding" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://quakearts.com/scaffolding">
+<!-- Copyright (C) 2017 Kwaku Twumasi-Afriyie <kwaku.twumasi@quakearts.com>. 
+	All rights reserved. This program and the accompanying materials are made 
+	available under the terms of the Eclipse Public License v1.0 which accompanies 
+	this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html 
+	Contributors: Kwaku Twumasi-Afriyie <kwaku.twumasi@quakearts.com> - initial 
+	API and implementation -->
+<schema targetNamespace="http://quakearts.com/scaffolding"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://quakearts.com/scaffolding">
 
-    <element name="scaffolding">
-    	<complexType>
-    		<sequence>
-    			<element name="properties" minOccurs="0" maxOccurs="1"
-    				type="tns:scaffolding-properties">
-    			</element>
-    			<element name="template-group" minOccurs="1" maxOccurs="unbounded"
-    				type="tns:template-group">
-    			</element>
-    			<element name="resource" minOccurs="1"
-					maxOccurs="unbounded" type="tns:resource">
+	<element name="scaffolding">
+		<complexType>
+			<sequence>
+				<element name="properties" minOccurs="0" maxOccurs="1"
+					type="tns:scaffolding-properties">
 				</element>
-    			<element name="folder-structure" minOccurs="1"
-    				maxOccurs="1" type="tns:folder-structure">
-    			</element>
-    		</sequence>
-    		<attribute name="id" type="string" use="required"></attribute>
-    	</complexType>
-    </element>
+				<element name="template-group" minOccurs="0" maxOccurs="unbounded"
+					type="tns:template-group">
+				</element>
+				<element name="resource" minOccurs="0" maxOccurs="unbounded"
+					type="tns:resource">
+				</element>
+				<element name="folder-structure" minOccurs="1" maxOccurs="1"
+					type="tns:folder-structure">
+				</element>
+			</sequence>
+			<attribute name="id" type="string" use="required"></attribute>
+		</complexType>
+	</element>
 
-    <complexType name="folder">
-    	<sequence>
-            <element name="folder" type="tns:folder" minOccurs="0" maxOccurs="unbounded"></element>
-    	</sequence>
-        <attribute name="name" type="string" use="required"></attribute>
-        <attribute name="folderID" type="string" use="required"></attribute>
-    </complexType>
-    
-    <complexType name="folder-structure">
+	<complexType name="folder">
+		<sequence>
+			<element name="folder" type="tns:folder" minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="folderID" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="folder-structure">
 		<sequence>
 			<element name="folder" type="tns:folder" minOccurs="1"
 				maxOccurs="1">
 			</element>
 		</sequence>
 	</complexType>
-    
-    <complexType name="beanType">
-    	<simpleContent>
+
+	<complexType name="beanType">
+		<simpleContent>
 			<extension base="string">
 				<attribute name="restriction-type" use="required">
 					<simpleType>
@@ -62,24 +60,25 @@
 					</simpleType>
 				</attribute>
 				<attribute name="exclusive" use="optional" type="boolean"></attribute>
-			</extension>	
-    	</simpleContent>
+			</extension>
+		</simpleContent>
 	</complexType>
-	
+
 	<complexType name="scaffolding-properties">
 		<sequence>
-			<element name="entry" maxOccurs="unbounded" minOccurs="1" type="tns:property-entry">
+			<element name="entry" maxOccurs="unbounded" minOccurs="1"
+				type="tns:property-entry">
 			</element>
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="template-group">
 		<sequence>
 			<element name="template" minOccurs="1" maxOccurs="unbounded"
 				type="tns:template">
 			</element>
-			<element name="bean" minOccurs="0"
-				maxOccurs="unbounded" type="tns:bean">
+			<element name="bean" minOccurs="0" maxOccurs="unbounded"
+				type="tns:bean">
 			</element>
 		</sequence>
 		<attribute name="folderID"></attribute>
@@ -88,8 +87,7 @@
 	<complexType name="property-entry">
 		<simpleContent>
 			<extension base="string">
-				<attribute name="property" use="required"
-					type="string">
+				<attribute name="property" use="required" type="string">
 				</attribute>
 				<attribute name="displayName" type="string" use="optional"></attribute>
 			</extension>
@@ -98,13 +96,15 @@
 
 	<complexType name="bean">
 		<choice>
-			<element name="bean-class" type="tns:beanType" minOccurs="1" maxOccurs="1">
+			<element name="bean-class" type="tns:beanType" minOccurs="1"
+				maxOccurs="1">
 			</element>
-			<element name="bean-interface" type="tns:beanType" minOccurs="1" maxOccurs="1">
+			<element name="bean-interface" type="tns:beanType" minOccurs="1"
+				maxOccurs="1">
 			</element>
 		</choice>
 	</complexType>
-	
+
 	<complexType name="resource">
 		<attribute name="folderID" use="required" type="string"></attribute>
 		<attribute name="location" type="string" use="required"></attribute>
