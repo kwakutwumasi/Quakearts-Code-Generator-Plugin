@@ -331,6 +331,10 @@ public class ScaffoldingWizardPage extends WizardPage {
 					if(resolveBeanModels) {						
 						for(BeanElement element:model.getBeanElements()) {
 							if(!element.isKnownInputType() 
+									&& !element.isEnum()
+									&& !element.isArray()
+									&& !element.isCollection()
+									&& !element.isMap()
 									&& !scaffoldingContext.getClassModelMappings()
 									.containsKey(element.getElementClass())) {
 								scaffoldingContext.getClassModelMappings()

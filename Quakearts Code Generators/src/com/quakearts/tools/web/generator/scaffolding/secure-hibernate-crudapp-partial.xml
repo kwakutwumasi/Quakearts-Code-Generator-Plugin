@@ -5,8 +5,6 @@
 	<properties>
 		<entry displayName="Application Title" property="apptitle">Bean Application</entry>
 		<entry displayName="Company" property="company">Quake Arts Inc.</entry>
-		<entry displayName="CRUD Managed Bean Class Name" property="crudappClassName">CRUDApplicationBean</entry>
-		<entry displayName="CRUD Managed Bean Name" property="crudappBeanName">crudapp</entry>	
 		<entry displayName="Create Role" property="createrole">Create</entry>
 		<entry displayName="Update Role" property="updaterole">Update</entry>
 		<entry displayName="Read Role" property="readrole">Read</entry>
@@ -24,7 +22,6 @@
 		<template location="crudapp/dropdownhelper.vm" filename="@{beanClassSimpleName}DropdownHelper.java"/>
 		<template location="crudapp/page.vm" filename="@{beanClassSimpleName}Page.java"/>
 	</template-group>
-	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
 	<folder-structure>
 		<folder name="Root Folder" folderID="root">
 			<folder name="src" folderID="src">
