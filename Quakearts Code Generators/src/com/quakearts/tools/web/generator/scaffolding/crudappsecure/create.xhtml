@@ -7,9 +7,9 @@
 	xmlns:c="http://quakearts.com/2.0/common">
 <ui:composition template="/base/template.xhtml">
     <ui:define name="content">
- 		<c:secure roles="$createrole" message="You are not authorized to insert into this table">
+ 		<c:secure roles="$createrole" message="You are not authorized to write to this table">
 	   		<h:form>
-				<b:messages showDetail="true" dismissible="true"></b:messages>
+				<b:messages showDetail="true" dismissible="true" id="messages"></b:messages>
 #set($id = $beanModel.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId)
 	            <span class="h4">#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end? 'Edit':'Create'} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
 	    			<ui:include src="../cp/${beanModel.name}.crud.xhtml">
@@ -23,18 +23,18 @@
 #else
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
 #end
-						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
 					<c:secure roles="$deleterole">
 						<b:button value="Delete" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
 							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+							<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 						</b:button>
 					</c:secure>
 					<b:button value="Reset" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
 				</b:buttonGroup>
 #else
@@ -46,19 +46,20 @@
 					<b:button>
 						Save
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
+						<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 	                </b:button>
 					<c:secure roles="$deleterole">
 						<b:button>
 							Delete
 							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
 							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 						</b:button>
 					</c:secure>
 					<b:button>
 						Reset
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
 				<b:buttonGroup>
 #end

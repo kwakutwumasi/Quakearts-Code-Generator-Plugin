@@ -26,7 +26,7 @@
 		<b:nav>
 			<b:menu value="Create">
 #foreach($beanModel in $beanModels)
-				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.create.jsf"><span class="app-menu"> Create ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="edit"></b:glyph></h:outputLink>
+				<h:outputLink value="#{facesContext.externalContext.requestContextPath}/ui/${beanModel.name}.create.jsf"><span class="app-menu">Create ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span><b:glyph value="edit"></b:glyph></h:outputLink>
 #end
 			</b:menu>
 			<b:menu value="View">
@@ -51,6 +51,15 @@
 		</h:outputText>
 	</div>
 </footer>
+<b:script>
+var ca = {};
+ca.error = function(data){
+	if(data && data.status)
+		alert("There was an unknown error processing the server call: HTTP Code: "+data.status);
+	else
+		alert("There was an unknown error processing the server call: HTTP Code Unknown.");
+}
+</b:script>
 </h:body>
 
 </html>

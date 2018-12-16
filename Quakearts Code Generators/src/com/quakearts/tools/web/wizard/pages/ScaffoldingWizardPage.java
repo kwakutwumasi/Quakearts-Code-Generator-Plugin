@@ -89,7 +89,6 @@ public class ScaffoldingWizardPage extends WizardPage {
 		container.setLayout(new GridLayout(3, false));
 		
 		Label lblPredefinedScaffolding = new Label(container, SWT.NONE);
-		lblPredefinedScaffolding.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblPredefinedScaffolding.setText("Predefined Scaffolding");
 		
 		final Combo combo = new Combo(container, SWT.NONE);
@@ -210,6 +209,12 @@ public class ScaffoldingWizardPage extends WizardPage {
 		btnClearCache.setText("  Clear Cache");
 		new Label(container, SWT.NONE);
 		
+		btnResolveBeanModels = new Button(container, SWT.CHECK);
+		btnResolveBeanModels.setText("Resolve Bean Models");
+		
+		btnUpdateAndMarkChanges = new Button(container, SWT.CHECK);
+		btnUpdateAndMarkChanges.setText("Update and mark changes");
+		
 		beanTree = new Tree(container, SWT.BORDER);
 		beanTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		
@@ -252,12 +257,6 @@ public class ScaffoldingWizardPage extends WizardPage {
                 beanTreeEditor.setEditor(beanNameText, item);
         	}
 		});
-
-        btnResolveBeanModels = new Button(container, SWT.CHECK);
-		btnResolveBeanModels.setText("Resolve Bean Models");
-		
-		btnUpdateAndMarkChanges = new Button(container, SWT.CHECK);
-		btnUpdateAndMarkChanges.setText("Update and mark changes");
 
 		setPageComplete(false);
 	}

@@ -9,14 +9,14 @@
     <ui:define name="content">
         <c:secure roles="$readrole" message="You are not authorized to read from this table">
 			<h:form>
-	 			<b:messages showDetail="true" dismissible="true"></b:messages>
+	 			<b:messages showDetail="true" dismissible="true" id="messages"></b:messages>
 	    			<span class="h4">#{(${beanModel.name}Page.${beanModel.name} ne null) and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'?'Edit ':(${beanModel.name}Page.${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
 	    			<br />
 	            <h:commandLink styleClass="btn btn-primary" rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit' and (param.${beanModel.name} eq null)}">
 					<b:glyph value="backward"></b:glyph>Back to search...
 					<c:set as="#{null}" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
 	    				<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 				</h:commandLink>
 				<b:row rendered="#{empty ${beanModel.name}Page.${crudappBeanName}.mode}">	
 					<b:pagination for="#{table}" pageSize="10"></b:pagination>
@@ -46,13 +46,13 @@
 			    					<h:commandLink value="Edit">
 			    						<c:set as="#{$beanModel.name}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 			    						<c:set as="edit" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 			    					</h:commandLink>
 		    					</c:secure>
 		    					<h:commandLink value="View">
 		    						<c:set as="#{$beanModel.name}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 		    						<c:set as="read" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 		    					</h:commandLink>
 		    				</h:column>
 		    			</b:dataTable>
@@ -66,7 +66,7 @@
 							<b:button>
 								Save
 								<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update"></c:saveUpdate>
-								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+								<f:ajax execute="@form" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 							</b:button>
 							<c:secure roles="$deleterole">
 								<b:button>
@@ -75,20 +75,20 @@
 									<c:executeAction listener="#{${beanModel.name}Page.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
 									<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 									<c:set as="#{null}" var="#{${beanModel.name}Page.${crudappBeanName}.mode}"></c:set>
-									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+									<f:ajax execute="@form" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 								</b:button>
 							</c:secure>
 						</b:buttonGroup>
 						<b:button rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}">
 							Edit
 							<c:set as="edit" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 						</b:button>
 					</c:secure>
 					<b:button rendered="#{empty ${beanModel.name}Page.${crudappBeanName}.mode}">
 						Search
 						<c:executeAction listener="#{${beanModel.name}Page.find${util.camelCase($beanModel.name)}}"></c:executeAction>
-						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}"></f:ajax>
+						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
 				</b:row>
 			</h:form>
