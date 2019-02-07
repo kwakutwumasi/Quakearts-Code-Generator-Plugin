@@ -3,8 +3,8 @@ package com.quakearts.webapp.beans;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -13,7 +13,7 @@ import javax.faces.convert.DateTimeConverter;
 #foreach($import in $util.getEnumImports($beanModels))import $import;
 #end
 
-@ManagedBean(name="${crudappBeanName}")
+@Named("${crudappBeanName}")
 @ViewScoped
 public class $crudappClassName implements Serializable {
 

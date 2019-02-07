@@ -2,9 +2,9 @@ package com.quakearts.webapp.beans;
 
 import java.util.List;
 import java.util.logging.Logger;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.bean.ManagedProperty;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.faces.view.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import com.quakearts.webapp.facelets.base.BaseBean;
@@ -15,7 +15,7 @@ import ${beanModel.beanClass.canonicalName};
 import ${elementModel.beanClass.canonicalName};
 #end#end#end
 
-@ManagedBean(name="${beanModel.name}Page")
+@Named("${beanModel.name}Page")
 @ViewScoped
 public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 
@@ -23,7 +23,7 @@ public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 
 	private ${beanModel.beanClass.simpleName} ${beanModel.name};
 	
-	@ManagedProperty("#{${crudappBeanName}}")
+	@Inject @Named("#{${crudappBeanName}}")
 	private $crudappClassName $crudappBeanName;
 	private transient ${beanModel.beanClass.simpleName}Finder finder = new ${beanModel.beanClass.simpleName}Finder();
 			
@@ -32,10 +32,6 @@ public class ${beanModel.beanClass.simpleName}Page extends BaseBean {
 			$crudappBeanName = new ${crudappClassName}();
 			
 		return $crudappBeanName;
-	}
-	
-	public void set${util.camelCase($crudappBeanName)}($crudappClassName $crudappBeanName){
-		this.$crudappBeanName = $crudappBeanName;
 	}
 	
 	public ${beanModel.beanClass.simpleName} get${util.camelCase($beanModel.name)}() {
