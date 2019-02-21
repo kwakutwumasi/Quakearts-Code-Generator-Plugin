@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -302,7 +303,8 @@ public class ScaffoldingWizard extends Wizard implements INewWizard {
 								for(Template template:templateGroup.getTemplates()){
 									String filename;
 									
-									filename = resolve(template.getFilename(), beanModel, scaffolding.getProperties().getPropertyMap());
+									filename = resolve(template.getFilename(), beanModel, scaffolding.getProperties()!=null? 
+											scaffolding.getProperties().getPropertyMap():Collections.emptyMap());
 									String templateName = (template.isPredefined()?"":scaffolding.getId()+"/")+template.getLocation();
 									
 									IFile file;

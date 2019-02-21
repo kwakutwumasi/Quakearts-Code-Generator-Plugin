@@ -51,9 +51,10 @@ public class ScaffoldingTemplateGenerator extends GenericGenerator {
 		context.put("nameModelMapping", scaffoldingContext.getNameModelMappings());
 		context.put("classModelMapping", scaffoldingContext.getClassModelMappings());
 		
-		for(PropertyEntry entry:scaffolding.getProperties().getEntries()){
-			context.put(entry.getProperty(), entry.getValue());
-		}
+		if(scaffolding.getProperties()!=null)
+			for(PropertyEntry entry:scaffolding.getProperties().getEntries()){
+				context.put(entry.getProperty(), entry.getValue());
+			}
 		
 		context.put("util", getGenerationUtilMethods());
 	}

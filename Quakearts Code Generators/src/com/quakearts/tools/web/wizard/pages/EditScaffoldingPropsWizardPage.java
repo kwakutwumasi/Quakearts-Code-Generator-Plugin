@@ -160,7 +160,8 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 				PropertyEntry entry = (PropertyEntry) propertyText.getData();
 				if(entry!=null){
 					entry.setValue(propertyText.getText());
-					scaffolding.getProperties().resetPropertyMap();
+					if(scaffolding.getProperties()!=null)
+						scaffolding.getProperties().resetPropertyMap();
 					tableViewer.refresh();
 				}
 			}
@@ -258,7 +259,10 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 	
 	public void setScaffolding(Scaffolding scaffolding) {
 		this.scaffolding = scaffolding;
-		tableViewer.setInput(scaffolding.getProperties().getEntries());
+		
+		if(scaffolding.getProperties()!=null){
+			tableViewer.setInput(scaffolding.getProperties().getEntries());
+		}
 		
 		folderTree.clearAll(true);
 		TreeItem rootItem = new TreeItem(folderTree, 0);
@@ -311,7 +315,9 @@ public class EditScaffoldingPropsWizardPage extends WizardPage {
 		@Override
 		protected void setValue(Object element, Object value) {
 			((PropertyEntry) element).setValue(value == null ? null : value.toString());
-			scaffolding.getProperties().resetPropertyMap();
+			if(scaffolding.getProperties()!=null)
+				scaffolding.getProperties().resetPropertyMap();
+			
 			tableViewer.update(element, null);
 		}
 	}
