@@ -46,13 +46,14 @@
 			    					<h:commandLink value="Edit">
 			    						<c:set as="#{$beanModel.name}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 			    						<c:set as="edit" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
+										<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 			    					</h:commandLink>
+			    					<br />
 		    					</c:secure>
 		    					<h:commandLink value="View">
 		    						<c:set as="#{$beanModel.name}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 		    						<c:set as="read" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-								<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
+									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 		    					</h:commandLink>
 		    				</h:column>
 		    			</b:dataTable>
@@ -64,28 +65,32 @@
 					<c:secure roles="$updaterole">
 						<b:buttonGroup rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'}">
 							<b:button>
+								<b:glyph value="save" />
 								Save
 								<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update"></c:saveUpdate>
 								<f:ajax execute="@form" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 							</b:button>
 							<c:secure roles="$deleterole">
 								<b:button>
+									<b:glyph value="trash" />
 									Delete
 									<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
 									<c:executeAction listener="#{${beanModel.name}Page.remove${util.camelCase($beanModel.name)}}"></c:executeAction>
 									<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 									<c:set as="#{null}" var="#{${beanModel.name}Page.${crudappBeanName}.mode}"></c:set>
-									<f:ajax execute="@form" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
+									<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 								</b:button>
 							</c:secure>
 						</b:buttonGroup>
 						<b:button rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'}">
+							<b:glyph value="edit" />
 							Edit
 							<c:set as="edit" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
 							<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 						</b:button>
 					</c:secure>
 					<b:button rendered="#{empty ${beanModel.name}Page.${crudappBeanName}.mode}">
+						<b:glyph value="search" />
 						Search
 						<c:executeAction listener="#{${beanModel.name}Page.find${util.camelCase($beanModel.name)}}"></c:executeAction>
 						<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>

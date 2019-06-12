@@ -15,24 +15,27 @@
 	    			<ui:include src="../cp/${beanModel.name}.crud.xhtml">
 					<ui:param name="${beanModel.name}" value="#{${beanModel.name}Page.${beanModel.name}}"></ui:param>
 				</ui:include>
-				<b:buttonGroup>
+				<b:buttonGroup id="buttons">
 					<b:button value="Save">
+						<b:glyph value="save" />
 #if($id.identity)
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="update" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}" action="save" unless="#{${beanModel.name}Page.${beanModel.name}.${id.value} != #if($id.primitiveNumber)0#{else}null#end}"></c:saveUpdate>
 #else
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
 #end
-						<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
+						<f:ajax execute="@this" render="messages buttons" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
 					<c:secure roles="$deleterole">
 						<b:button value="Delete" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+							<b:glyph value="trash" />
 							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
 							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
-							<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
+							<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 						</b:button>
 					</c:secure>
 					<b:button value="Reset" disabled="#{${beanModel.name}Page.${beanModel.name}.${id.value} == #if($id.primitiveNumber)0#{else}null#end}">
+						<b:glyph value="erase" />
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 					</b:button>
@@ -44,12 +47,14 @@
 				</ui:include>
 				<b:buttonGroup>
 					<b:button>
+						<b:glyph value="save" />
 						Save
 						<c:saveUpdate object="#{${beanModel.name}Page.${beanModel.name}}"></c:saveUpdate>
 						<f:ajax execute="@this" render="messages" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 	                </b:button>
 					<c:secure roles="$deleterole">
 						<b:button>
+							<b:glyph value="trash" />
 							Delete
 							<c:delete object="#{${beanModel.name}Page.${beanModel.name}}"></c:delete>
 							<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
@@ -57,6 +62,7 @@
 						</b:button>
 					</c:secure>
 					<b:button>
+						<b:glyph value="erase" />
 						Reset
 						<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 						<f:ajax execute="@this" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
