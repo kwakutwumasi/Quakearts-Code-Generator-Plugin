@@ -10,12 +10,12 @@
         <c:secure roles="$readrole" message="You are not authorized to read from this table">
 			<h:form>
 	 			<b:messages showDetail="true" dismissible="true" id="messages"></b:messages>
-	    			<span class="h4">#{(${beanModel.name}Page.${beanModel.name} ne null) and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'?'Edit ':(${beanModel.name}Page.${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
-	    			<br />
-	            <h:commandLink styleClass="btn btn-primary" rendered="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'edit' and (param.${beanModel.name} eq null)}">
+	    		<span class="h4">#{(${beanModel.name}Page.${beanModel.name} ne null) and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit'?'Edit ':(${beanModel.name}Page.${crudappBeanName}.mode eq 'read'?'View ':'Search ')} ${util.splitCamelCase($beanModel.beanClass.simpleName)}</span>
+	    		<br />
+            	<h:commandLink styleClass="btn btn-primary" rendered="#{(${beanModel.name}Page.${crudappBeanName}.mode eq 'edit' or ${beanModel.name}Page.${crudappBeanName}.mode eq 'read') and (param.${beanModel.name} eq null)}">
 					<b:glyph value="backward"></b:glyph>Back to search...
 					<c:set as="#{null}" var="#{${beanModel.name}Page.${crudappBeanName}.mode}" />
-	    				<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
+	    			<c:set as="#{null}" var="#{${beanModel.name}Page.${beanModel.name}}"></c:set>
 					<f:ajax execute="@form" render="@form" onevent="#{loader.mainAjaxLoader}" onerror="ca.error"></f:ajax>
 				</h:commandLink>
 				<b:row rendered="#{empty ${beanModel.name}Page.${crudappBeanName}.mode}">	

@@ -1,35 +1,44 @@
 #set($stringElements=[])#foreach($element in $beanModel.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
 package com.quakearts.webapp.beans;
 
-import java.io.Serializable;
-import java.util.Map;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import com.quakearts.webapp.orm.DataStoreFactory;
-import com.quakearts.webapp.orm.query.QueryOrder;
+import com.quakearts.webapp.orm.cdi.annotation.DataStoreFactoryHandle;
+import com.quakearts.webapp.orm.query.criteria.CriteriaMap;
 import ${beanModel.beanClass.canonicalName};
-#if(!$stringElements.isEmpty())import static com.quakearts.webapp.orm.query.helper.ParameterMapBuilder.createParameters;
+#if(!$stringElements.isEmpty())import static com.quakearts.webapp.orm.query.criteria.CriteriaMapBuilder.createCriteria;
 #end
-
+@Singleton
 public class ${beanModel.beanClass.simpleName}Finder {	
 
-	public List<${beanModel.beanClass.simpleName}> findObjects(Map<String, Serializable> parameters,QueryOrder...queryOrders){
-		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, parameters, queryOrders);
+	@Inject @DataStoreFactoryHandle
+	private DataStoreFactory dataStoreFactory;
+
+	public List<${beanModel.beanClass.simpleName}> findObjects(CriteriaMap criteria){
+		return dataStoreFactory.getDataStore().find(${beanModel.beanClass.simpleName}.class).using(criteria).thenList();
 	}
 #set($id=$beanModel.idElement.id)#if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+
 	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
-		return DataStoreFactory.getInstance().getDataStore().get(${beanModel.beanClass.simpleName}.class,id);
+		return dataStoreFactory.getDataStore().get(${beanModel.beanClass.simpleName}.class, id);
 	}
 #end
 #if($stringElements.isEmpty())
+
 	public List<${beanModel.beanClass.simpleName}> getAll(){
-		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, null);
+		return dataStoreFactory.getDataStore().list(${beanModel.beanClass.simpleName}.class);
 	}
 #else
-	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
-		return DataStoreFactory.getInstance().getDataStore().list(${beanModel.beanClass.simpleName}.class, createParameters()#if($stringElements.size()>1).disjoin()#end
 
-#foreach($element in $stringElements)															.addVariableString("${element.value}", searchString)
-#if(!$foreach.hasNext)															.build());
+	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
+		return dataStoreFactory.getDataStore().find(${beanModel.beanClass.simpleName}.class)
+												.using(createCriteria()#if($stringElements.size()>1).requireAnyOfTheFollowing()#end
+
+#foreach($element in $stringElements)													.property("${element.value}").mustBeLike(searchString)
+#if(!$foreach.hasNext)												.finish())
+											.thenList();
 #end#end
 	}
 #end

@@ -1,23 +1,32 @@
 package com.quakearts.webapp.beans;
 
 #set($stringElements=[])#foreach($element in $beanModel.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
-import java.io.Serializable;
+#if($stringElements.isEmpty())import java.io.Serializable;
+#end
 import java.util.List;
 import java.util.ArrayList;
+import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 #if(!$stringElements.isEmpty())import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.context.FacesContext;
+import com.quakearts.webapp.facelets.base.BaseBean;
 #end
 import ${beanModel.beanClass.canonicalName};
 
-public class ${beanModel.beanClass.simpleName}DropdownHelper implements Serializable{
-	private transient ${beanModel.beanClass.simpleName}Finder finder = new ${beanModel.beanClass.simpleName}Finder();
+@Dependent
+public class ${beanModel.beanClass.simpleName}DropdownHelper#if(!$stringElements.isEmpty()) extends BaseBean#else implements Serializable#end {
+	
+	@Inject
+	private transient ${beanModel.beanClass.simpleName}Finder finder;
 	
 	private List<${beanModel.beanClass.simpleName}> foundItems;
+	
 #if($stringElements.isEmpty())	
 #end	public List<${beanModel.beanClass.simpleName}> getFoundItems() {
 #if($stringElements.isEmpty())		if(foundItems == null)
 			foundItems = finder.getAll();
 #end
-    		return foundItems;
+    	return foundItems;
     }
     	
 	private ${beanModel.beanClass.simpleName} ${util.reverseCamelCase($beanModel.beanClass.simpleName)};
@@ -42,13 +51,13 @@ public class ${beanModel.beanClass.simpleName}DropdownHelper implements Serializ
 	}
 
 	public void addToFoundItemsList(${beanModel.beanClass.simpleName} ${beanModel.name}) {
-		if(foundItems==null)
+		if(foundItems == null)
 			foundItems = new ArrayList<>();
 		
 		foundItems.add(${beanModel.name});
 	}
-	
 #if(!$stringElements.isEmpty())
+
 	private String searchText;
 	
 	public String getSearchText() {
@@ -60,8 +69,13 @@ public class ${beanModel.beanClass.simpleName}DropdownHelper implements Serializ
 	}
 	
 	public void filterItems(AjaxBehaviorEvent event){
-		if(searchText !=null && !searchText.trim().isEmpty()){
-			foundItems = finder.filterByText(searchText);
+		if(searchText != null && !searchText.trim().isEmpty()){
+			foundItems = finder.filterByText(searchText+"%");
+			
+			if(foundItems.isEmpty()) {
+				addMessage("Not found","The search string returned no results",
+					FacesContext.getCurrentInstance(), event.getComponent().getClientId());
+			}
 		}
 	}
 #end

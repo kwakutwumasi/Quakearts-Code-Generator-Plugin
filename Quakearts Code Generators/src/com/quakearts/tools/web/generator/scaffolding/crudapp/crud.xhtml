@@ -33,6 +33,8 @@
 #else#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])#set($stringValue = "")
 #foreach($subelement in $elementModel.beanElements)#if($subelement.string)#set($stringValue ="$stringValue#{${element.value}.${subelement.value}} ")#end#end
 #set($insetId=${beanModel.name}+${util.camelCase($elementModel.name)}+"Inset")
+#set($dropDownId=${beanModel.name}+${util.camelCase($elementModel.name)}+"DropDown")
+#set($messageId=${beanModel.name}+${util.camelCase($elementModel.name)}+"Message")
 #set($dropDownHelper=${beanModel.name}+"Page."+${util.reverseCamelCase($elementModel.beanClass.simpleName)}+"DropdownHelper")	<c:unique>
     	<h:panelGroup id="$insetId" layout="block" styleClass="#{loader.overlayClass}">
     		<b:formGroup>
@@ -43,16 +45,21 @@
     					<f:setPropertyActionListener value="#{true}" target="#{${dropDownHelper}.inCreateMode}"></f:setPropertyActionListener>
     				</h:commandLink>
     			</label>
-    			<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
-    				value="#{${beanModel.name}.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
+    			<b:selectOneInput id="$dropDownId" mainClass="#{loader.overlayClass}" 
+    				disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
+    				value="#{${beanModel.name}.${element.value}}"#if($stringValue.empty)>
+#else autocomplete="true"
     				suggestion="#{${dropDownHelper}.searchText}" delay="1"
     				listener="#{${dropDownHelper}.filterItems}"
-    				onevent="#{loader.overlayAjaxLoader}">
+    				onevent="#{loader.overlayAjaxLoader}"
+    				render="@this $messageId">
 #end    				<f:selectItems value="#{${dropDownHelper}.foundItems}" 
     					var="${element.value}" itemValue="#{${element.value}}" itemLabel= "#if(!$stringValue.empty)$stringValue#else#{${element.value}}#end">
     				</f:selectItems>
     				<c:pojoConverter></c:pojoConverter>
     			</b:selectOneInput>
+#if(!$stringValue.empty)    			<h:message id="$messageId" showDetail="true" for="$dropDownId" />
+#end
     		</b:formGroup>
     		<h:panelGroup rendered="#{${dropDownHelper}.inCreateMode}">
     			<span class="h4">Create ${util.splitCamelCase($element.value)}</span>

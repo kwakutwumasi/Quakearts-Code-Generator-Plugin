@@ -36,7 +36,8 @@
 	<b:formGroup>
 		<label id="${element.value}_label" for="#{${element.value}Component.clientId}">${util.splitCamelCase($element.value)}</label>
 		<b:selectOneInput mainClass="#{loader.overlayClass}" disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read' || ${dropDownHelper}.inCreateMode}"
-			value="#{obj.${element.value}}"#if($stringValue.empty)>#else autocomplete="true"
+			value="#{obj.${element.value}}"#if($stringValue.empty)>
+#else autocomplete="true"
 			suggestion="#{${dropDownHelper}.searchText}" delay="1"
 			listener="#{${dropDownHelper}.filterItems}"
 			onevent="#{loader.overlayAjaxLoader}">

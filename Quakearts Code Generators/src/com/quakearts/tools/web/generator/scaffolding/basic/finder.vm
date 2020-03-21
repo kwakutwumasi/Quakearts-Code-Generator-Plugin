@@ -3,11 +3,21 @@ package com.quakearts.webapp.beans;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import com.quakearts.webapp.orm.DataStoreFactory;
+import com.quakearts.webapp.orm.cdi.annotation.DataStoreFactoryHandle;
 import ${beanModel.beanClass.canonicalName};
 
 #set($stringElements=[])#foreach($element in $beanModel.beanElements)#if($element.string)#set($ignoreadd=${stringElements.add($element)})#end#end
+@Singleton
 public class ${beanModel.beanClass.simpleName}Finder {
+	
+	@Inject @DataStoreFactoryHandle
+	private DataStoreFactory dataStoreFactory;
+
 	public ${beanModel.beanClass.simpleName}Finder(){
+		//TODO
 	}
 
 	public List<${beanModel.beanClass.simpleName}> findObjects(HashMap<String, Serializable> parameters){
@@ -15,17 +25,20 @@ public class ${beanModel.beanClass.simpleName}Finder {
 		return null;
 	}
 #if($beanModel.idElement && !$beanModel.idElement.compositeId &&(${id.descriptor.propertyType.name} == "int" || ${id.descriptor.propertyType.name} == "java.lang.Integer" || ${id.descriptor.propertyType.name} == "long" || ${id.descriptor.propertyType.name} == "java.lang.Long" || ${id.descriptor.propertyType.name} == "java.lang.String"))
+	
 	public ${beanModel.beanClass.simpleName} getById(${id.descriptor.propertyType.simpleName} id){
 		//TODO
 		return null;
 	}
 #end
 #if($stringElements.isEmpty())
+	
 	public List<${beanModel.beanClass.simpleName}> getAll(){
 		//TODO
 		return null;
 	}
 #else
+	
 	public List<${beanModel.beanClass.simpleName}> filterByText(String searchString){
 		//TODO
 		return null;

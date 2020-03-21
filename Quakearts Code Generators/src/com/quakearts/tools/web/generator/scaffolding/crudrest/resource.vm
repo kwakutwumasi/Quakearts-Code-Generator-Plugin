@@ -19,6 +19,7 @@ import com.quakearts.appbase.cdi.annotation.Transactional;
 import com.quakearts.appbase.cdi.annotation.Transactional.TransactionType;
 import com.quakearts.webapp.orm.DataStore;
 import com.quakearts.webapp.orm.cdi.annotation.DataStoreHandle;
+import com.quakearts.webapp.orm.cdi.annotation.RequiresTransaction;
 import com.quakearts.webapp.orm.exception.DataStoreException;
 import ${beanModel.beanClassName};
 
@@ -26,7 +27,7 @@ import ${beanModel.beanClassName};
 @Path("${beanModel.name}") @Transactional(TransactionType.SINGLETON)
 public class ${beanModel.beanClass.simpleName}Resource {
 	
-	@Inject @DataStoreHandle
+	@Inject @DataStoreHandle @RequiresTransaction
 	private DataStore dataStore;
 	
 	@GET
