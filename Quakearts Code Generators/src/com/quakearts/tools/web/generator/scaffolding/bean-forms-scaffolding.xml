@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scaffolding id="basic-app" xmlns="http://quakearts.com/scaffolding"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://quakearts.com/scaffolding ../model/scaffolding.xsd ">
+	xsi:schemaLocation="http://quakearts.com/scaffolding ../../model/scaffolding.xsd ">
 	<properties>
 		<entry displayName="Application Title" property="apptitle">Bean Application</entry>
 		<entry displayName="Company" property="company">Quake Arts Inc.</entry>
@@ -19,7 +19,6 @@
 	<resource folderID="images" location="crudapp/images/loading.gif" />
 	<resource folderID="images" location="crudapp/images/loading-small.gif" />
 	<resource folderID="beans" location="crudapp/crudappapplicationbean.vm" filename="@{crudappClassName}.java" template="true" />
-	<resource folderID="web" location="crudapp/index.vm" filename="index.jsp" template="true" />
 	<resource folderID="webinf" location="crudapp/web.xml" template="true" filename="web.xml" />
 	<resource folderID="base" location="crudapp/template.xhtml" template="true" />
 	<resource folderID="webinf" location="crudapp/faces-config.xml" />

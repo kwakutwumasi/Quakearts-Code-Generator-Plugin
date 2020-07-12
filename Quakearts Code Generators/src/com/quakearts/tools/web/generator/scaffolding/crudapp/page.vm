@@ -11,7 +11,7 @@ import com.quakearts.webapp.facelets.base.BaseBean;
 import com.quakearts.webapp.orm.query.criteria.CriteriaMapBuilder;
 import com.quakearts.webapp.orm.exception.DataStoreException;
 import ${beanModel.beanClass.canonicalName};
-#foreach($element in $beanModel.beanElements)#if(!$element.primitiveOrString)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}])
+#set($imports=[])#foreach($element in $beanModel.beanElements)#if(!$element.primitiveOrString)#set($elementModel = $classModelMapping[${element.descriptor.propertyType.name}])#if($classModelMapping[${element.descriptor.propertyType.name}] && !$imports.contains($elementModel.beanClass.canonicalName))#set($ignoreadd=$imports.add($elementModel.beanClass.canonicalName))
 import ${elementModel.beanClass.canonicalName};
 #end#end#end
 
