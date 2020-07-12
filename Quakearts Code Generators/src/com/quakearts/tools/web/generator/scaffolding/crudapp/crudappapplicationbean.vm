@@ -19,7 +19,7 @@ public class $crudappClassName implements Serializable {
 
 	private static Logger log = Logger.getLogger(${crudappClassName}.class.getName());
 	private String mode;
-	private Converter converter;
+	private transient Converter converter;
 	
 	public String getMode() {
 		return mode;
