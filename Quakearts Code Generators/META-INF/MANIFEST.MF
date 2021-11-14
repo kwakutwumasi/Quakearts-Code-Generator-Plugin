@@ -16,4 +16,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib/velocity-1.7-dep.jar,
- lib/velocity-1.7.jar
+ lib/velocity-1.7.jar,
+ lib/jakarta.activation.jar,
+ lib/jakarta.xml.bind-api.jar,
+ lib/jaxb-impl.jar
+ 

@@ -101,11 +101,11 @@ public class Procedure {
 				if(column.getJavaTypeName().isEmpty()||column.getVariableName().isEmpty())
 					return false;
 				
-				ResultColumn checkColumn = resultColumns.get(new Integer(column.getColumnNumber()));
+				ResultColumn checkColumn = resultColumns.get(Integer.valueOf(column.getColumnNumber()));
 				if(checkColumn!=null){
 					return false;
 				}else{
-					resultColumns.put(new Integer(column.getColumnNumber()), column);
+					resultColumns.put(Integer.valueOf(column.getColumnNumber()), column);
 				}
 			}
 		}

@@ -2,6 +2,8 @@ package com.quakearts.webapp.beans;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -19,7 +21,8 @@ public class $crudappClassName implements Serializable {
 
 	private static Logger log = Logger.getLogger(${crudappClassName}.class.getName());
 	private String mode;
-	private transient Converter converter;
+	private transient Converter timeStampConverter;
+	private transient Converter localDateTimeConverter;
 	
 	public String getMode() {
 		return mode;
@@ -29,12 +32,12 @@ public class $crudappClassName implements Serializable {
 		this.mode = mode;
 	}
 	
-	public Converter getConverter() {
-		if(converter==null){
-			converter = new TimeStampConverter();
-			((TimeStampConverter)converter).setPattern("dd/MM/yyyy");
+	public Converter getTimeStampConverter() {
+		if(timeStampConverter == null){
+			timeStampConverter = new TimeStampConverter();
+			((TimeStampConverter)timeStampConverter).setPattern("dd/MM/yyyy");
 		}
-		return converter;
+		return timeStampConverter;
 	}
 	
 	public static class TimeStampConverter extends DateTimeConverter implements Serializable {
@@ -64,6 +67,36 @@ public class $crudappClassName implements Serializable {
 			}
 			return result;
 		}
+	}
+	
+	public Converter getLocalDateTimeConverter() {
+		if(localDateTimeConverter == null){
+			localDateTimeConverter = new LocalDateTimeConverter();
+		}
+		
+		return localDateTimeConverter;
+	}
+	
+	private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+	public static class LocalDateTimeConverter implements Converter {
+
+		@Override
+		public Object getAsObject(FacesContext context, UIComponent component, String value) {
+			if(value == null)
+				return null;
+			
+			return LocalDateTime.from(dateTimeFormatter.parse(value));
+		}
+
+		@Override
+		public String getAsString(FacesContext context, UIComponent component, Object value) {
+			if(!(value instanceof LocalDateTime))
+				return null;
+			
+			return dateTimeFormatter.format((LocalDateTime) value);
+		}
+		
 	}
 #foreach($enumName in $util.getEnums($beanModels)) 
 

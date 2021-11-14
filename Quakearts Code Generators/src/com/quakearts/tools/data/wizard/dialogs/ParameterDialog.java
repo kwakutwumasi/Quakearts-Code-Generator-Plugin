@@ -180,12 +180,12 @@ public class ParameterDialog extends Dialog {
 							break;
 						case Types.BIT:
 							int bit = Integer.parseInt(value);
-							callParameters[position] = new Boolean(bit==1);
+							callParameters[position] = Boolean.valueOf(bit==1);
 							if(control instanceof Button)
 								((Button)control).setSelection(bit==1);
 							break;
 						case Types.BOOLEAN:
-							callParameters[position] = new Boolean(Boolean.parseBoolean(value));
+							callParameters[position] = Boolean.valueOf(Boolean.parseBoolean(value));
 							if(control instanceof Button)
 								((Button)control).setSelection(Boolean.parseBoolean(value));
 							break;
@@ -193,7 +193,7 @@ public class ParameterDialog extends Dialog {
 						case Types.SMALLINT:
 						case Types.TINYINT:
 							try{
-								callParameters[position] = new Integer(Integer.parseInt(value));
+								callParameters[position] = Integer.valueOf(Integer.parseInt(value));
 							} catch (Exception e1) {
 								MessageDialog.openError(getShell(),"Invalid data", "Parameter "+(position+1)+" must be a valid number");
 								continue;
@@ -203,7 +203,7 @@ public class ParameterDialog extends Dialog {
 							break;
 						case Types.BIGINT:
 							try{
-								callParameters[position] = new Long(Long.parseLong(value));
+								callParameters[position] = Long.valueOf(Long.parseLong(value));
 							} catch (Exception e1) {
 								MessageDialog.openError(getShell(),"Invalid data", "Parameter "+(position+1)+" must be a valid number");
 								continue;
@@ -216,7 +216,7 @@ public class ParameterDialog extends Dialog {
 						case Types.FLOAT:
 						case Types.REAL:
 							try{
-								callParameters[position] = new Double(Double.parseDouble(value));
+								callParameters[position] = Double.valueOf(Double.parseDouble(value));
 							} catch (Exception e1) {
 								MessageDialog.openError(getShell(),"Invalid data", "Parameter "+(position+1)+" must be a valid number");
 								continue;
@@ -266,7 +266,7 @@ public class ParameterDialog extends Dialog {
 					return;
 				
 				try {
-					callParameters[parameterPosition] = new Integer(Integer.parseInt(text.getText().trim()));
+					callParameters[parameterPosition] = Integer.valueOf(Integer.parseInt(text.getText().trim()));
 				} catch (Exception e) {
 					MessageDialog.openError(getShell(),"Invalid data", "Parameter must be a valid integer");
 					text.forceFocus();
@@ -294,7 +294,7 @@ public class ParameterDialog extends Dialog {
 				if(!(obj instanceof Button))
 					return;
 				Button button = (Button) obj;
-				callParameters[parameterPosition] = new Boolean(button.getSelection());
+				callParameters[parameterPosition] = Boolean.valueOf(button.getSelection());
 				break;
 			case Types.BIGINT:
 				if(!(obj instanceof Text))
@@ -304,7 +304,7 @@ public class ParameterDialog extends Dialog {
 					return;
 
 				try {
-					callParameters[parameterPosition] = new Long(Long.parseLong(text.getText().trim()));
+					callParameters[parameterPosition] = Long.valueOf(Long.parseLong(text.getText().trim()));
 				} catch (Exception e) {
 					MessageDialog.openError(getShell(),"Invalid data", "Parameter must be a valid integer");
 					text.forceFocus();
@@ -322,7 +322,7 @@ public class ParameterDialog extends Dialog {
 					return;
 
 				try {
-					callParameters[parameterPosition] = new Double(Double.parseDouble(text.getText().trim()));
+					callParameters[parameterPosition] = Double.valueOf(Double.parseDouble(text.getText().trim()));
 				} catch (Exception e) {
 					MessageDialog.openError(getShell(),"Invalid data", "Parameter must be a valid integer");
 					text.forceFocus();

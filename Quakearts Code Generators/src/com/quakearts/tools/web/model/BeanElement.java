@@ -104,7 +104,9 @@ public class BeanElement implements Comparable<BeanElement> {
 	}
 	
 	public boolean isKnownInputType(){
-		return isPrimitiveOrString() || isDateTimeType()
+		return isPrimitiveOrString() 
+				|| isDateTimeType()
+				|| isLocalDateTimeType()
 				|| descriptor.getPropertyType() == java.math.BigInteger.class
 				|| descriptor.getPropertyType() == java.math.BigDecimal.class;
 	}
@@ -114,7 +116,13 @@ public class BeanElement implements Comparable<BeanElement> {
 		|| descriptor.getPropertyType() == java.sql.Date.class 
 		|| descriptor.getPropertyType() == java.sql.Timestamp.class;
 	}
-	
+
+	public boolean isLocalDateTimeType(){
+		return descriptor.getPropertyType() == java.time.LocalTime.class
+		|| descriptor.getPropertyType() == java.time.LocalDate.class
+		|| descriptor.getPropertyType() == java.time.LocalDateTime.class;
+	}
+
 	public boolean isEnum(){
 		return descriptor.getPropertyType().isEnum();
 	}

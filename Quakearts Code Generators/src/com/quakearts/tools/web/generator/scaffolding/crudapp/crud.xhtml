@@ -17,7 +17,12 @@
 		</h:inputText>
 #elseif(${element.dateTimeType})
 		<b:date nullable="true" dayClass="btn-xs" monthClass="btn-xs" yearClass="btn-xs" 
-			value="#{${beanModel.name}.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.converter}" 
+			value="#{${beanModel.name}.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.timeStampConverter}" 
+			disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(${beanModel.name}.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
+		</b:date>
+#elseif(${element.localDateTimeType})
+		<b:date nullable="true" dayClass="btn-xs" monthClass="btn-xs" yearClass="btn-xs" 
+			value="#{${beanModel.name}.${element.value}}" converter="#{${beanModel.name}Page.${crudappBeanName}.localDateTimeConverter}" format="dmyhns"
 			disabled="#{${beanModel.name}Page.${crudappBeanName}.mode eq 'read'#if($element.id) ||(${beanModel.name}.${element.value} != #if($element.primitiveNumber)0#{else}null#end and ${beanModel.name}Page.${crudappBeanName}.mode eq 'edit')#end}">
 		</b:date>
 #end
